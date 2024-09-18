@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://localhost:7000/</loc>
+        <lastmod>2024-09-18</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/ABOUT/about/</loc>
+        <lastmod>2024-09-18</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/ABOUT/about/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/ABOUT/about/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/ARCHITECTURE/architecture/</loc>
+        <lastmod>2024-09-18</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/ARCHITECTURE/architecture/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/ARCHITECTURE/architecture/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/blog/</loc>
+        <lastmod>2024-09-18</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/blog/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/blog/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/</loc>
+        <lastmod>2024-09-18</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/ABOUT/about/</loc>
+        <lastmod>2024-09-18</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/ABOUT/about/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/ABOUT/about/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/ARCHITECTURE/architecture/</loc>
+        <lastmod>2024-09-18</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/ARCHITECTURE/architecture/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/ARCHITECTURE/architecture/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/blog/</loc>
+        <lastmod>2024-09-18</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/blog/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/blog/"/>
+    </url>
+</urlset>
