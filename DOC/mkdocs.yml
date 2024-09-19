@@ -243,9 +243,9 @@ markdown_extensions:
 nav:
   - ABOUT: 
       # - "index.md"
-      - "ABOUT/about.md"
+      ABOUT: "ABOUT/about.md"
   - ARCHITECTURE:
-      - "ARCHITECTURE/architecture.md"
+      ARCHITECTURE: "ARCHITECTURE/architecture.md"
 
 
     
