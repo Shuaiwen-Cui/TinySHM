@@ -32,4 +32,3 @@ To demonstrate the capabilities and features, TinySHM uses LiftNode as the physi
 ![Software Architecture](sw.png)
 
 What is shown here is actually the software architecture of LiftNode. TinySHM, as a part of the middleware layer, mainly serves as an middleware, connecting the underlying driver layer and supporting the functions of the application layer. As a framework, TinySHM aims to bridge the gap between general-purposes computation and SHM specified computation, providing highly-abstracted, configurable, energy-efficient, and high-performance functions for SHM applications.
-
