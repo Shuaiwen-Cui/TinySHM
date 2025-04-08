@@ -121,6 +121,9 @@ plugins:
             MATH: 数学运算
             DSP: 数字信号处理
             AI: 人工智能
+            MEASUREMENT: 测量
+            SYSTEM_IDENTIFICATION: 系统识别
+            DAMAGE_DETECTION: 损伤检测
 
 # # Hooks
 # hooks:
@@ -260,6 +263,12 @@ nav:
       "DSP/dsp.md"
   - AI:
       "AI/ai.md"
+  - MEASUREMENT:
+      "MEASUREMENT/measurement.md"
+  - SYSTEM_IDENTIFICATION:
+      "SYSTEM_IDENTIFICATION/system_identification.md"
+  - DAMAGE_DETECTION:
+      "DAMAGE_DETECTION/damage_detection.md"
 
     
 # if there are sub nodes under a node, then there should not be a link right after the node. All the stuff should be placed under the node.
