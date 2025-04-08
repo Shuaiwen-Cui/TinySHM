@@ -124,6 +124,10 @@ plugins:
             MEASUREMENT: 测量
             SYSTEM_IDENTIFICATION: 系统识别
             DAMAGE_DETECTION: 损伤检测
+            RELEASES: 版本发布
+            NOTES: 说明
+            CODE: 代码
+            LOG: 日志
 
 # # Hooks
 # hooks:
@@ -250,26 +254,33 @@ markdown_extensions:
 # Page Navigation Tree
 nav:
   - ABOUT: 
-      "ABOUT/about.md"
+      - "ABOUT/about.md"
   - DEVKITS:
-      "DEVKITS/devkits.md"
+      - "DEVKITS/devkits.md"
   - ARCHITECTURE:
-      "ARCHITECTURE/architecture.md"
+      - "ARCHITECTURE/architecture.md"
   - ADAPTATION:
-      "ADAPTATION/adaptation.md"
+      - "ADAPTATION/adaptation.md"
+      - NOTES: "ADAPTATION/notes.md"
+      - CODE: "ADAPTATION/code.md"
+      - LOG: "ADAPTATION/log.md"
   - MATH:
-      "MATH/math.md"
+      - "MATH/math.md"
   - DSP:
-      "DSP/dsp.md"
+      - "DSP/dsp.md"
   - AI:
-      "AI/ai.md"
+      - "AI/ai.md"
   - MEASUREMENT:
-      "MEASUREMENT/measurement.md"
+      - "MEASUREMENT/measurement.md"
+      - NOTES: "MEASUREMENT/notes.md"
+      - CODE: "MEASUREMENT/code.md"
+      - LOG: "MEASUREMENT/log.md"
   - SYSTEM_IDENTIFICATION:
-      "SYSTEM_IDENTIFICATION/system_identification.md"
+      - "SYSTEM_IDENTIFICATION/system_identification.md"
   - DAMAGE_DETECTION:
-      "DAMAGE_DETECTION/damage_detection.md"
-
+      - "DAMAGE_DETECTION/damage_detection.md"
+  - RELEASES:
+      - "RELEASES/releases.md"
     
 # if there are sub nodes under a node, then there should not be a link right after the node. All the stuff should be placed under the node.
 
