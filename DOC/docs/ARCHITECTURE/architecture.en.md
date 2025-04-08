@@ -1,34 +1,38 @@
 # ARCHITECTURE
 
-## HARDWARE ARCHITECTURE
+## LAYERED ARCHITECTURE
 
-![Hardware Architecture](hw.png)
+```txt
++------------------------------+
+| AI                           | <-- AI/ML Functions for Edge Devices based on Low Level Functions
++------------------------------+
+| DSP                          | <-- Digital Signal Processing Functions
++------------------------------+
+| Math Operations              | <-- Commonly Used Math Functions for Various Applications
++------------------------------+
+| Adaptation Layer             | <-- To Replace Functions in Standard C with Platform Optimized/Specific Functions
++------------------------------+
+```
 
-To demonstrate the capabilities and features, TinySHM uses LiftNode as the physical foundation. LiftNode is a MCU level low-cost, low-power-consumption, high-performance sensing node, specially designed for various SHM applications.
+## CODE ORGANIZATION
 
-<div class="grid cards" markdown>
+```txt
 
--   :fontawesome-brands-github:{ .lg .middle } __LiftNode Repo__  
++------------------------------+
+| APPLICATION                  |
+|   - measurement              | <-- measurement / sensing
+|   - system_identification    | <-- system identification
+|   - damage detection         | <-- damage detection, localization, and assessment
++------------------------------+
+| MIDDLEWARE                   |
+|   - TinyAdapter              | <-- Platform-specific Low-level Optimization
+|   - TinyMath                 | <-- Common Math Functions
+|   - TinyDSP                  | <-- DSP Functions
+|   - TinyAI                   | <-- AI Functions
++------------------------------+
+| DRIVERS                      |
++------------------------------+
+| HARDWARE                     |
++------------------------------+
 
-    ---
-
-    LiftNode's Github repository.
-
-
-    [:octicons-arrow-right-24: <a href="https://github.com/Shuaiwen-Cui/MCU_NODE_STM32" target="_blank"> Repository </a>](#)
-
--   :fontawesome-brands-github:{ .lg .middle } __LiftNode__  
-
-    ---
-
-    LiftNode's documentation.
-
-    [:octicons-arrow-right-24: <a href="https://shuaiwen-cui.github.io/MCU_NODE_STM32/" target="_blank"> Documentation </a>](#)
-
-</div>
-
-## SOFTWARE ARCHITECTURE
-
-![Software Architecture](sw.png)
-
-What is shown here is actually the software architecture of LiftNode. TinySHM, as a part of the middleware layer, mainly serves as an middleware, connecting the underlying driver layer and supporting the functions of the application layer. As a framework, TinySHM aims to bridge the gap between general-purposes computation and SHM specified computation, providing highly-abstracted, configurable, energy-efficient, and high-performance functions for SHM applications.
+```

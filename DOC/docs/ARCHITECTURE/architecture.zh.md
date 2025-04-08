@@ -1,35 +1,38 @@
 # 架构
 
-## 硬件架构
+## 分层架构
 
-![Hardware Architecture](hw.png)
+```txt
++------------------------------+
+| AI                           | <-- 基于低级函数的边缘设备 AI/ML 函数
++------------------------------+
+| DSP                          | <-- 数字信号处理函数
++------------------------------+
+| Math Operations              | <-- 各种应用的常用数学函数
++------------------------------+
+| Adaptation Layer             | <-- 用平台优化/特定函数替换标准 C 中的函数
++------------------------------+
+```
 
-为了展示 TinySHM 的功能和特性，TinySHM 使用 LiftNode 作为物理基础。LiftNode 是一种 MCU 级别的低成本、低功耗、高性能的传感节点，专门为各种结构健康监测应用而设计。
+## 代码组织
 
-<div class="grid cards" markdown>
+```txt
 
--   :fontawesome-brands-github:{ .lg .middle } __LiftNode仓库__
++------------------------------+
+| 应用层                        |
+|   - measurement              | <-- 测量
+|   - system_identification    | <-- 系统识别
+|   - damage detection         | <-- 损伤检测,定位和评估
++------------------------------+
+| 中间件                        |
+|   - TinyAdapter              | <-- 平台底层优化
+|   - TinyMath                 | <-- 常用数学函数
+|   - TinyDSP                  | <-- DSP 函数
+|   - TinyAI                   | <-- AI 函数
++------------------------------+
+| 驱动层                        |
++------------------------------+
+| 硬件层                        |
++------------------------------+
 
-    ---
-
-    LiftNode 的 Github 仓库。
-
-
-    [:octicons-arrow-right-24: <a href="https://github.com/Shuaiwen-Cui/MCU_NODE_STM32" target="_blank"> 仓库 </a>](#)
-
--   :fontawesome-brands-github:{ .lg .middle } __LiftNode文档__
-
-    ---
-
-    LiftNode 的文档。
-
-    [:octicons-arrow-right-24: <a href="https://shuaiwen-cui.github.io/MCU_NODE_STM32/" target="_blank"> 地址 </a>](#)
-
-</div>
-
-
-## 软件架构
-
-![Software Architecture](sw.png)
-
-这里展示的实际上是LiftNode的软件架构，TinySHM作为其中间层的一部分，主要作为中间件使用，向下对接底层驱动，向上支撑应用层的功能。TinySHM作为一个框架，旨在弥合通用计算和结构健康监测特定计算之间的差距，为结构健康监测应用提供高度抽象、可配置、节能、高性能的功能。
+```

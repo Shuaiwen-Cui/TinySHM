@@ -115,7 +115,12 @@ plugins:
           build: true
           nav_translations: # note that all titles and subtitles in the navigation bar that need to be translated can be put here, but with no indentation
             ABOUT: 关于
+            DEVKITS: 开发载体
             ARCHITECTURE: 架构
+            ADAPTATION: 适配层
+            MATH: 数学运算
+            DSP: 数字信号处理
+            AI: 人工智能
 
 # # Hooks
 # hooks:
@@ -242,11 +247,19 @@ markdown_extensions:
 # Page Navigation Tree
 nav:
   - ABOUT: 
-      # - "index.md"
-      ABOUT: "ABOUT/about.md"
+      "ABOUT/about.md"
+  - DEVKITS:
+      "DEVKITS/devkits.md"
   - ARCHITECTURE:
-      ARCHITECTURE: "ARCHITECTURE/architecture.md"
-
+      "ARCHITECTURE/architecture.md"
+  - ADAPTATION:
+      "ADAPTATION/adaptation.md"
+  - MATH:
+      "MATH/math.md"
+  - DSP:
+      "DSP/dsp.md"
+  - AI:
+      "AI/ai.md"
 
     
 # if there are sub nodes under a node, then there should not be a link right after the node. All the stuff should be placed under the node.
