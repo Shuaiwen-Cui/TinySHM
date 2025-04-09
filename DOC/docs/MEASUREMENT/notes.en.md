@@ -168,7 +168,7 @@ void acc_streamline_task(void *pvParameters)
             snprintf(streamline_buff, sizeof(streamline_buff), "Time Stamp: %10ld, acc_x = %10.6f, acc_y = %10.6f, acc_z = %10.6f, Sensor Temperature: %4.2f °C", time_stamp, acc_x, acc_y, acc_z, temperature);
         }
 
-        // // print out the data
+        // print out the data - comment out for higher sample rate
         if (config->printout)
         {
             ESP_LOGI(TAG, "%s", streamline_buff);
