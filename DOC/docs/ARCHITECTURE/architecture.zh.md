@@ -22,7 +22,7 @@
 | 应用层                        |
 |   - measurement              | <-- 测量
 |   - system_identification    | <-- 系统识别
-|   - damage detection         | <-- 损伤检测,定位和评估
+|   - damage_detection         | <-- 损伤检测,定位和评估
 +------------------------------+
 | 中间件                        |
 |   - TinyAdapter              | <-- 平台底层优化

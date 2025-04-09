@@ -22,7 +22,7 @@
 | APPLICATION                  |
 |   - measurement              | <-- measurement / sensing
 |   - system_identification    | <-- system identification
-|   - damage detection         | <-- damage detection, localization, and assessment
+|   - damage_detection         | <-- damage detection, localization, and assessment
 +------------------------------+
 | MIDDLEWARE                   |
 |   - TinyAdapter              | <-- Platform-specific Low-level Optimization
