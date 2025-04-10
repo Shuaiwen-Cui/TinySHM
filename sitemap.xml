@@ -113,11 +113,25 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/toolbox/"/>
     </url>
     <url>
-        <loc>https://localhost:7000/TOOLBOX/TIME/time/</loc>
+        <loc>https://localhost:7000/TOOLBOX/TIME/code/</loc>
         <lastmod>2025-04-10</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/TIME/time/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/TIME/time/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/TIME/code/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/TIME/code/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/TOOLBOX/TIME/log/</loc>
+        <lastmod>2025-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/TIME/log/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/TIME/log/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/TOOLBOX/TIME/notes/</loc>
+        <lastmod>2025-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/TIME/notes/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/TIME/notes/"/>
     </url>
     <url>
         <loc>https://localhost:7000/blog/</loc>
@@ -239,11 +253,25 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/toolbox/"/>
     </url>
     <url>
-        <loc>https://localhost:7000/zh/TOOLBOX/TIME/time/</loc>
+        <loc>https://localhost:7000/zh/TOOLBOX/TIME/code/</loc>
         <lastmod>2025-04-10</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/TIME/time/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/TIME/time/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/TIME/code/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/TIME/code/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/TOOLBOX/TIME/log/</loc>
+        <lastmod>2025-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/TIME/log/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/TIME/log/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/TOOLBOX/TIME/notes/</loc>
+        <lastmod>2025-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/TIME/notes/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/TIME/notes/"/>
     </url>
     <url>
         <loc>https://localhost:7000/zh/blog/</loc>
