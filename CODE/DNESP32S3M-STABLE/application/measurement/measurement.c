@@ -54,7 +54,7 @@ struct SenseConfig streamline_config = {
 
 // for sensing configuration
 struct SenseConfig sense_config = {
-    .sample_rate = 500,   // Sample rate in Hz, only can be (1, 2, 5, 10, 20, 25, 50, 100, 200, 500) for FreeRTOS based sensing. Note can not be 1000Hz (no time to feed the watchdog).
+    .sample_rate = 100,   // Sample rate in Hz, only can be (1, 2, 5, 10, 20, 25, 50, 100, 200, 500) for FreeRTOS based sensing. Note can not be 1000Hz (no time to feed the watchdog).
     .sample_duration = 1, // Sample duration in seconds
     .printout = true      // Only available for sampling rate <= 100Hz
 };
@@ -97,7 +97,7 @@ void acc_streamline_task(void *pvParameters)
     while (1)
     {
         // get the time stamp
-        time_stamp = tiny_get_time();
+        time_stamp = tiny_get_running_time();
 
         // get accelerometer data
         mpu6050_get_acce(mpu6050, &acce);
@@ -151,7 +151,7 @@ void acc_sense_task(void *pvParameters)
     data_struct.sample_duration = config->sample_duration;
     mpu6050_get_temp(mpu6050, &temp);
     data_struct.sensor_temperature = temp.temp;
-    data_struct.start_time_stamp = tiny_get_time();
+    data_struct.start_time_stamp = tiny_get_running_time();
 
     // Allocate memory
     data_struct.acc_data = malloc(sizeof(float) * 3 * total_samples);
@@ -175,7 +175,7 @@ void acc_sense_task(void *pvParameters)
 
     for (int i = 0; i < total_samples; i++)
     {
-        TinyTimeMark_t now = tiny_get_time();
+        TinyTimeMark_t now = tiny_get_running_time();
         mpu6050_get_acce(mpu6050, &acce);
         mpu6050_get_temp(mpu6050, &temp);
 
@@ -213,6 +213,12 @@ void acc_sense_task(void *pvParameters)
                      data_struct.acc_data[i * 3 + 1],
                      data_struct.acc_data[i * 3 + 2],
                      data_struct.temperature[i]);
+    
+            // Release CPU for a short time to avoid blocking
+            if ((i % 10) == 0)
+            {
+                vTaskDelay(pdMS_TO_TICKS(10));
+            }
         }
     }
 
@@ -237,79 +243,3 @@ void acc_sense_task(void *pvParameters)
 }
 
 
-// void acc_sense_task(void *pvParameters)
-// {
-//     struct SenseConfig *config = (struct SenseConfig *)pvParameters;
-//     TickType_t xLastWakeTime = xTaskGetTickCount();
-//     const TickType_t xFrequency = pdMS_TO_TICKS(1000 / config->sample_rate);
-//     int total_samples = config->sample_rate * config->sample_duration;
-
-//     // Fill global data_struct
-//     data_struct.sample_rate = config->sample_rate;
-//     data_struct.sample_duration = config->sample_duration;
-//     mpu6050_get_temp(mpu6050, &temp);
-//     data_struct.sensor_temperature = temp.temp;
-//     data_struct.start_time_stamp = tiny_get_time();
-//     data_struct.acc_data = malloc(sizeof(float) * 3 * total_samples);
-//     if (data_struct.acc_data == NULL)
-//     {
-//         ESP_LOGE(TAG, "Failed to allocate memory for acc_data.");
-//         vTaskDelete(NULL);
-//     }
-
-//     ESP_LOGI(TAG, "Sampling started: %d Hz for %d seconds (%d samples)",
-//              config->sample_rate, config->sample_duration, total_samples);
-
-//     for (int i = 0; i < total_samples; i++)
-//     {
-//         mpu6050_get_acce(mpu6050, &acce);
-
-//         // Save accelerometer data to global buffer
-//         data_struct.acc_data[i * 3 + 0] = acce.acce_x;
-//         data_struct.acc_data[i * 3 + 1] = acce.acce_y;
-//         data_struct.acc_data[i * 3 + 2] = acce.acce_z;
-
-//         // Print first few samples for debug
-//         if (i < 5)
-//         {
-//             ESP_LOGI(TAG, "[DEBUG] Sample #%3d: x=%.3f, y=%.3f, z=%.3f",
-//                      i + 1, acce.acce_x, acce.acce_y, acce.acce_z);
-//         }
-
-//         vTaskDelayUntil(&xLastWakeTime, xFrequency);
-//     }
-
-//     ESP_LOGI(TAG, "Sampling complete.");
-
-//     // Print metadata
-//     ESP_LOGI(TAG, "-----------------------------");
-//     ESP_LOGI(TAG, "Sensor Temperature : %.2f °C", data_struct.sensor_temperature);
-//     ESP_LOGI(TAG, "Start Time Stamp   : %d", data_struct.start_time_stamp);
-//     ESP_LOGI(TAG, "Sample Rate        : %d Hz", data_struct.sample_rate);
-//     ESP_LOGI(TAG, "Sample Duration    : %d sec", data_struct.sample_duration);
-//     ESP_LOGI(TAG, "Total Samples      : %d", total_samples);
-//     ESP_LOGI(TAG, "Data Size          : %d bytes", sizeof(float) * 3 * total_samples);
-//     ESP_LOGI(TAG, "-----------------------------");
-
-//     // Print collected data if enabled
-//     if (config->printout)
-//     {
-//         for (int i = 0; i < total_samples; i++)
-//         {
-//             ESP_LOGI(TAG, "Sample #%3d: x=%.6f, y=%.6f, z=%.6f",
-//                      i + 1,
-//                      data_struct.acc_data[i * 3 + 0],
-//                      data_struct.acc_data[i * 3 + 1],
-//                      data_struct.acc_data[i * 3 + 2]);
-//         }
-//     }
-
-//     // Free allocated memory if not needed further
-//     if (data_struct.acc_data != NULL)
-//     {
-//         free(data_struct.acc_data);
-//         data_struct.acc_data = NULL;
-//     }
-
-//     vTaskDelete(NULL);
-// }

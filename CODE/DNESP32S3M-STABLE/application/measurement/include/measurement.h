@@ -37,8 +37,8 @@
 #include "mqtt.h"
 #include "mpu6050.h"
 
-// TinyAuton
-#include "TinyAdapter.h"
+// TinyAuton/TinySHM
+#include "TinyToolbox.h" // TinyToolbox Middleware
 
 /* VARIABLES */
 extern struct SenseConfig streamline_config; // Streamline configuration

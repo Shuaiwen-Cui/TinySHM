@@ -29,7 +29,7 @@
 /* Macros */
 #define ENTERPRISE_WIFI_SSID "NTUSECURE" //SSID of WiFi
 #define ENTERPRISE_WIFI_USERNAME "SHUAIWEN001@e.ntu.edu.sg" // Username
-#define ENTERPRISE_WIFI_PASSWORD "Csw19950918$" // Password
+#define ENTERPRISE_WIFI_PASSWORD "Csw19950918%" // Password
 
 /* Variables */
 extern const char *TAG_WIFI; // tag for logging

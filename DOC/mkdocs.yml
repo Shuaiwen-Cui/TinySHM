@@ -115,9 +115,7 @@ plugins:
           build: true
           nav_translations: # note that all titles and subtitles in the navigation bar that need to be translated can be put here, but with no indentation
             ABOUT: 关于
-            DEVKITS: 开发载体
-            ARCHITECTURE: 架构
-            ADAPTATION: 适配层
+            TOOLBOX: 工具箱
             MATH: 数学运算
             DSP: 数字信号处理
             AI: 人工智能
@@ -254,16 +252,12 @@ markdown_extensions:
 # Page Navigation Tree
 nav:
   - ABOUT: 
-      - "ABOUT/about.md"
-  - DEVKITS:
-      - "DEVKITS/devkits.md"
-  - ARCHITECTURE:
-      - "ARCHITECTURE/architecture.md"
-  - ADAPTATION:
-      - "ADAPTATION/adaptation.md"
-      - NOTES: "ADAPTATION/notes.md"
-      - CODE: "ADAPTATION/code.md"
-      - LOG: "ADAPTATION/log.md"
+      - TinySHM: "ABOUT/about.md"
+  - TOOLBOX:
+      - "TOOLBOX/toolbox.md"
+      - NOTES: "TOOLBOX/notes.md"
+      - CODE: "TOOLBOX/code.md"
+      - LOG: "TOOLBOX/log.md"
   - MATH:
       - "MATH/math.md"
   - DSP:

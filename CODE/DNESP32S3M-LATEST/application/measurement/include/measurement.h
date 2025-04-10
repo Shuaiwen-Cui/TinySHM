@@ -38,7 +38,7 @@
 #include "mpu6050.h"
 
 // TinyAuton/TinySHM
-#include "TinyAdapter.h"
+#include "TinyToolbox.h" // TinyToolbox Middleware
 
 /* VARIABLES */
 extern struct SenseConfig streamline_config; // Streamline configuration
