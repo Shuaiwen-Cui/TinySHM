@@ -118,6 +118,8 @@ plugins:
             TOOLBOX: 工具箱
             TIME: 时间
             MATH: 数学运算
+            ESP-DSP: ESP数字信号处理
+            EXAMPLES: 示例
             DSP: 数字信号处理
             AI: 人工智能
             MEASUREMENT: 测量
@@ -257,11 +259,14 @@ nav:
   - TOOLBOX:
       - TOOLBOX: "TOOLBOX/toolbox.md"
       - TIME: 
-          - NOTES: "TOOLBOX/TIME/time.md"
+          - NOTES: "TOOLBOX/TIME/notes.md"
           - CODE: "TOOLBOX/TIME/code.md"
           - LOG: "TOOLBOX/TIME/log.md"
   - MATH:
       - "MATH/math.md"
+      - ESP-DSP: 
+          - ESP-DSP: "MATH/ESP-DSP/esp-dsp.md"
+          - EXAMPLES: "MATH/ESP-DSP/examples.md"
   - DSP:
       - "DSP/dsp.md"
   - AI:

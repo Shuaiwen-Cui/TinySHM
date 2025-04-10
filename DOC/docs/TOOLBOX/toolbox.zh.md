@@ -6,7 +6,27 @@
 !!! warning     
     目前开发以ESP32为基础，向STM32等平台的迁移需要对适配层进行一定的修改。
 
+## 组件依赖
 
+```c
+set(src_dirs
+    .
+)
+
+set(include_dirs
+    include
+)
+
+set(requires
+    esp_timer
+    esp_rtc
+    espressif__esp-dsp
+    espressif__esp_jpeg
+    espressif__esp-dl
+)
+
+idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRES ${requires})
+```
 
 ## 架构与功能目录
 

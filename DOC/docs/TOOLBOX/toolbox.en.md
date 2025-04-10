@@ -6,6 +6,25 @@
 !!! warning
     Currently, development is based on ESP32, and migration to platforms like STM32 requires some modifications to the adaptation layer.
 
+## COMPONENT DEPENDENCIES
+
+```c
+set(src_dirs
+    .
+)
+set(include_dirs
+    include
+)
+set(requires
+    esp_timer
+    esp_rtc
+    espressif__esp-dsp
+    espressif__esp_jpeg
+    espressif__esp-dl
+)
+idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRES ${requires})
+```
+
 ## ARCHITECTURE AND FUNCTION DIRECTORY
 
 ```txt
