@@ -39,636 +39,636 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/xtensa/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/xtensa/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_gpio/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_gpio/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_pm/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_pm/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/mbedtls/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/mbedtls/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/bootloader/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/bootloader/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esptool_py/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esptool_py/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/partition_table/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/partition_table/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_app_format/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_app_format/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_bootloader_format/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_bootloader_format/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/app_update/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/app_update/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_partition/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_partition/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/efuse/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/efuse/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/bootloader_support/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/bootloader_support/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_mm/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_mm/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/spi_flash/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/spi_flash/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_system/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_system/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_common/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_common/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_rom/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_rom/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/hal/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/hal/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/log/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/log/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/heap/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/heap/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/soc/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/soc/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_security/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_security/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_hw_support/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_hw_support/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/freertos/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/freertos/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/newlib/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/newlib/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/pthread/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/pthread/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/cxx/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/cxx/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_timer/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_timer/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_gptimer/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_gptimer/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_ringbuf/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_ringbuf/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_uart/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_uart/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/app_trace/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/app_trace/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_event/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_event/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/nvs_flash/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/nvs_flash/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_phy/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_phy/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_usb_serial_jtag/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_usb_serial_jtag/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_vfs_console/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_vfs_console/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/vfs/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/vfs/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/lwip/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/lwip/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_netif_stack/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_netif_stack/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_netif/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_netif/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/wpa_supplicant/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/wpa_supplicant/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_coex/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_coex/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_wifi/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_wifi/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_spi/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_spi/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_gdbstub/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_gdbstub/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/bt/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/bt/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/unity/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/unity/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/cmock/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/cmock/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/console/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/console/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_pcnt/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_pcnt/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_mcpwm/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_mcpwm/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_ana_cmpr/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_ana_cmpr/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_i2s/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_i2s/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/sdmmc/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/sdmmc/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_sdmmc/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_sdmmc/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_sdspi/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_sdspi/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_sdio/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_sdio/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_dac/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_dac/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_rmt/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_rmt/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_tsens/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_tsens/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_sdm/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_sdm/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_i2c/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_i2c/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_ledc/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_ledc/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_parlio/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_parlio/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/driver/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/driver/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/http_parser/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/http_parser/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp-tls/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp-tls/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_adc/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_adc/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_bitscrambler/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_bitscrambler/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_isp/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_isp/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_cam/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_cam/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_jpeg/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_jpeg/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_ppa/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_ppa/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_driver_touch_sens/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_driver_touch_sens/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_eth/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_eth/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_hid/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_hid/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/tcp_transport/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/tcp_transport/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_http_client/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_http_client/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_http_server/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_http_server/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_https_ota/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_https_ota/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_https_server/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_https_server/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_psram/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_psram/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_lcd/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_lcd/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/protobuf-c/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/protobuf-c/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/protocomm/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/protocomm/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_local_ctrl/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_local_ctrl/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/espcoredump/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/espcoredump/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/wear_levelling/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/wear_levelling/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/fatfs/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/fatfs/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/idf_test/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/idf_test/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/ieee802154/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/ieee802154/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/json/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/json/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/mqtt/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/mqtt/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/nvs_sec_provider/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/nvs_sec_provider/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/openthread/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/openthread/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/perfmon/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/perfmon/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/rt/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/rt/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/spiffs/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/spiffs/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/touch_element/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/touch_element/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/ulp/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/ulp/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/usb/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/usb/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/wifi_provisioning/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/wifi_provisioning/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/main/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/main/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp32_mqtt/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp32_mqtt/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/esp_rtc/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/esp_rtc/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/led/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/led/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/exit/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/exit/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/i2c/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/i2c/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/spi/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/spi/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/lcd/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/lcd/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/mpu6050/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/mpu6050/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/rng/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/rng/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/spi_sdcard/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/spi_sdcard/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/tim/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/tim/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/wifi/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/wifi/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/TinyAI/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/TinyAI/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/TinyDSP/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/TinyDSP/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/TinyMath/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/TinyMath/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/espressif__esp-dsp/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/espressif__esp-dsp/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/espressif__esp_jpeg/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/espressif__esp_jpeg/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/espressif__esp-dl/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/espressif__esp-dl/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/TinyToolbox/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/TinyToolbox/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/damage_detection/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/damage_detection/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/measurement/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/measurement/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/esp-idf/system_identification/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/esp-idf/system_identification/cmake_install.cmake")
 endif()
 

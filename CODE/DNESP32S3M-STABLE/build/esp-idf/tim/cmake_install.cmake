@@ -1,4 +1,4 @@
-# Install script for directory: /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/driver/tim
+# Install script for directory: /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/driver/tim
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -1,2 +1,2 @@
-source /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/bootloader/gdbinit/symbols
-source /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/bootloader/gdbinit/connect
+source /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/bootloader/gdbinit/symbols
+source /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/bootloader/gdbinit/connect

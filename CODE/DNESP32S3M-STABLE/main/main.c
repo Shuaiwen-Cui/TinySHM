@@ -165,6 +165,6 @@ void app_main(void)
         led_toggle();
 
         // time delay
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }

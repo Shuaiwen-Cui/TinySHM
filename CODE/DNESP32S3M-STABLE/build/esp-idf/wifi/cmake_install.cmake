@@ -1,4 +1,4 @@
-# Install script for directory: /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/driver/wifi
+# Install script for directory: /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/driver/wifi
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -1,4 +1,4 @@
-# Install script for directory: /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/application/measurement
+# Install script for directory: /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/application/measurement
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

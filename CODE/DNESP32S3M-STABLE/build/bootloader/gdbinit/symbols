@@ -17,4 +17,4 @@ set confirm off
 set confirm on
 
 # Load application symbols
-file /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/bootloader/bootloader.elf
+file /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/bootloader/bootloader.elf

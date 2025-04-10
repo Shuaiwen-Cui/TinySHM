@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/bootloader/esp-idf/cmake_install.cmake")
+  include("/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/bootloader/esp-idf/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/bootloader/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/bootloader/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

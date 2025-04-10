@@ -1,4 +1,4 @@
-# Install script for directory: /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/application/system_identification
+# Install script for directory: /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/application/system_identification
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

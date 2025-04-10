@@ -13,8 +13,8 @@ end
 
 # Load bootloader symbols
 set confirm off
-    add-symbol-file /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/bootloader/bootloader.elf
+    add-symbol-file /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/bootloader/bootloader.elf
 set confirm on
 
 # Load application symbols
-file /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-LATEST/build/DNESP32S3-CORE.elf
+file /home/cshwstem/CSW/Development/TinySHM/CODE/DNESP32S3M-STABLE/build/DNESP32S3-CORE.elf
