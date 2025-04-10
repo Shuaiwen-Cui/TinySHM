@@ -156,7 +156,6 @@ void app_main(void)
         vTaskDelay(3000 / portTICK_PERIOD_MS); // wait for mqtt to connect
     }
 
-
     // streamline
     // xTaskCreate(acc_streamline_task, "Accel_Streamline_Task", 4096, &streamline_config, 5, NULL);
 

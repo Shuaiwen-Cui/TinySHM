@@ -6,3 +6,10 @@
 !!! warning     
     目前开发以ESP32为基础，向STM32等平台的迁移需要对适配层进行一定的修改。
 
+## 功能目录
+
+### [时间](./TIME/time.zh.md)
+
+- 获取运行时间： `tiny_get_running_time()`
+- SNTP对时： `sync_time_with_timezone("CST-8")`
+- 获取世界时间： `tiny_get_current_time(1)`

@@ -18,6 +18,7 @@
 #include "esp_flash.h"     // ESP32 Flash
 #include "esp_log.h"       // ESP32 Logging
 
+
 // BSP
 #include "led.h"
 #include "exit.h"
@@ -143,26 +144,31 @@ void app_main(void)
         ESP_LOGE(TAG_WIFI, "WiFi STA Init Failed");
     }
 
-    // only when the ip is obtained, start mqtt
+    // only when the ip is obtained, start time sync and mqtt
     EventBits_t ev = 0;
     ev = xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, pdTRUE, pdFALSE, portMAX_DELAY);
+
     if (ev & CONNECTED_BIT)
     {
+        sync_time_with_timezone("CST-8");
+        vTaskDelay(500/portTICK_PERIOD_MS);
         mqtt_app_start();
+        vTaskDelay(3000 / portTICK_PERIOD_MS); // wait for mqtt to connect
     }
-
-    vTaskDelay(3000); // wait for mqtt to connect
 
     // streamline
     // xTaskCreate(acc_streamline_task, "Accel_Streamline_Task", 4096, &streamline_config, 5, NULL);
 
     // normal sense
-    xTaskCreate(acc_sense_task, "Accel_Sense_Task", 8192, &sense_config, 5, NULL);
+    // xTaskCreate(acc_sense_task, "Accel_Sense_Task", 8192, &sense_config, 5, NULL);
 
     while (1)
     {
         // led test
         led_toggle();
+        
+        // show time
+        tiny_get_current_time(1); // get the current time
 
         // time delay
         vTaskDelay(1000 / portTICK_PERIOD_MS);

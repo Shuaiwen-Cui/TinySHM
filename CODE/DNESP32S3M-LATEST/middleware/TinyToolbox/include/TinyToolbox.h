@@ -13,7 +13,7 @@
 
 /* CONFIGURATIONS */
 
-/* DEPENDENCIES */
+/* ================================ DEPENDENCIES ================================ */
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
@@ -29,13 +29,13 @@
 // customized drivers
 #include "esp_rtc.h"
 
-/* DEFINITIONS */
+/* ================================ DEFINITIONS ================================= */
 typedef TickType_t TinyTimeMark_t;
 
 /**
  * @brief Structure to hold date and time
  */
-typedef struct DateTime_t
+typedef struct TinyDateTime_t
 {
     int year;
     int month;
@@ -44,21 +44,17 @@ typedef struct DateTime_t
     int minute;
     int second;
     long microsecond;
-} DateTime_t;
+} TinyDateTime_t; 
 
-/* FUNCTIONS */
+/* ================================ FUNCTIONS =================================== */
+/* LOCAL RUNNING TIME IN MICROSECONDS */
 /**
  * @brief Get the running time in microseconds
  * @return TinyTimeMark_t
  */
 TinyTimeMark_t tiny_get_running_time(void);
 
-/**
- * @brief Initialize SNTP
- * @return None
- */
-void initialize_sntp(void);
-
+/* WORLD CURRENT TIME - SNTP */
 /**
  * @brief Obtain the current time with timezone
  * @param timezone_str Timezone string (e.g., "CST-8")
@@ -68,13 +64,14 @@ void initialize_sntp(void);
  */
 void sync_time_with_timezone(const char *timezone_str);
 
+/* WORLD CURRENT TIME - GET TIME */
 /**
  * @name tiny_get_current_time
- * @brief Get the current time as a DateTime_t struct
+ * @brief Get the current time as a TinyDateTime_t struct
  * @param print_flag Flag to indicate whether to print the time
- * @return DateTime_t structure containing the current date and time
+ * @return TinyDateTime_t structure containing the current date and time
  */
-DateTime_t tiny_get_current_time(bool print_flag);
+TinyDateTime_t tiny_get_current_time(bool print_flag);
 
 
 #endif /* __TINYTOOLBOX__ */

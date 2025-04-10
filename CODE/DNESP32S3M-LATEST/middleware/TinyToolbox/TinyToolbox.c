@@ -14,6 +14,8 @@
 
 /* ================================ DEFINITIONS ================================= */
 /* CONFIGURATIONS */
+
+/* TAGS */
 static const char *TAG_SNTP = "NTP_SYNC";
 static const char *TAG_TIME = "TIME";
 
@@ -104,11 +106,11 @@ void sync_time_with_timezone(const char *timezone_str)
 /* WORLD CURRENT TIME - GET TIME */
 /**
  * @name tiny_get_current_time
- * @brief Get the current time as a DateTime_t struct
+ * @brief Get the current time as a TinyDateTime_t struct
  * @param print_flag Flag to indicate whether to print the time
- * @return DateTime_t structure containing the current date and time
+ * @return TinyDateTime_t structure containing the current date and time
  */
-DateTime_t tiny_get_current_time(bool print_flag)
+TinyDateTime_t tiny_get_current_time(bool print_flag)
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);  // Get current time (seconds + microseconds)
@@ -117,7 +119,7 @@ DateTime_t tiny_get_current_time(bool print_flag)
     struct tm timeinfo;
     localtime_r(&now, &timeinfo);  // Convert to local time
 
-    DateTime_t result;
+    TinyDateTime_t result;
     result.year   = timeinfo.tm_year + 1900;
     result.month  = timeinfo.tm_mon + 1;
     result.day    = timeinfo.tm_mday;

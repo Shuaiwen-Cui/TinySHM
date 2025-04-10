@@ -8,6 +8,7 @@ set(include_dirs
 
 set(requires
     esp_timer
+    esp_rtc
     espressif__esp-dsp
     espressif__esp_jpeg
     espressif__esp-dl
