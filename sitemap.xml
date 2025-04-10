@@ -113,6 +113,13 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/toolbox/"/>
     </url>
     <url>
+        <loc>https://localhost:7000/TOOLBOX/TIME/time/</loc>
+        <lastmod>2025-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/TIME/time/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/TIME/time/"/>
+    </url>
+    <url>
         <loc>https://localhost:7000/blog/</loc>
         <lastmod>2025-04-10</lastmod>
         <changefreq>daily</changefreq>
@@ -230,6 +237,13 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/toolbox/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/toolbox/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/TOOLBOX/TIME/time/</loc>
+        <lastmod>2025-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/TOOLBOX/TIME/time/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/TOOLBOX/TIME/time/"/>
     </url>
     <url>
         <loc>https://localhost:7000/zh/blog/</loc>
