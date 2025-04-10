@@ -43,6 +43,20 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/math/"/>
     </url>
     <url>
+        <loc>https://localhost:7000/MATH/ESP-DSP/esp-dsp/</loc>
+        <lastmod>2025-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP/esp-dsp/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP/esp-dsp/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/MATH/ESP-DSP/examples/</loc>
+        <lastmod>2025-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP/examples/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP/examples/"/>
+    </url>
+    <url>
         <loc>https://localhost:7000/MEASUREMENT/code/</loc>
         <lastmod>2025-04-10</lastmod>
         <changefreq>daily</changefreq>
@@ -181,6 +195,20 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/math/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/math/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/MATH/ESP-DSP/esp-dsp/</loc>
+        <lastmod>2025-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP/esp-dsp/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP/esp-dsp/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/MATH/ESP-DSP/examples/</loc>
+        <lastmod>2025-04-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP/examples/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP/examples/"/>
     </url>
     <url>
         <loc>https://localhost:7000/zh/MEASUREMENT/code/</loc>
