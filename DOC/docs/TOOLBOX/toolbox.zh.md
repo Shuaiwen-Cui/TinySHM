@@ -6,7 +6,19 @@
 !!! warning     
     目前开发以ESP32为基础，向STM32等平台的迁移需要对适配层进行一定的修改。
 
-## 功能目录
+
+
+## 架构与功能目录
+
+```txt
+    TINYTOOLBOX
+    ├── INCLUDE
+    │   ├── TinyToolbox.h // serves as a directory, integrating all submodules
+    │   ├── TinyTime.h // submodule for time management - header file
+    │   └── ...
+    ├── TinyToolbox.c // no specific function, serves as a directory
+    ├── TinyTime.c // submodule for time management - source file
+```
 
 ### [时间](./TIME/time.zh.md)
 

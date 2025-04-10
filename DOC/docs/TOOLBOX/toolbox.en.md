@@ -6,7 +6,17 @@
 !!! warning
     Currently, development is based on ESP32, and migration to platforms like STM32 requires some modifications to the adaptation layer.
 
-## FEATURE OVERVIEW
+## ARCHITECTURE AND FUNCTION DIRECTORY
+
+```txt
+    TINYTOOLBOX
+    ├── INCLUDE
+    │   ├── TinyToolbox.h // serves as a directory, integrating all submodules
+    │   ├── TinyTime.h // submodule for time management - header file
+    │   └── ...
+    ├── TinyToolbox.c // no specific function, serves as a directory
+    ├── TinyTime.c // submodule for time management - source file
+```
 
 ### [TIME](./TIME/time.en.md)
 

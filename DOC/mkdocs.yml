@@ -256,10 +256,10 @@ nav:
       - TinySHM: "ABOUT/about.md"
   - TOOLBOX:
       - TOOLBOX: "TOOLBOX/toolbox.md"
-      - TIME: "TOOLBOX/TIME/time.md"
-          # - NOTES: "TOOLBOX/TIME/notes.md"
-          # - CODE: "TOOLBOX/TIME/code.md"
-          # - LOG: "TOOLBOX/TIME/log.md"
+      - TIME: 
+          - NOTES: "TOOLBOX/TIME/time.md"
+          - CODE: "TOOLBOX/TIME/code.md"
+          - LOG: "TOOLBOX/TIME/log.md"
   - MATH:
       - "MATH/math.md"
   - DSP:
