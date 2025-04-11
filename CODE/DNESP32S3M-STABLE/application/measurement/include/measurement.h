@@ -13,6 +13,11 @@
 #ifndef __MEASUREMENT_H__
 #define __MEASUREMENT_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /* DEPENDENCIES */
 // SYSTEM
 #include "esp_system.h" // ESP32 System
@@ -60,5 +65,9 @@ void acc_streamline_task(void *pvParameters);
  * @retval None
  */
 void acc_sense_task(void *pvParameters);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __MEASUREMENT_H__ */

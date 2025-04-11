@@ -46,3 +46,69 @@ idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRE
 TODO:
 
 - Local Time Synchronization for Wireless Sensor Networks - Microsecond Level
+
+## CODE
+
+!!! tip
+    TinyToolbox.h serves merely as a directory, integrating all submodules. The specific functionalities are implemented in each submodule. TinyToolbox.c is just a formal source file without specific functionality.
+
+### TinyToolbox.h
+
+```c
+/**
+ * @file TinyToolbox.h
+ * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
+ * @brief This file is the header file for the TinyToolbox middleware.
+ * @version 1.0
+ * @date 2025-03-26
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+#ifndef __TINYTOOLBOX__
+#define __TINYTOOLBOX__
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* DEPENDENCIES */
+// system
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_log.h"
+#include "esp_timer.h"
+#include "esp_heap_caps.h"
+#include "esp_dsp.h"
+
+// customized drivers
+#include "esp_rtc.h"
+
+// submodules
+#include "TinyTime.h" // Time
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __TINYTOOLBOX__ */
+```
+
+### TinyToolbox.c
+
+```c
+/**
+ * @file TinyToolbox.c
+ * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
+ * @brief This file is the source file for the TinyToolbox middleware.
+ * @version 1.0
+ * @date 2025-03-26
+ *
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+/* DEPENDENCIES */
+#include "TinyToolbox.h"
+```

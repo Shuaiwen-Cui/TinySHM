@@ -11,6 +11,11 @@
 #ifndef __TINYTOOLBOX__
 #define __TINYTOOLBOX__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /* DEPENDENCIES */
 // system
 #include "freertos/FreeRTOS.h"
@@ -25,5 +30,9 @@
 
 // submodules
 #include "TinyTime.h" // Time
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __TINYTOOLBOX__ */

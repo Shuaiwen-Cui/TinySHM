@@ -49,3 +49,69 @@ idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRE
 待开发:
 
 - 无线传感器网络本地对时-微秒级别
+
+## 代码
+
+!!! tip
+    TinyToolbox.h 只是作为一个目录，集成了所有的子模块，具体的功能在各个子模块中实现。TinyToolbox.c 只是形式上的源文件，没有具体的功能。
+
+### TinyToolbox.h
+
+```c
+/**
+ * @file TinyToolbox.h
+ * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
+ * @brief This file is the header file for the TinyToolbox middleware.
+ * @version 1.0
+ * @date 2025-03-26
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+#ifndef __TINYTOOLBOX__
+#define __TINYTOOLBOX__
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* DEPENDENCIES */
+// system
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_log.h"
+#include "esp_timer.h"
+#include "esp_heap_caps.h"
+#include "esp_dsp.h"
+
+// customized drivers
+#include "esp_rtc.h"
+
+// submodules
+#include "TinyTime.h" // Time
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __TINYTOOLBOX__ */
+```
+
+### TinyToolbox.c
+
+```c
+/**
+ * @file TinyToolbox.c
+ * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
+ * @brief This file is the source file for the TinyToolbox middleware.
+ * @version 1.0
+ * @date 2025-03-26
+ *
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+/* DEPENDENCIES */
+#include "TinyToolbox.h"
+```

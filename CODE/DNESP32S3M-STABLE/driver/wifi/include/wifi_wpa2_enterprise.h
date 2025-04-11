@@ -12,6 +12,11 @@
 #ifndef __WIFI_WPA2_ENTERPRISE_H__
 #define __WIFI_WPA2_ENTERPRISE_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /* Dependencies */
 #include <string.h>
 #include <stdlib.h>
@@ -44,5 +49,9 @@ extern const int CONNECTED_BIT;
  * @return esp_err_t 
  */
 esp_err_t wifi_sta_wpa2_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __WIFI_WPA2_ENTERPRISE_H__ */

@@ -11,6 +11,11 @@
 #ifndef __TINYTIME__
 #define __TINYTIME__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /* CONFIGURATIONS */
 
 /* ================================ DEPENDENCIES ================================ */
@@ -66,5 +71,9 @@ void sync_time_with_timezone(const char *timezone_str);
  * @return TinyDateTime_t structure containing the current date and time
  */
 TinyDateTime_t tiny_get_current_time(bool print_flag);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __TINYTIME__ */

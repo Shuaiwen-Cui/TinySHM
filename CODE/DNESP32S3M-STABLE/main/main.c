@@ -168,7 +168,7 @@ void app_main(void)
         led_toggle();
         
         // show time
-        tiny_get_current_time(1); // get the current time
+        // tiny_get_current_time(1); // get the current time
 
         // time delay
         vTaskDelay(1000 / portTICK_PERIOD_MS);
