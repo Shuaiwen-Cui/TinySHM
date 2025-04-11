@@ -11,63 +11,72 @@
 </span><span id=__span-0-11><a id=__codelineno-0-11 name=__codelineno-0-11 href=#__codelineno-0-11></a><span class=cp>#ifndef __TINYTIME__</span>
 </span><span id=__span-0-12><a id=__codelineno-0-12 name=__codelineno-0-12 href=#__codelineno-0-12></a><span class=cp>#define __TINYTIME__</span>
 </span><span id=__span-0-13><a id=__codelineno-0-13 name=__codelineno-0-13 href=#__codelineno-0-13></a>
-</span><span id=__span-0-14><a id=__codelineno-0-14 name=__codelineno-0-14 href=#__codelineno-0-14></a><span class=cm>/* CONFIGURATIONS */</span>
-</span><span id=__span-0-15><a id=__codelineno-0-15 name=__codelineno-0-15 href=#__codelineno-0-15></a>
-</span><span id=__span-0-16><a id=__codelineno-0-16 name=__codelineno-0-16 href=#__codelineno-0-16></a><span class=cm>/* ================================ DEPENDENCIES ================================ */</span>
-</span><span id=__span-0-17><a id=__codelineno-0-17 name=__codelineno-0-17 href=#__codelineno-0-17></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;stdio.h&gt;</span>
-</span><span id=__span-0-18><a id=__codelineno-0-18 name=__codelineno-0-18 href=#__codelineno-0-18></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;time.h&gt;</span>
-</span><span id=__span-0-19><a id=__codelineno-0-19 name=__codelineno-0-19 href=#__codelineno-0-19></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;sys/time.h&gt;</span>
-</span><span id=__span-0-20><a id=__codelineno-0-20 name=__codelineno-0-20 href=#__codelineno-0-20></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&quot;esp_log.h&quot;</span>
-</span><span id=__span-0-21><a id=__codelineno-0-21 name=__codelineno-0-21 href=#__codelineno-0-21></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&quot;esp_timer.h&quot;</span>
-</span><span id=__span-0-22><a id=__codelineno-0-22 name=__codelineno-0-22 href=#__codelineno-0-22></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&quot;esp_sntp.h&quot;</span>
-</span><span id=__span-0-23><a id=__codelineno-0-23 name=__codelineno-0-23 href=#__codelineno-0-23></a><span class=c1>// customized drivers</span>
-</span><span id=__span-0-24><a id=__codelineno-0-24 name=__codelineno-0-24 href=#__codelineno-0-24></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&quot;esp_rtc.h&quot;</span>
-</span><span id=__span-0-25><a id=__codelineno-0-25 name=__codelineno-0-25 href=#__codelineno-0-25></a>
-</span><span id=__span-0-26><a id=__codelineno-0-26 name=__codelineno-0-26 href=#__codelineno-0-26></a><span class=cm>/* ================================ DEFINITIONS ================================= */</span>
-</span><span id=__span-0-27><a id=__codelineno-0-27 name=__codelineno-0-27 href=#__codelineno-0-27></a><span class=k>typedef</span><span class=w> </span><span class=n>TickType_t</span><span class=w> </span><span class=n>TinyTimeMark_t</span><span class=p>;</span>
-</span><span id=__span-0-28><a id=__codelineno-0-28 name=__codelineno-0-28 href=#__codelineno-0-28></a>
-</span><span id=__span-0-29><a id=__codelineno-0-29 name=__codelineno-0-29 href=#__codelineno-0-29></a><span class=cm>/**</span>
-</span><span id=__span-0-30><a id=__codelineno-0-30 name=__codelineno-0-30 href=#__codelineno-0-30></a><span class=cm> * @brief Structure to hold date and time</span>
-</span><span id=__span-0-31><a id=__codelineno-0-31 name=__codelineno-0-31 href=#__codelineno-0-31></a><span class=cm> */</span>
-</span><span id=__span-0-32><a id=__codelineno-0-32 name=__codelineno-0-32 href=#__codelineno-0-32></a><span class=k>typedef</span><span class=w> </span><span class=k>struct</span><span class=w> </span><span class=nc>TinyDateTime_t</span>
-</span><span id=__span-0-33><a id=__codelineno-0-33 name=__codelineno-0-33 href=#__codelineno-0-33></a><span class=p>{</span>
-</span><span id=__span-0-34><a id=__codelineno-0-34 name=__codelineno-0-34 href=#__codelineno-0-34></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>year</span><span class=p>;</span>
-</span><span id=__span-0-35><a id=__codelineno-0-35 name=__codelineno-0-35 href=#__codelineno-0-35></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>month</span><span class=p>;</span>
-</span><span id=__span-0-36><a id=__codelineno-0-36 name=__codelineno-0-36 href=#__codelineno-0-36></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>day</span><span class=p>;</span>
-</span><span id=__span-0-37><a id=__codelineno-0-37 name=__codelineno-0-37 href=#__codelineno-0-37></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>hour</span><span class=p>;</span>
-</span><span id=__span-0-38><a id=__codelineno-0-38 name=__codelineno-0-38 href=#__codelineno-0-38></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>minute</span><span class=p>;</span>
-</span><span id=__span-0-39><a id=__codelineno-0-39 name=__codelineno-0-39 href=#__codelineno-0-39></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>second</span><span class=p>;</span>
-</span><span id=__span-0-40><a id=__codelineno-0-40 name=__codelineno-0-40 href=#__codelineno-0-40></a><span class=w>    </span><span class=kt>long</span><span class=w> </span><span class=n>microsecond</span><span class=p>;</span>
-</span><span id=__span-0-41><a id=__codelineno-0-41 name=__codelineno-0-41 href=#__codelineno-0-41></a><span class=p>}</span><span class=w> </span><span class=n>TinyDateTime_t</span><span class=p>;</span>
-</span><span id=__span-0-42><a id=__codelineno-0-42 name=__codelineno-0-42 href=#__codelineno-0-42></a>
-</span><span id=__span-0-43><a id=__codelineno-0-43 name=__codelineno-0-43 href=#__codelineno-0-43></a><span class=cm>/* ================================ FUNCTIONS =================================== */</span>
-</span><span id=__span-0-44><a id=__codelineno-0-44 name=__codelineno-0-44 href=#__codelineno-0-44></a><span class=cm>/* LOCAL RUNNING TIME IN MICROSECONDS */</span>
-</span><span id=__span-0-45><a id=__codelineno-0-45 name=__codelineno-0-45 href=#__codelineno-0-45></a><span class=cm>/**</span>
-</span><span id=__span-0-46><a id=__codelineno-0-46 name=__codelineno-0-46 href=#__codelineno-0-46></a><span class=cm> * @brief Get the running time in microseconds</span>
-</span><span id=__span-0-47><a id=__codelineno-0-47 name=__codelineno-0-47 href=#__codelineno-0-47></a><span class=cm> * @return TinyTimeMark_t</span>
-</span><span id=__span-0-48><a id=__codelineno-0-48 name=__codelineno-0-48 href=#__codelineno-0-48></a><span class=cm> */</span>
-</span><span id=__span-0-49><a id=__codelineno-0-49 name=__codelineno-0-49 href=#__codelineno-0-49></a><span class=n>TinyTimeMark_t</span><span class=w> </span><span class=nf>tiny_get_running_time</span><span class=p>(</span><span class=kt>void</span><span class=p>);</span>
-</span><span id=__span-0-50><a id=__codelineno-0-50 name=__codelineno-0-50 href=#__codelineno-0-50></a>
-</span><span id=__span-0-51><a id=__codelineno-0-51 name=__codelineno-0-51 href=#__codelineno-0-51></a><span class=cm>/* WORLD CURRENT TIME - SNTP */</span>
-</span><span id=__span-0-52><a id=__codelineno-0-52 name=__codelineno-0-52 href=#__codelineno-0-52></a><span class=cm>/**</span>
-</span><span id=__span-0-53><a id=__codelineno-0-53 name=__codelineno-0-53 href=#__codelineno-0-53></a><span class=cm> * @brief Obtain the current time with timezone</span>
-</span><span id=__span-0-54><a id=__codelineno-0-54 name=__codelineno-0-54 href=#__codelineno-0-54></a><span class=cm> * @param timezone_str Timezone string (e.g., &quot;CST-8&quot;)</span>
-</span><span id=__span-0-55><a id=__codelineno-0-55 name=__codelineno-0-55 href=#__codelineno-0-55></a><span class=cm> * @note The timezone string should be in the format &quot;TZ=GMT+/-HH:MM&quot;</span>
-</span><span id=__span-0-56><a id=__codelineno-0-56 name=__codelineno-0-56 href=#__codelineno-0-56></a><span class=cm> * @note To use this function, in application, insert &quot;sync_time_with_timezone(&quot;CST-8&quot;);&quot; will do</span>
-</span><span id=__span-0-57><a id=__codelineno-0-57 name=__codelineno-0-57 href=#__codelineno-0-57></a><span class=cm> * @return None</span>
-</span><span id=__span-0-58><a id=__codelineno-0-58 name=__codelineno-0-58 href=#__codelineno-0-58></a><span class=cm> */</span>
-</span><span id=__span-0-59><a id=__codelineno-0-59 name=__codelineno-0-59 href=#__codelineno-0-59></a><span class=kt>void</span><span class=w> </span><span class=nf>sync_time_with_timezone</span><span class=p>(</span><span class=k>const</span><span class=w> </span><span class=kt>char</span><span class=w> </span><span class=o>*</span><span class=n>timezone_str</span><span class=p>);</span>
-</span><span id=__span-0-60><a id=__codelineno-0-60 name=__codelineno-0-60 href=#__codelineno-0-60></a>
-</span><span id=__span-0-61><a id=__codelineno-0-61 name=__codelineno-0-61 href=#__codelineno-0-61></a><span class=cm>/* WORLD CURRENT TIME - GET TIME */</span>
-</span><span id=__span-0-62><a id=__codelineno-0-62 name=__codelineno-0-62 href=#__codelineno-0-62></a><span class=cm>/**</span>
-</span><span id=__span-0-63><a id=__codelineno-0-63 name=__codelineno-0-63 href=#__codelineno-0-63></a><span class=cm> * @name tiny_get_current_time</span>
-</span><span id=__span-0-64><a id=__codelineno-0-64 name=__codelineno-0-64 href=#__codelineno-0-64></a><span class=cm> * @brief Get the current time as a TinyDateTime_t struct</span>
-</span><span id=__span-0-65><a id=__codelineno-0-65 name=__codelineno-0-65 href=#__codelineno-0-65></a><span class=cm> * @param print_flag Flag to indicate whether to print the time</span>
-</span><span id=__span-0-66><a id=__codelineno-0-66 name=__codelineno-0-66 href=#__codelineno-0-66></a><span class=cm> * @return TinyDateTime_t structure containing the current date and time</span>
-</span><span id=__span-0-67><a id=__codelineno-0-67 name=__codelineno-0-67 href=#__codelineno-0-67></a><span class=cm> */</span>
-</span><span id=__span-0-68><a id=__codelineno-0-68 name=__codelineno-0-68 href=#__codelineno-0-68></a><span class=n>TinyDateTime_t</span><span class=w> </span><span class=nf>tiny_get_current_time</span><span class=p>(</span><span class=kt>bool</span><span class=w> </span><span class=n>print_flag</span><span class=p>);</span>
-</span><span id=__span-0-69><a id=__codelineno-0-69 name=__codelineno-0-69 href=#__codelineno-0-69></a>
-</span><span id=__span-0-70><a id=__codelineno-0-70 name=__codelineno-0-70 href=#__codelineno-0-70></a><span class=cp>#endif </span><span class=cm>/* __TINYTIME__ */</span>
+</span><span id=__span-0-14><a id=__codelineno-0-14 name=__codelineno-0-14 href=#__codelineno-0-14></a><span class=cp>#ifdef __cplusplus</span>
+</span><span id=__span-0-15><a id=__codelineno-0-15 name=__codelineno-0-15 href=#__codelineno-0-15></a><span class=k>extern</span><span class=w> </span><span class=s>&quot;C&quot;</span>
+</span><span id=__span-0-16><a id=__codelineno-0-16 name=__codelineno-0-16 href=#__codelineno-0-16></a><span class=p>{</span>
+</span><span id=__span-0-17><a id=__codelineno-0-17 name=__codelineno-0-17 href=#__codelineno-0-17></a><span class=cp>#endif</span>
+</span><span id=__span-0-18><a id=__codelineno-0-18 name=__codelineno-0-18 href=#__codelineno-0-18></a>
+</span><span id=__span-0-19><a id=__codelineno-0-19 name=__codelineno-0-19 href=#__codelineno-0-19></a><span class=cm>/* CONFIGURATIONS */</span>
+</span><span id=__span-0-20><a id=__codelineno-0-20 name=__codelineno-0-20 href=#__codelineno-0-20></a>
+</span><span id=__span-0-21><a id=__codelineno-0-21 name=__codelineno-0-21 href=#__codelineno-0-21></a><span class=cm>/* ================================ DEPENDENCIES ================================ */</span>
+</span><span id=__span-0-22><a id=__codelineno-0-22 name=__codelineno-0-22 href=#__codelineno-0-22></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;stdio.h&gt;</span>
+</span><span id=__span-0-23><a id=__codelineno-0-23 name=__codelineno-0-23 href=#__codelineno-0-23></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;time.h&gt;</span>
+</span><span id=__span-0-24><a id=__codelineno-0-24 name=__codelineno-0-24 href=#__codelineno-0-24></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;sys/time.h&gt;</span>
+</span><span id=__span-0-25><a id=__codelineno-0-25 name=__codelineno-0-25 href=#__codelineno-0-25></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&quot;esp_log.h&quot;</span>
+</span><span id=__span-0-26><a id=__codelineno-0-26 name=__codelineno-0-26 href=#__codelineno-0-26></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&quot;esp_timer.h&quot;</span>
+</span><span id=__span-0-27><a id=__codelineno-0-27 name=__codelineno-0-27 href=#__codelineno-0-27></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&quot;esp_sntp.h&quot;</span>
+</span><span id=__span-0-28><a id=__codelineno-0-28 name=__codelineno-0-28 href=#__codelineno-0-28></a><span class=c1>// customized drivers</span>
+</span><span id=__span-0-29><a id=__codelineno-0-29 name=__codelineno-0-29 href=#__codelineno-0-29></a><span class=cp>#include</span><span class=w> </span><span class=cpf>&quot;esp_rtc.h&quot;</span>
+</span><span id=__span-0-30><a id=__codelineno-0-30 name=__codelineno-0-30 href=#__codelineno-0-30></a>
+</span><span id=__span-0-31><a id=__codelineno-0-31 name=__codelineno-0-31 href=#__codelineno-0-31></a><span class=cm>/* ================================ DEFINITIONS ================================= */</span>
+</span><span id=__span-0-32><a id=__codelineno-0-32 name=__codelineno-0-32 href=#__codelineno-0-32></a><span class=k>typedef</span><span class=w> </span><span class=n>TickType_t</span><span class=w> </span><span class=n>TinyTimeMark_t</span><span class=p>;</span>
+</span><span id=__span-0-33><a id=__codelineno-0-33 name=__codelineno-0-33 href=#__codelineno-0-33></a>
+</span><span id=__span-0-34><a id=__codelineno-0-34 name=__codelineno-0-34 href=#__codelineno-0-34></a><span class=cm>/**</span>
+</span><span id=__span-0-35><a id=__codelineno-0-35 name=__codelineno-0-35 href=#__codelineno-0-35></a><span class=cm> * @brief Structure to hold date and time</span>
+</span><span id=__span-0-36><a id=__codelineno-0-36 name=__codelineno-0-36 href=#__codelineno-0-36></a><span class=cm> */</span>
+</span><span id=__span-0-37><a id=__codelineno-0-37 name=__codelineno-0-37 href=#__codelineno-0-37></a><span class=k>typedef</span><span class=w> </span><span class=k>struct</span><span class=w> </span><span class=nc>TinyDateTime_t</span>
+</span><span id=__span-0-38><a id=__codelineno-0-38 name=__codelineno-0-38 href=#__codelineno-0-38></a><span class=p>{</span>
+</span><span id=__span-0-39><a id=__codelineno-0-39 name=__codelineno-0-39 href=#__codelineno-0-39></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>year</span><span class=p>;</span>
+</span><span id=__span-0-40><a id=__codelineno-0-40 name=__codelineno-0-40 href=#__codelineno-0-40></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>month</span><span class=p>;</span>
+</span><span id=__span-0-41><a id=__codelineno-0-41 name=__codelineno-0-41 href=#__codelineno-0-41></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>day</span><span class=p>;</span>
+</span><span id=__span-0-42><a id=__codelineno-0-42 name=__codelineno-0-42 href=#__codelineno-0-42></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>hour</span><span class=p>;</span>
+</span><span id=__span-0-43><a id=__codelineno-0-43 name=__codelineno-0-43 href=#__codelineno-0-43></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>minute</span><span class=p>;</span>
+</span><span id=__span-0-44><a id=__codelineno-0-44 name=__codelineno-0-44 href=#__codelineno-0-44></a><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=n>second</span><span class=p>;</span>
+</span><span id=__span-0-45><a id=__codelineno-0-45 name=__codelineno-0-45 href=#__codelineno-0-45></a><span class=w>    </span><span class=kt>long</span><span class=w> </span><span class=n>microsecond</span><span class=p>;</span>
+</span><span id=__span-0-46><a id=__codelineno-0-46 name=__codelineno-0-46 href=#__codelineno-0-46></a><span class=p>}</span><span class=w> </span><span class=n>TinyDateTime_t</span><span class=p>;</span>
+</span><span id=__span-0-47><a id=__codelineno-0-47 name=__codelineno-0-47 href=#__codelineno-0-47></a>
+</span><span id=__span-0-48><a id=__codelineno-0-48 name=__codelineno-0-48 href=#__codelineno-0-48></a><span class=cm>/* ================================ FUNCTIONS =================================== */</span>
+</span><span id=__span-0-49><a id=__codelineno-0-49 name=__codelineno-0-49 href=#__codelineno-0-49></a><span class=cm>/* LOCAL RUNNING TIME IN MICROSECONDS */</span>
+</span><span id=__span-0-50><a id=__codelineno-0-50 name=__codelineno-0-50 href=#__codelineno-0-50></a><span class=cm>/**</span>
+</span><span id=__span-0-51><a id=__codelineno-0-51 name=__codelineno-0-51 href=#__codelineno-0-51></a><span class=cm> * @brief Get the running time in microseconds</span>
+</span><span id=__span-0-52><a id=__codelineno-0-52 name=__codelineno-0-52 href=#__codelineno-0-52></a><span class=cm> * @return TinyTimeMark_t</span>
+</span><span id=__span-0-53><a id=__codelineno-0-53 name=__codelineno-0-53 href=#__codelineno-0-53></a><span class=cm> */</span>
+</span><span id=__span-0-54><a id=__codelineno-0-54 name=__codelineno-0-54 href=#__codelineno-0-54></a><span class=n>TinyTimeMark_t</span><span class=w> </span><span class=nf>tiny_get_running_time</span><span class=p>(</span><span class=kt>void</span><span class=p>);</span>
+</span><span id=__span-0-55><a id=__codelineno-0-55 name=__codelineno-0-55 href=#__codelineno-0-55></a>
+</span><span id=__span-0-56><a id=__codelineno-0-56 name=__codelineno-0-56 href=#__codelineno-0-56></a><span class=cm>/* WORLD CURRENT TIME - SNTP */</span>
+</span><span id=__span-0-57><a id=__codelineno-0-57 name=__codelineno-0-57 href=#__codelineno-0-57></a><span class=cm>/**</span>
+</span><span id=__span-0-58><a id=__codelineno-0-58 name=__codelineno-0-58 href=#__codelineno-0-58></a><span class=cm> * @brief Obtain the current time with timezone</span>
+</span><span id=__span-0-59><a id=__codelineno-0-59 name=__codelineno-0-59 href=#__codelineno-0-59></a><span class=cm> * @param timezone_str Timezone string (e.g., &quot;CST-8&quot;)</span>
+</span><span id=__span-0-60><a id=__codelineno-0-60 name=__codelineno-0-60 href=#__codelineno-0-60></a><span class=cm> * @note The timezone string should be in the format &quot;TZ=GMT+/-HH:MM&quot;</span>
+</span><span id=__span-0-61><a id=__codelineno-0-61 name=__codelineno-0-61 href=#__codelineno-0-61></a><span class=cm> * @note To use this function, in application, insert &quot;sync_time_with_timezone(&quot;CST-8&quot;);&quot; will do</span>
+</span><span id=__span-0-62><a id=__codelineno-0-62 name=__codelineno-0-62 href=#__codelineno-0-62></a><span class=cm> * @return None</span>
+</span><span id=__span-0-63><a id=__codelineno-0-63 name=__codelineno-0-63 href=#__codelineno-0-63></a><span class=cm> */</span>
+</span><span id=__span-0-64><a id=__codelineno-0-64 name=__codelineno-0-64 href=#__codelineno-0-64></a><span class=kt>void</span><span class=w> </span><span class=nf>sync_time_with_timezone</span><span class=p>(</span><span class=k>const</span><span class=w> </span><span class=kt>char</span><span class=w> </span><span class=o>*</span><span class=n>timezone_str</span><span class=p>);</span>
+</span><span id=__span-0-65><a id=__codelineno-0-65 name=__codelineno-0-65 href=#__codelineno-0-65></a>
+</span><span id=__span-0-66><a id=__codelineno-0-66 name=__codelineno-0-66 href=#__codelineno-0-66></a><span class=cm>/* WORLD CURRENT TIME - GET TIME */</span>
+</span><span id=__span-0-67><a id=__codelineno-0-67 name=__codelineno-0-67 href=#__codelineno-0-67></a><span class=cm>/**</span>
+</span><span id=__span-0-68><a id=__codelineno-0-68 name=__codelineno-0-68 href=#__codelineno-0-68></a><span class=cm> * @name tiny_get_current_time</span>
+</span><span id=__span-0-69><a id=__codelineno-0-69 name=__codelineno-0-69 href=#__codelineno-0-69></a><span class=cm> * @brief Get the current time as a TinyDateTime_t struct</span>
+</span><span id=__span-0-70><a id=__codelineno-0-70 name=__codelineno-0-70 href=#__codelineno-0-70></a><span class=cm> * @param print_flag Flag to indicate whether to print the time</span>
+</span><span id=__span-0-71><a id=__codelineno-0-71 name=__codelineno-0-71 href=#__codelineno-0-71></a><span class=cm> * @return TinyDateTime_t structure containing the current date and time</span>
+</span><span id=__span-0-72><a id=__codelineno-0-72 name=__codelineno-0-72 href=#__codelineno-0-72></a><span class=cm> */</span>
+</span><span id=__span-0-73><a id=__codelineno-0-73 name=__codelineno-0-73 href=#__codelineno-0-73></a><span class=n>TinyDateTime_t</span><span class=w> </span><span class=nf>tiny_get_current_time</span><span class=p>(</span><span class=kt>bool</span><span class=w> </span><span class=n>print_flag</span><span class=p>);</span>
+</span><span id=__span-0-74><a id=__codelineno-0-74 name=__codelineno-0-74 href=#__codelineno-0-74></a>
+</span><span id=__span-0-75><a id=__codelineno-0-75 name=__codelineno-0-75 href=#__codelineno-0-75></a><span class=cp>#ifdef __cplusplus</span>
+</span><span id=__span-0-76><a id=__codelineno-0-76 name=__codelineno-0-76 href=#__codelineno-0-76></a><span class=p>}</span>
+</span><span id=__span-0-77><a id=__codelineno-0-77 name=__codelineno-0-77 href=#__codelineno-0-77></a><span class=cp>#endif</span>
+</span><span id=__span-0-78><a id=__codelineno-0-78 name=__codelineno-0-78 href=#__codelineno-0-78></a>
+</span><span id=__span-0-79><a id=__codelineno-0-79 name=__codelineno-0-79 href=#__codelineno-0-79></a><span class=cp>#endif </span><span class=cm>/* __TINYTIME__ */</span>
 </span></code></pre></div> <h2 id=tinytimec>TinyTime.c<a class=headerlink href=#tinytimec title="Permanent link">&para;</a></h2> <div class="language-c highlight"><pre><span></span><code><span id=__span-1-1><a id=__codelineno-1-1 name=__codelineno-1-1 href=#__codelineno-1-1></a><span class=cm>/**</span>
 </span><span id=__span-1-2><a id=__codelineno-1-2 name=__codelineno-1-2 href=#__codelineno-1-2></a><span class=cm> * @file TinyTime.c</span>
 </span><span id=__span-1-3><a id=__codelineno-1-3 name=__codelineno-1-3 href=#__codelineno-1-3></a><span class=cm> * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)</span>
