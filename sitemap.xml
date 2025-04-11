@@ -57,6 +57,27 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP/examples/"/>
     </url>
     <url>
+        <loc>https://localhost:7000/MATH/ESP-DSP-DOTPROD/esp-dsp-dotprod/</loc>
+        <lastmod>2025-04-11</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP-DOTPROD/esp-dsp-dotprod/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP-DOTPROD/esp-dsp-dotprod/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/MATH/ESP-DSP-MATH/esp-dsp-math/</loc>
+        <lastmod>2025-04-11</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP-MATH/esp-dsp-math/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP-MATH/esp-dsp-math/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/MATH/ESP-DSP-MATRIX/esp-dsp-matrix/</loc>
+        <lastmod>2025-04-11</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP-MATRIX/esp-dsp-matrix/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP-MATRIX/esp-dsp-matrix/"/>
+    </url>
+    <url>
         <loc>https://localhost:7000/MEASUREMENT/code/</loc>
         <lastmod>2025-04-11</lastmod>
         <changefreq>daily</changefreq>
@@ -209,6 +230,27 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP/examples/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP/examples/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/MATH/ESP-DSP-DOTPROD/esp-dsp-dotprod/</loc>
+        <lastmod>2025-04-11</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP-DOTPROD/esp-dsp-dotprod/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP-DOTPROD/esp-dsp-dotprod/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/MATH/ESP-DSP-MATH/esp-dsp-math/</loc>
+        <lastmod>2025-04-11</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP-MATH/esp-dsp-math/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP-MATH/esp-dsp-math/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/MATH/ESP-DSP-MATRIX/esp-dsp-matrix/</loc>
+        <lastmod>2025-04-11</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/ESP-DSP-MATRIX/esp-dsp-matrix/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/ESP-DSP-MATRIX/esp-dsp-matrix/"/>
     </url>
     <url>
         <loc>https://localhost:7000/zh/MEASUREMENT/code/</loc>
