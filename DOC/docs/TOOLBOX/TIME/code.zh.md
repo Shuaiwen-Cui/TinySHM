@@ -1,10 +1,10 @@
 # TIME
 
-## TinyTime.h
+## tiny_time.h
 
 ```c
 /**
- * @file TinyTime.h
+ * @file tiny_time.h    
  * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
  * @brief Submodule for TinyToolbox - header file
  * @version 1.0
@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef __TINYTIME__
-#define __TINYTIME__
+#ifndef __TINY_TIME__
+#define __TINY_TIME__
 
 #ifdef __cplusplus
 extern "C"
@@ -81,14 +81,14 @@ TinyDateTime_t tiny_get_current_time(bool print_flag);
 }
 #endif
 
-#endif /* __TINYTIME__ */
+#endif /* __TINY_TIME__ */
 ```
 
-## TinyTime.c
+## tiny_time.c
 
 ```c
 /**
- * @file TinyTime.c
+ * @file tiny_time.c
  * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
  * @brief Submodule for TinyToolbox - source file
  * @version 1.0
@@ -98,7 +98,7 @@ TinyDateTime_t tiny_get_current_time(bool print_flag);
  */
 
 /* ================================ DEPENDENCIES ================================ */
-#include "TinyTime.h"
+#include "tiny_time.h" // Time
 
 /* ================================ DEFINITIONS ================================= */
 /* CONFIGURATIONS */

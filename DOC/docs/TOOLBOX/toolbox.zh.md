@@ -1,7 +1,7 @@
 # 工具箱
 
-!!! info "TinyToolbox"
-    工具箱TinyToolbox定位是用于 **平台适配与优化** 并提供 **各种实用工具** 的库，服务于边缘计算与应用开发。**注意，之所以将适配和工具放在一个库里面，是因为很多工具底层利用的是平台提供的功能，所以将平台适配和各类工具放在同一个库里面，便于使用和维护。**
+!!! info "tiny_toolbox"
+    工具箱tiny_toolbox定位是用于 **平台适配与优化** 并提供 **各种实用工具** 的库，服务于边缘计算与应用开发。**注意，之所以将适配和工具放在一个库里面，是因为很多工具底层利用的是平台提供的功能，所以将平台适配和各类工具放在同一个库里面，便于使用和维护。**
 
 !!! warning     
     目前开发以ESP32为基础，向STM32等平台的迁移需要对适配层进行一定的修改。
@@ -11,10 +11,12 @@
 ```c
 set(src_dirs
     .
+    time
 )
 
 set(include_dirs
-    include
+    .
+    time
 )
 
 set(requires
@@ -26,18 +28,20 @@ set(requires
 )
 
 idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRES ${requires})
+
+
 ```
 
 ## 架构与功能目录
 
 ```txt
-    TINYTOOLBOX
-    ├── INCLUDE
-    │   ├── TinyToolbox.h // serves as a directory, integrating all submodules
-    │   ├── TinyTime.h // submodule for time management - header file
+    tiny_toolbox
+    ├── tiny_toolbox.h // serves as a directory, integrating all submodules
+    ├── time
+    │   ├── tiny_time.h // submodule for time management - header file
+    │   ├── tiny_time.c // submodule for time management - source file
     │   └── ...
-    ├── TinyToolbox.c // no specific function, serves as a directory
-    ├── TinyTime.c // submodule for time management - source file
+    └── ...
 ```
 
 ### [时间](./TIME/time.zh.md)
@@ -53,23 +57,23 @@ idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRE
 ## 代码
 
 !!! tip
-    TinyToolbox.h 只是作为一个目录，集成了所有的子模块，具体的功能在各个子模块中实现。TinyToolbox.c 只是形式上的源文件，没有具体的功能。
+    tiny_toolbox.h 只是作为一个目录，集成了所有的子模块，具体的功能在各个子模块中实现。tiny_toolbox.c 只是形式上的源文件，没有具体的功能。
 
-### TinyToolbox.h
+### tiny_toolbox.h
 
 ```c
 /**
- * @file TinyToolbox.h
+ * @file tiny_toolbox.h
  * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
- * @brief This file is the header file for the TinyToolbox middleware.
+ * @brief This file is the header file for the tiny_toolbox middleware.
  * @version 1.0
  * @date 2025-03-26
  * @copyright Copyright (c) 2025
  *
  */
 
-#ifndef __TINYTOOLBOX__
-#define __TINYTOOLBOX__
+#ifndef __TINY_TOOLBOX__
+#define __TINY_TOOLBOX__
 
 #ifdef __cplusplus
 extern "C"
@@ -88,30 +92,12 @@ extern "C"
 // customized drivers
 #include "esp_rtc.h"
 
-// submodules
-#include "TinyTime.h" // Time
+/* SUBMODULES */
+#include "tiny_time.h" // Time
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TINYTOOLBOX__ */
-```
-
-### TinyToolbox.c
-
-```c
-/**
- * @file TinyToolbox.c
- * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
- * @brief This file is the source file for the TinyToolbox middleware.
- * @version 1.0
- * @date 2025-03-26
- *
- * @copyright Copyright (c) 2025
- *
- */
-
-/* DEPENDENCIES */
-#include "TinyToolbox.h"
+#endif /* __TINY_TOOLBOX__ */
 ```

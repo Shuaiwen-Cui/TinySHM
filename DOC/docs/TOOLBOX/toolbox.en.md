@@ -1,7 +1,7 @@
 # TOOLBOX
 
-!!! note "TinyToolbox"
-    TinyToolbox is a library designed for **platform adaptation and optimization**, providing **various practical tools** to serve edge computing and application development. **Note that the adaptation and tools are included in the same library because many tools utilize the functions provided by the platform at a lower level. Therefore, placing platform adaptation and various tools together facilitates usage and maintenance.**
+!!! note "tiny_toolbox"
+    tiny_toolbox is a library designed for **platform adaptation and optimization**, providing **various practical tools** to serve edge computing and application development. **Note that the adaptation and tools are included in the same library because many tools utilize the functions provided by the platform at a lower level. Therefore, placing platform adaptation and various tools together facilitates usage and maintenance.**
 
 !!! warning
     Currently, development is based on ESP32, and migration to platforms like STM32 requires some modifications to the adaptation layer.
@@ -11,10 +11,14 @@
 ```c
 set(src_dirs
     .
+    time
 )
+
 set(include_dirs
-    include
+    .
+    time
 )
+
 set(requires
     esp_timer
     esp_rtc
@@ -22,19 +26,22 @@ set(requires
     espressif__esp_jpeg
     espressif__esp-dl
 )
+
 idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRES ${requires})
+
+
 ```
 
 ## ARCHITECTURE AND FUNCTION DIRECTORY
 
 ```txt
-    TINYTOOLBOX
-    ├── INCLUDE
-    │   ├── TinyToolbox.h // serves as a directory, integrating all submodules
-    │   ├── TinyTime.h // submodule for time management - header file
+    tiny_toolbox
+    ├── tiny_toolbox.h // serves as a directory, integrating all submodules
+    ├── time
+    │   ├── tiny_time.h // submodule for time management - header file
+    │   ├── tiny_time.c // submodule for time management - source file
     │   └── ...
-    ├── TinyToolbox.c // no specific function, serves as a directory
-    ├── TinyTime.c // submodule for time management - source file
+    └── ...
 ```
 
 ### [TIME](./TIME/time.en.md)
@@ -50,23 +57,23 @@ TODO:
 ## CODE
 
 !!! tip
-    TinyToolbox.h serves merely as a directory, integrating all submodules. The specific functionalities are implemented in each submodule. TinyToolbox.c is just a formal source file without specific functionality.
+    tiny_toolbox.h serves merely as a directory, integrating all submodules. The specific functionalities are implemented in each submodule. tiny_toolbox.c is just a formal source file without specific functionality.
 
-### TinyToolbox.h
+### tiny_toolbox.h
 
 ```c
 /**
- * @file TinyToolbox.h
+ * @file tiny_toolbox.h
  * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
- * @brief This file is the header file for the TinyToolbox middleware.
+ * @brief This file is the header file for the tiny_toolbox middleware.
  * @version 1.0
  * @date 2025-03-26
  * @copyright Copyright (c) 2025
  *
  */
 
-#ifndef __TINYTOOLBOX__
-#define __TINYTOOLBOX__
+#ifndef __TINY_TOOLBOX__
+#define __TINY_TOOLBOX__
 
 #ifdef __cplusplus
 extern "C"
@@ -85,30 +92,12 @@ extern "C"
 // customized drivers
 #include "esp_rtc.h"
 
-// submodules
-#include "TinyTime.h" // Time
+/* SUBMODULES */
+#include "tiny_time.h" // Time
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TINYTOOLBOX__ */
-```
-
-### TinyToolbox.c
-
-```c
-/**
- * @file TinyToolbox.c
- * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
- * @brief This file is the source file for the TinyToolbox middleware.
- * @version 1.0
- * @date 2025-03-26
- *
- * @copyright Copyright (c) 2025
- *
- */
-
-/* DEPENDENCIES */
-#include "TinyToolbox.h"
+#endif /* __TINY_TOOLBOX__ */
 ```
