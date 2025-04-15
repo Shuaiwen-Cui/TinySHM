@@ -1,11 +1,12 @@
 set(src_dirs
     .
-    constants
+    vec
 )
 
 set(include_dirs
     .
-    constants
+    include
+    vec
 )
 
 set(requires

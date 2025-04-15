@@ -21,10 +21,15 @@ extern "C"
 // this layer
 #include "tiny_math_config.h"
 
-
 /* SUBMODULES */
-// constants
-#include "tiny_constants.h"
+
+// vector operations
+#include "tiny_vec.h"
+
+/* TEST */ // NOTE: test files are platform specific and should not be included in the library
+
+// vector operations
+#include "tiny_vec_test.h"
 
 
 #ifdef __cplusplus
