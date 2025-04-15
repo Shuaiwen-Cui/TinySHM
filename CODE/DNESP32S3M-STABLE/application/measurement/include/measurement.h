@@ -43,7 +43,7 @@ extern "C"
 #include "mpu6050.h"
 
 // TinyAuton/TinySHM
-#include "TinyToolbox.h" // TinyToolbox Middleware
+#include "tiny_toolbox.h" // TinyToolbox
 
 /* VARIABLES */
 extern struct SenseConfig streamline_config; // Streamline configuration

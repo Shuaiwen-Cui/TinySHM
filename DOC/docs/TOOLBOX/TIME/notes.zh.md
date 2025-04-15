@@ -55,9 +55,9 @@ void app_main(void)
 ```txt
    Client                      Server
      |------------------->      |     T1：请求发出
-     |                         |
-     |        <--------------- |     T2/T3：服务器收到 & 回复
-     |                         |
+     |                          |
+     |         <--------------- |     T2/T3：服务器收到 & 回复
+     |                          |
      |------------------->      |     T4：客户端收到响应
 ```
 
@@ -227,3 +227,10 @@ void app_main(void)
              current_time.hour, current_time.minute, current_time.second, current_time.microsecond);
 }
 ```
+
+使用效果：
+
+![](SNTP.png)
+
+!!! danger
+    SNTP的对时精度在 **ms** 水平。

@@ -1,15 +1,15 @@
 /**
- * @file TinyToolbox.h
+ * @file tiny_toolbox.h
  * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
- * @brief This file is the header file for the TinyToolbox middleware.
+ * @brief This file is the header file for the tiny_toolbox middleware.
  * @version 1.0
  * @date 2025-03-26
  * @copyright Copyright (c) 2025
  *
  */
 
-#ifndef __TINYTOOLBOX__
-#define __TINYTOOLBOX__
+#ifndef __TINY_TOOLBOX__
+#define __TINY_TOOLBOX__
 
 #ifdef __cplusplus
 extern "C"
@@ -28,11 +28,11 @@ extern "C"
 // customized drivers
 #include "esp_rtc.h"
 
-// submodules
-#include "TinyTime.h" // Time
+/* SUBMODULES */
+#include "tiny_time.h" // Time
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TINYTOOLBOX__ */
+#endif /* __TINY_TOOLBOX__ */

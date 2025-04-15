@@ -33,6 +33,7 @@
 #include "mpu6050.h"
 
 // TinyAuton
+#include "tiny_math.h" // TinyMath Header
 
 // TinySHM
 #include "measurement.h" // Measurement Header
@@ -161,6 +162,9 @@ void app_main(void)
 
     // normal sense
     // xTaskCreate(acc_sense_task, "Accel_Sense_Task", 8192, &sense_config, 5, NULL);
+
+    /* TINYAUTO / TINYSHM TEST */
+    tiny_vec_test();
 
     while (1)
     {

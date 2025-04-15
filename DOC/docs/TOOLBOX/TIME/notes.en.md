@@ -58,9 +58,9 @@ void app_main(void)
 ```txt
     Client                      Server
       |------------------->      |     T1：Request sent
-      |                         |
-      |        <--------------- |     T2/T3：Server received & replied
-      |                         |
+      |                          |
+      |         <--------------- |     T2/T3：Server received & replied
+      |                          |
       |------------------->      |     T4：Client received response
 ```
 !!! note "NTP Time Synchronization Principle"
@@ -229,3 +229,10 @@ void app_main(void)
              current_time.hour, current_time.minute, current_time.second, current_time.microsecond);
 }
 ```
+
+Example Output
+
+![](SNTP.png)
+
+!!! danger
+    The SNTP accuracy is at **ms** level.

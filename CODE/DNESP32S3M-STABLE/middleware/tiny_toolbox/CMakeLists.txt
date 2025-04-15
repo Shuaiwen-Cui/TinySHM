@@ -1,9 +1,11 @@
 set(src_dirs
     .
+    time
 )
 
 set(include_dirs
-    include
+    .
+    time
 )
 
 set(requires

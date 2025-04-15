@@ -1,5 +1,5 @@
 /**
- * @file TinyTime.c
+ * @file tiny_time.c
  * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
  * @brief Submodule for TinyToolbox - source file
  * @version 1.0
@@ -9,7 +9,7 @@
  */
 
 /* ================================ DEPENDENCIES ================================ */
-#include "TinyTime.h"
+#include "tiny_time.h" // Time
 
 /* ================================ DEFINITIONS ================================= */
 /* CONFIGURATIONS */
