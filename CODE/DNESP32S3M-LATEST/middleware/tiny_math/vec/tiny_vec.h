@@ -32,8 +32,8 @@ tiny_error_t tiny_vec_sqrt_f32(const float *input, float *output, int len);
 tiny_error_t tiny_vec_sqrtf_f32(const float *input, float *output, int len);
 tiny_error_t tiny_vec_inv_sqrt_f32(const float *input, float *output, int len);
 tiny_error_t tiny_vec_inv_sqrtf_f32(const float *input, float *output, int len);
-
-
+tiny_error_t tiny_vec_dotprod_f32(const float *src1, const float *src2, float *dest, int len);
+tiny_error_t tiny_vec_dotprode_f32(const float *src1, const float *src2, float *dest, int len, int step1, int step2);
 #ifdef __cplusplus
 }
 #endif

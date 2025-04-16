@@ -36,6 +36,7 @@ idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRE
 
 ```txt
     tiny_toolbox
+    ├── CMakeLists.txt
     ├── tiny_toolbox.h // serves as a directory, integrating all submodules
     ├── time
     │   ├── tiny_time.h // submodule for time management - header file

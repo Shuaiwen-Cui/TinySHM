@@ -1,12 +1,14 @@
 set(src_dirs
     .
     vec
+    mat
 )
 
 set(include_dirs
     .
     include
     vec
+    mat
 )
 
 set(requires

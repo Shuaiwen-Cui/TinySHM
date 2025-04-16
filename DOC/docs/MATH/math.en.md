@@ -9,11 +9,52 @@
 ## COMPONENT DEPENDENCIES
 
 ```c
+set(src_dirs
+    .
+    vec
+    mat
+)
+
+set(include_dirs
+    .
+    include
+    vec
+    mat
+)
+
+set(requires
+    tiny_toolbox
+)
+
+idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRES ${requires})
 
 ```
 
-## ARCHITECTURE AND FUNCTION DIRECTORY
+## ARCHITECTURE AND DIRECTORY
+
+### Dependency Diagram
+![](tiny_math.png)
+
+### Code Tree
 
 ```txt
-
+TinyMath
+    ├── CMakeLists.txt
+    ├── include
+    |   ├── tiny_error_type.h // error type header file
+    |   ├── tiny_constant.h // constant header file
+    |   ├── tiny_math_config.h // configuration header file
+    |   └── tiny_math.h // main header file, include this file where you want to use the library
+    ├── vec
+    |   ├── tiny_vec.h // vector header file
+    |   ├── tiny_vec.c // vector source file
+    |   ├── tiny_vec_test.c // vector test file
+    |   └──  tiny_vec_test.h // vector test header file
+    ├── mat
+    |   ├── tiny_mat.h // matrix header file
+    |   ├── tiny_mat.c // matrix source file
+    |   ├── tiny_mat_test.c // matrix test file
+    |   └── tiny_mat_test.h // matrix test header file
+    └── ...
 ```
+

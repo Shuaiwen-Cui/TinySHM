@@ -583,3 +583,82 @@ tiny_error_t tiny_vec_inv_sqrtf_f32(const float *input, float *output, int len)
     return TINY_OK;
 }
 
+/* DOT PRODUCT */
+
+// vector * vector (dot product) | float
+/**
+ * @name tiny_vec_dotprod_f32
+ * @brief Computes the dot product of two vectors.
+ * @param src1 Pointer to the first input vector.
+ * @param src2 Pointer to the second input vector.
+ * @param dest Pointer to the output scalar result.
+ * @param len Length of the vectors.
+ * @return tiny_error_t Error code indicating success or failure.
+ * @note This function computes the dot product of two vectors and stores the result in a single float value.
+ *       It returns TINY_ERR_MATH_NULL_POINTER if any pointer is NULL.
+ *       The function uses the ESP-DSP library for optimized computation.
+ */
+tiny_error_t tiny_vec_dotprod_f32(const float *src1, const float *src2, float *dest, int len)
+{
+    if (NULL == src1 || NULL == src2 || NULL == dest)
+    {
+        return TINY_ERR_MATH_NULL_POINTER;
+    }
+
+    if (len <= 0)
+    {
+        return TINY_ERR_INVALID_ARG;
+    }
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+    // Use the ESP-DSP library for optimized dot product
+    dsps_dotprod_f32(src1, src2, dest, len);
+#else
+    // Fallback to a simple loop for dot product
+    float acc = 0.0f;
+    for (int i = 0; i < len; i++)
+    {
+        acc += src1[i] * src2[i];
+    }
+    *dest = acc;
+#endif
+    return TINY_OK;
+}
+
+// vector * vector (dot product - step support) | float
+/**
+ * @name tiny_vec_dotprode_f32
+ * @brief Computes the dot product of two vectors with step support.
+ * @param src1 Pointer to the first input vector.
+ * @param src2 Pointer to the second input vector.
+ * @param dest Pointer to the output scalar result.
+ * @param len Length of the vectors.
+ * @param step1 Step size for the first input vector.
+ * @param step2 Step size for the second input vector.
+ * @return tiny_error_t Error code indicating success or failure.
+ * @note This function computes the dot product of two vectors with specified step sizes and stores the result in a single float value.
+ */
+tiny_error_t tiny_vec_dotprode_f32(const float *src1, const float *src2, float *dest, int len, int step1, int step2)
+{
+    if (NULL == src1 || NULL == src2 || NULL == dest)
+    {
+        return TINY_ERR_MATH_NULL_POINTER;
+    }
+
+    if (len <= 0 || step1 <= 0 || step2 <= 0)
+    {
+        return TINY_ERR_INVALID_ARG;
+    }
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+    // Use the ESP-DSP library for optimized dot product with step support
+    dsps_dotprode_f32(src1, src2, dest, len, step1, step2);
+#else
+    // Fallback to a simple loop for dot product with step support
+    float acc = 0.0f;
+    for (int i = 0; i < len; i++)
+    {
+        acc += src1[i * step1] * src2[i * step2];
+    }
+    *dest = acc;
+#endif
+    return TINY_OK;
+}
