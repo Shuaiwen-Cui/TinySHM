@@ -164,7 +164,11 @@ void app_main(void)
     // xTaskCreate(acc_sense_task, "Accel_Sense_Task", 8192, &sense_config, 5, NULL);
 
     /* TINYAUTO / TINYSHM TEST */
-    tiny_vec_test();
+    
+    // tiny_math - tiny_vec
+    // tiny_vec_test();
+    // tiny_math - tiny_mat
+    // tiny_mat_test();
 
     while (1)
     {

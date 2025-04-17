@@ -26,10 +26,16 @@ extern "C"
 // vector operations
 #include "tiny_vec.h"
 
+// matrix operations
+#include "tiny_mat.h"
+
 /* TEST */ // NOTE: test files are platform specific and should not be included in the library
 
 // vector operations
 #include "tiny_vec_test.h"
+
+// matrix operations
+#include "tiny_mat_test.h"
 
 
 #ifdef __cplusplus

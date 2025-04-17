@@ -34,7 +34,7 @@ extern "C"
 #include "tiny_constants.h"
 
 // platform-optimization
-#include "esp_dsp.h"
+#include "esp_dsp.h" // access to all ESP-DSP library built-in functions
 
 /* PLATFORM SELECTION */
 
@@ -46,6 +46,9 @@ extern "C"
 
 // choose one platform
 #define MCU_PLATFORM_SELECTED    MCU_PLATFORM_ESP32
+
+/* DEBUG OPTION */ // print out information to facilitate debugging
+#define DEBUG 1 // 1: enable debug, 0: disable debug
 
 
 #ifdef __cplusplus

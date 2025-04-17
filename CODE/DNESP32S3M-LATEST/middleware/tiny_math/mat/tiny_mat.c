@@ -11,6 +11,54 @@
 /* DEPENDENCIES */
 #include "tiny_mat.h"
 
+/* SUPPORTIVE FUNCTIONS */
+
+/**
+ * @name print_matrix
+ * @brief Prints a matrix to the console.
+ * @param name Name of the matrix.
+ * @param mat Pointer to the matrix data.
+ * @param rows Number of rows in the matrix.
+ * @param cols Number of columns in the matrix.
+ */
+void print_matrix(const char *name, const float *mat, int rows, int cols)
+{
+    printf("%s =\n\r", name);
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            printf("%10.6f ", mat[i + j]); // padding not considered
+        }
+        printf("\n\r");
+    }
+    printf("\n\r");
+}
+
+// print matrix padded
+/**
+ * @name print_matrix
+ * @brief Prints a matrix to the console.
+ * @param name Name of the matrix.
+ * @param mat Pointer to the matrix data.
+ * @param rows Number of rows in the matrix.
+ * @param cols Number of columns in the matrix.
+ * @param step Step size (how many elements in a row) for the matrix data. row-major order.
+ */
+void print_matrix_padded(const char *name, const float *mat, int rows, int cols, int step)
+{
+    printf("%s =\n\r", name);
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            printf("%10.6f ", mat[i * step + j]); // padding considered
+        }
+        printf("\n\r");
+    }
+    printf("\n\r");
+}
+
 /* ADDITION */
 
 // matrix + matrix | float
@@ -246,27 +294,21 @@ tiny_error_t tiny_mat_subc_f32(const float *input, float *output, float C, int r
 tiny_error_t tiny_mat_mult_f32(const float *A, const float *B, float *C, int m, int n, int k)
 {
     if (NULL == A || NULL == B || NULL == C)
-    {
         return TINY_ERR_MATH_NULL_POINTER;
-    }
     if (m <= 0 || n <= 0 || k <= 0)
-    {
         return TINY_ERR_MATH_INVALID_PARAM;
-    }
 
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
     // Use the ESP-DSP library for optimized matrix multiplication
     dspm_mult_f32(A, B, C, m, n, k);
 #else
-    // Matrinx A(m,n), m - amount or rows, n - amount of columns
-    // C(m,k) = A(m,n)*B(n,k)
-    // c(i,j) = sum(a(i,s)*b(s,j)) , s=1..n
+    // C[i][j] = sum_{s=0}^{n-1} A[i][s] * B[s][j]
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < k; j++)
         {
-            C[i * k + j] = A[i * n] * B[j];
-            for (int s = 1; s < n; s++)
+            C[i * k + j] = 0.0f;
+            for (int s = 0; s < n; s++)
             {
                 C[i * k + j] += A[i * n + s] * B[s * k + j];
             }
