@@ -55,7 +55,11 @@ TinyMath
     |   ├── tiny_mat.h // matrix header file
     |   ├── tiny_mat.c // matrix source file
     |   ├── tiny_mat_test.c // matrix test file
-    |   └── tiny_mat_test.h // matrix test header file
+    |   ├── tiny_mat_test.h // matrix test header file
+    |   ├── tiny_mat_more.h // matrix header file - cpp
+    |   ├── tiny_mat_more.cpp // matrix source file - cpp
+    |   ├── tiny_mat_more_test.c // matrix test file - cpp
+    |   └── tiny_mat_more_test.h // matrix test header file - cpp
     └── ...
 ```
 

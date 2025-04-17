@@ -51,21 +51,21 @@ theme:
     - media: "(prefers-color-scheme)"
       scheme: slate
       primary: black
-      accent: blue grey
+      accent: deep purple
       toggle:
         icon: material/link
         name: Switch to light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: blue grey
-      accent: blue grey
+      primary: deep purple
+      accent: deep purple
       toggle:
         icon: material/toggle-switch
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: black
-      accent: blue grey
+      accent: deep purple
       toggle:
         icon: material/toggle-switch-off
         name: Switch to system preference

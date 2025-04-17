@@ -45,7 +45,7 @@ idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRE
     └── ...
 ```
 
-### [TIME](./TIME/time.en.md)
+### [TIME](./TIME/notes.en.md)
 
 - Get Running Time: `tiny_get_running_time()`
 - SNTP Time Synchronization: `sync_time_with_timezone("CST-8")`
