@@ -109,6 +109,11 @@ namespace tiny
         Mat(float *data, int rows, int cols, int stride);
 
         /**
+         * Allocate matrix with undefined size.
+         */
+        Mat();
+
+        /**
          * @brief Destroy the Mat object, freeing internal memory
          */
         ~Mat();
@@ -117,5 +122,85 @@ namespace tiny
          * @brief Allocate internal memory buffer
          */
         void allocate();
+
+        /**
+         * @brief Make copy of matrix.
+         *
+         * if src matrix is sub matrix, only the header is copied
+         * if src matrix is matrix, header and data are copied
+         *
+         * @param[in] src: source matrix
+         */
+        Mat(const Mat &src);
+
+        /**
+         * @brief Create a subset of matrix as ROI (Region of Interest)
+         *
+         * @param[in] startRow: start row position of source matrix to get the subset matrix from
+         * @param[in] startCol: start col position of source matrix to get the subset matrix from
+         * @param[in] roiRows: size of row elements of source matrix to get the subset matrix from
+         * @param[in] roiCols: size of col elements of source matrix to get the subset matrix from
+         * @param[in] stride: number of cols + padding between 2 rows
+         *
+         * @return
+         *      - result matrix size roiRows x roiCols
+         */
+        Mat getROI(int startRow, int startCol, int roiRows, int roiCols, int stride);
+
+        /**
+         * @brief Create a subset of matrix as ROI (Region of Interest)
+         *
+         * @param[in] startRow: start row position of source matrix to get the subset matrix from
+         * @param[in] startCol: start col position of source matrix to get the subset matrix from
+         * @param[in] roiRows: size of row elements of source matrix to get the subset matrix from
+         * @param[in] roiCols: size of col elements of source matrix to get the subset matrix from
+         *
+         * @return
+         *      - result matrix size roiRows x roiCols
+         */
+        Mat getROI(int startRow, int startCol, int roiRows, int roiCols);
+
+        /**
+         * @brief Create a subset of matrix as ROI (Region of Interest)
+         *
+         * @param[in] rect: rectangular area of interest
+         *
+         * @return
+         *      - result matrix size rect.rectRows x rect.rectCols
+         */
+        Mat getROI(const Mat::Rect &rect);
+
+        /**
+         * Make copy of matrix.
+         * @param[in] src: source matrix
+         * @param[in] row_pos: start row position of destination matrix
+         * @param[in] col_pos: start col position of destination matrix
+         */
+        void Copy(const Mat &src, int row_pos, int col_pos);
+
+        /**
+         * @brief copy header of matrix
+         *
+         * Make a shallow copy of matrix (no data copy)
+         * @param[in] src: source matrix
+         */
+        void CopyHead(const Mat &src);
+
+        /**
+         * @brief print matrix header
+         *
+         * Print all information about matrix to the terminal
+         * @param[in] src: source matrix
+         */
+        void PrintHead(void);
+        /**
+         * @brief print matrix header and data
+         * 
+         * Print all information about matrix to the terminal
+         * @param[in] show_padding: show padding information
+         * @param[in] label: label for the matrix
+         */
+        void PrintMatrix(bool show_padding, const std::string &label);
+
     };
 }

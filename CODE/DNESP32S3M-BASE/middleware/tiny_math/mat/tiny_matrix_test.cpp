@@ -34,36 +34,58 @@ void print_matrix(const tiny::Mat &mat, const std::string &label)
     std::cout << std::endl;
 }
 
-void tiny_matrix_test()
-{
+void tiny_matrix_test() {
     std::cout << "============ [tiny_matrix_test] ============\n";
 
-    // Test 1: Internal memory constructor
-    tiny::Mat mat_internal(2, 3);
-    print_matrix(mat_internal, "[Test 1] Internal Constructor");
+    // Test 1: Internal constructor
+    tiny::Mat mat1(3, 4);
+    std::cout << "[Test 1] Internal 3x4 matrix (default initialized):\n";
+    mat1.PrintHead();
 
-    // Test 2: External buffer constructor (default stride)
-    float buffer1[6] = {1, 2, 3, 4, 5, 6};
-    tiny::Mat mat_external(buffer1, 2, 3);
-    print_matrix(mat_external, "[Test 2] External Constructor (stride = cols)");
+    // Test 2: External buffer constructor
+    float data2[6] = {1, 2, 3, 4, 5, 6};
+    tiny::Mat mat2(data2, 2, 3);
+    std::cout << "[Test 2] External 2x3 matrix (no stride):\n";
+    mat2.PrintHead();
 
-    // Test 3: External buffer with custom stride
-    float buffer2[8] = {1, 2, 3, 0, 4, 5, 6, 0}; // 2 rows, stride = 4
-    tiny::Mat mat_strided(buffer2, 2, 3, 4);
-    print_matrix(mat_strided, "[Test 3] External Constructor (stride = 4)");
+    // Test 3: External buffer with stride
+    float data3[8] = {1, 2, 3, 0, 4, 5, 6, 0};
+    tiny::Mat mat3(data3, 2, 3, 4);
+    std::cout << "[Test 3] External 2x3 matrix (stride = 4):\n";
+    mat3.PrintHead();
 
-    // Test 4: Rect structure testing
-    tiny::Mat::Rect roi(1, 1, 2, 2);
-    std::cout << "[Test 4] Rect structure:\n";
-    std::cout << "x: " << roi.x << ", y: " << roi.y
-              << ", width: " << roi.width << ", height: " << roi.height << "\n";
-    std::cout << "area: " << roi.areaRect() << "\n\n";
+    // Test 4: Default constructor
+    tiny::Mat mat4;
+    std::cout << "[Test 4] Default constructor (1x1):\n";
+    mat4.PrintHead();
 
-    roi.resizeRect(0, 0, 1, 3);
-    std::cout << "Resized ROI:\n";
-    std::cout << "x: " << roi.x << ", y: " << roi.y
-              << ", width: " << roi.width << ", height: " << roi.height << "\n";
-    std::cout << "area: " << roi.areaRect() << "\n";
+    // Test 5: Copy constructor
+    tiny::Mat mat5(mat1);
+    std::cout << "[Test 5] Copy constructor from mat1:\n";
+    mat5.PrintHead();
+
+    // Test 6: getROI using coordinates
+    tiny::Mat roi1 = mat1.getROI(1, 1, 2, 2);
+    std::cout << "[Test 6] ROI (1,1,2,2) from mat1:\n";
+    roi1.PrintHead();
+
+    // Test 7: getROI using Rect
+    tiny::Mat::Rect r(0, 0, 2, 2);
+    tiny::Mat roi2 = mat1.getROI(r);
+    std::cout << "[Test 7] ROI using Rect(0,0,2,2):\n";
+    roi2.PrintHead();
+
+    // Test 8: CopyHead
+    tiny::Mat mat8;
+    mat8.CopyHead(mat3);
+    std::cout << "[Test 8] CopyHead from mat3:\n";
+    mat8.PrintHead();
+
+    // Test 9: Copy content into offset
+    tiny::Mat mat9(5, 5);
+    mat9.Copy(mat1, 2, 1);
+    std::cout << "[Test 9] mat1 copied into mat9 at (2,1):\n";
+    mat9.PrintHead();
 
     std::cout << "============ [test complete] ============\n";
 }
