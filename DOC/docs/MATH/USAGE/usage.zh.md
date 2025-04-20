@@ -6,7 +6,7 @@
 ## 整体引入TinyMath
 
 !!! info
-    适用于C项目，或者较为简单的C++项目。
+    适用于C项目，或者结构较为简单的C++项目。
 
 ```c
 #include "tiny_math.h"

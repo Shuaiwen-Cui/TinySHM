@@ -7,7 +7,7 @@
 ## Import TinyMath as a Whole
 
 !!! info
-    Suitable for C projects or simpler C++ projects.
+    Suitable for C projects or projects with a simple structure in C++.
 
 ```c
 #include "tiny_math.h"
