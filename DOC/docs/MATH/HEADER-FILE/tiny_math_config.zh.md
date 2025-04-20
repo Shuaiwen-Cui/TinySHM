@@ -42,9 +42,6 @@ extern "C"
 #include "tiny_error_type.h"
 #include "tiny_constants.h"
 
-// platform-optimization
-#include "esp_dsp.h"
-
 /* PLATFORM SELECTION */
 
 // available platforms

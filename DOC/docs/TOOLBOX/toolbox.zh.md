@@ -60,6 +60,27 @@ idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRE
 !!! tip
     tiny_toolbox.h 只是作为一个目录，集成了所有的子模块，具体的功能在各个子模块中实现。tiny_toolbox.c 只是形式上的源文件，没有具体的功能。
 
+### CMakeLists.txt
+
+```cmake
+set(src_dirs
+    .
+)
+
+set(include_dirs
+    include
+)
+
+set(requires
+    esp_timer
+    espressif__esp-dsp
+    espressif__esp_jpeg
+    espressif__esp-dl
+)
+
+idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRES ${requires})
+```
+
 ### tiny_toolbox.h
 
 ```c
@@ -88,7 +109,6 @@ extern "C"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
-#include "esp_dsp.h"
 
 // customized drivers
 #include "esp_rtc.h"

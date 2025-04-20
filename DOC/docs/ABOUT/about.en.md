@@ -1,4 +1,4 @@
-# TinySHM: Distributed Intelligence Enabling Framework for Structural Health Monitoring
+# TinySHM: Microcontroller-oriented Distributed Intelligence Enabling Framework for Structural Health Monitoring
 
 ![cover](cover.jpg)
 
@@ -15,6 +15,7 @@ This project aims to develop an empowering framework that equips MCU-level IoT d
 
 ## SCOPE
 
+- Platform adaptation and various tools (time, communication, etc.)
 - Basic Math Operations
 - Digital Signal Processing
 - TinyML / Edge AI

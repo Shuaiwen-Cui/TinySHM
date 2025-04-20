@@ -127,6 +127,8 @@ plugins:
             VECTOR: 向量操作
             API: 应用程序接口
             TEST: 测试
+            MATRIX: 矩阵操作
+            USAGE: 使用方法
             EXAMPLES: 示例
             DSP: 数字信号处理
             AI: 人工智能
@@ -137,6 +139,7 @@ plugins:
             NOTES: 说明
             CODE: 代码
             LOG: 日志
+
 
 # # Hooks
 # hooks:
@@ -275,6 +278,7 @@ nav:
       # - ESP-DSP: 
       #     - ESP-DSP: "MATH/ESP-DSP/esp-dsp.md"
       #     - EXAMPLES: "MATH/ESP-DSP/examples.md"
+      - USAGE: "MATH/USAGE/usage.md"
       - HEADER-FILE:
           - CONSTANTS: "MATH/HEADER-FILE/tiny_constants.md"
           - ERROR-TYPE: "MATH/HEADER-FILE/tiny_error_type.md"
@@ -284,6 +288,10 @@ nav:
           - API: "MATH/VECTOR/api.md"
           - CODE: "MATH/VECTOR/code.md"
           - TEST: "MATH/VECTOR/test.md"
+      - MATRIX:
+          - API: "MATH/MATRIX/api.md"
+          - CODE: "MATH/MATRIX/code.md"
+          - TEST: "MATH/MATRIX/test.md"
   - DSP:
       - "DSP/dsp.md"
   - AI:

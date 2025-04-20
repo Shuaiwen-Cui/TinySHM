@@ -17,11 +17,6 @@
 #ifndef __TINY_MATH__
 #define __TINY_MATH__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 /* DEPENDENCIES */
 
 // this layer
@@ -32,15 +27,39 @@ extern "C"
 // vector operations
 #include "tiny_vec.h"
 
+// matrix operations
+#include "tiny_mat.h"
+
+// advanced matrix operations
+#ifdef __cplusplus
+
+#include "tiny_matrix.hpp"
+
+#endif
+
 /* TEST */ // NOTE: test files are platform specific and should not be included in the library
 
 // vector operations
 #include "tiny_vec_test.h"
 
+// matrix operations
+#include "tiny_mat_test.h"
+
+// advanced matrix operations
+#ifdef __cplusplus
+
+#include "tiny_matrix_test.hpp"
+
+#endif
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TINY_TOOLBOX__ */
+#endif /* __TINY_MATH__ */
 ```

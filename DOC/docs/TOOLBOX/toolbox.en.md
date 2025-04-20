@@ -60,6 +60,27 @@ TODO:
 !!! tip
     tiny_toolbox.h serves merely as a directory, integrating all submodules. The specific functionalities are implemented in each submodule. tiny_toolbox.c is just a formal source file without specific functionality.
 
+### CMakeLists.txt
+
+```cmake
+set(src_dirs
+    .
+)
+
+set(include_dirs
+    include
+)
+
+set(requires
+    esp_timer
+    espressif__esp-dsp
+    espressif__esp_jpeg
+    espressif__esp-dl
+)
+
+idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRES ${requires})
+```
+
 ### tiny_toolbox.h
 
 ```c
@@ -88,7 +109,6 @@ extern "C"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
-#include "esp_dsp.h"
 
 // customized drivers
 #include "esp_rtc.h"
