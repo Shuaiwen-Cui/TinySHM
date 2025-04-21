@@ -195,12 +195,41 @@ namespace tiny
         void PrintHead(void);
         /**
          * @brief print matrix header and data
-         * 
+         *
          * Print all information about matrix to the terminal
          * @param[in] show_padding: show padding information
          * @param[in] label: label for the matrix
          */
         void PrintMatrix(bool show_padding, const std::string &label);
 
+        /**
+         * Make copy of matrix.
+         * @param[in] row_start: start row position of source matrix to copy
+         * @param[in] row_size: size of wor elements of source matrix to copy
+         * @param[in] col_start: start col position of source matrix to copy
+         * @param[in] col_size: size of wor elements of source matrix to copy
+         *
+         * @return
+         *      - result matrix size row_size x col_size
+         */
+        Mat Get(int row_start, int row_size, int col_start, int col_size);
+
+        /**
+         * Make copy of matrix.
+         * @param[in] rect: rectangular area of interest
+         * @return
+         *      - result matrix size row_size x col_size
+         */
+        Mat Get(const Mat::Rect &rect);
+
+        /**
+         * Copy operator
+         *
+         * @param[in] src: source matrix
+         *
+         * @return
+         *      - matrix copy
+         */
+        Mat &operator=(const Mat &src);
     };
 }

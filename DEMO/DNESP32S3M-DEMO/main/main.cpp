@@ -67,32 +67,6 @@ extern "C" void app_main();
  */
 void app_main()
 {
-    /* RESET REASON CHECK FOR DEBUGGING */
-
-    // Delay for 500ms to allow the system to stabilize
-    vTaskDelay(pdMS_TO_TICKS(500)); 
-
-    // Help to determine the reset reason
-    esp_reset_reason_t reason = esp_reset_reason();
-    ESP_LOGI("RESET", "Reset reason: %d", reason);
-    switch (reason)
-    {
-        case ESP_RST_POWERON:
-            ESP_LOGI("RESET", "Power-on reset");
-            break;
-        case ESP_RST_BROWNOUT:
-            ESP_LOGI("RESET", "Brownout reset");
-            break;
-        case ESP_RST_WDT:
-            ESP_LOGI("RESET", "Watchdog reset");
-            break;
-        case ESP_RST_DEEPSLEEP:
-            ESP_LOGI("RESET", "Wake from deep sleep");
-            break;
-        default:
-            ESP_LOGI("RESET", "Other reset reason");
-            break;
-    }
 
     /* VARIABLES */
     const char *TAG_NODE = "NODE";
@@ -134,19 +108,19 @@ void app_main()
 
     i2c_sensor_mpu6050_init();
 
-    while (sd_card_init()) /* SD card not detected */
-    {
-        lcd_show_string(0, 0, 200, 16, 16, "SD Card Error!", RED);
-        vTaskDelay(500);
-        lcd_show_string(0, 20, 200, 16, 16, "Please Check!", RED);
-        vTaskDelay(500);
-    }
-    lcd_clear(WHITE);
-    lcd_show_string(0, 0, 200, 16, 16, "SD Initialized!", RED);
-    sd_card_test_filesystem(); /* Run SD card test */
-    lcd_show_string(0, 0, 200, 16, 16, "SD Tested CSW! ", RED);
+    // while (sd_card_init()) /* SD card not detected */
+    // {
+    //     lcd_show_string(0, 0, 200, 16, 16, "SD Card Error!", RED);
+    //     vTaskDelay(500);
+    //     lcd_show_string(0, 20, 200, 16, 16, "Please Check!", RED);
+    //     vTaskDelay(500);
+    // }
+    // lcd_clear(WHITE);
+    // lcd_show_string(0, 0, 200, 16, 16, "SD Initialized!", RED);
+    // sd_card_test_filesystem(); /* Run SD card test */
+    // lcd_show_string(0, 0, 200, 16, 16, "SD Tested CSW! ", RED);
     // sd_card_unmount();
-    vTaskDelay(1000);
+    // vTaskDelay(1000);
 
     lcd_show_string(0, 0, lcd_self.width, 16, 16, "WiFi STA Test  ", RED);
     ret = wifi_sta_wpa2_init();
@@ -164,19 +138,20 @@ void app_main()
     ev = xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, pdTRUE, pdFALSE, portMAX_DELAY);
     if (ev & CONNECTED_BIT)
     {
-        sync_time_with_timezone("CST-8");
-        vTaskDelay(500/portTICK_PERIOD_MS);
+        // sync_time_with_timezone("CST-8");
+        // vTaskDelay(500/portTICK_PERIOD_MS);
 
-        // lcd show time synchronized
-        lcd_show_string(0, 0, lcd_self.width, 16, 16, "Time Synchronized!", RED);
+        // // lcd show time synchronized
+        // lcd_show_string(0, 0, lcd_self.width, 16, 16, "Time Synchronized!", RED);
 
         mqtt_app_start();
+
         vTaskDelay(3000 / portTICK_PERIOD_MS); // wait for mqtt to connect
 
         // lcd show mqtt connected
         lcd_show_string(0, 0, lcd_self.width, 16, 16, "MQTT Connected!   ", RED);
 
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        // vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 
     /* TASK PERFORMING */

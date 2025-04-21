@@ -46,9 +46,9 @@ struct DataStruct
 /* VARIABLES */
 // for streamline configuration
 struct SenseConfig streamline_config = {
-    .sample_rate = 100,          // Sample rate in Hz. For local printout + mqtt, at most 25Hz; for only mqtt, at most 200Hz.
+    .sample_rate = 20,          // Sample rate in Hz. For local printout + mqtt, at most 25Hz; for only mqtt, at most 200Hz.
     .temperature_sense = true, // Whether to sense temperature
-    .printout = true,          // Only available for sampling rate <= 100Hz
+    .printout = false,          // Only available for sampling rate <= 100Hz
     .mqtt_pub = true           // Only available for sampling rate <= 100Hz
 };
 
@@ -103,6 +103,9 @@ void acc_streamline_task(void *pvParameters)
     // LCD clear
     lcd_clear(WHITE);
 
+    // LCD show it is sensing
+    lcd_show_string(0, 0, lcd_self.width, 16, 16, "Sensing...", RED);
+
     while (1)
     {
         // get the time stamp
@@ -125,21 +128,21 @@ void acc_streamline_task(void *pvParameters)
         }
 
         // print out the data
-        if (config->printout)
-        {
+        // if (config->printout)
+        // {
             // ESP_LOGI(TAG, "%s", streamline_buff);
 
             // LCD printout acc_x, acc_y, acc_z, temperature, each in a line
-            sprintf(lcd_buff_accx, "acc_x = %10.6f", acc_x);
-            sprintf(lcd_buff_accy, "acc_y = %10.6f", acc_y);
-            sprintf(lcd_buff_accz, "acc_z = %10.6f", acc_z);
-            sprintf(lcd_buff_temp, "Temperature: %4.2f °C", temperature);
-            lcd_show_string(0, 0, lcd_self.width, 16, 16, lcd_buff_accx, RED);
-            lcd_show_string(0, 20, lcd_self.width, 16, 16, lcd_buff_accy, RED);
-            lcd_show_string(0, 40, lcd_self.width, 16, 16, lcd_buff_accz, RED);
-            lcd_show_string(0, 60, lcd_self.width, 16, 16, lcd_buff_temp, RED);
+            // sprintf(lcd_buff_accx, "acc_x = %10.6f", acc_x);
+            // sprintf(lcd_buff_accy, "acc_y = %10.6f", acc_y);
+            // sprintf(lcd_buff_accz, "acc_z = %10.6f", acc_z);
+            // sprintf(lcd_buff_temp, "Temperature: %4.2f °C", temperature);
+            // lcd_show_string(0, 0, lcd_self.width, 16, 16, lcd_buff_accx, RED);
+            // lcd_show_string(0, 20, lcd_self.width, 16, 16, lcd_buff_accy, RED);
+            // lcd_show_string(0, 40, lcd_self.width, 16, 16, lcd_buff_accz, RED);
+            // lcd_show_string(0, 60, lcd_self.width, 16, 16, lcd_buff_temp, RED);
 
-        }
+        // }
 
         // MQTT publish
         if (config->mqtt_pub)

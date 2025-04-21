@@ -210,4 +210,68 @@ namespace tiny
         std::cout << std::endl;
     }
     
+    // Get a sub-matrix (ROI) from the original matrix
+    Mat Mat::Get(int row_start, int row_size, int col_start, int col_size)
+    {
+        Mat result(row_size, col_size);
+    
+        if ((row_start + row_size) > this->rows) {
+            return result;
+        }
+        if ((col_start + col_size) > this->cols) {
+            return result;
+        }
+    
+        for (size_t r = 0; r < result.rows; r++) {
+            memcpy(&result.data[r * result.cols], &this->data[(r + row_start) * this->stride + col_start], result.cols * sizeof(float));
+        }
+        return result;
+    }
+
+    // Get a sub-matrix (ROI) from the original matrix using Rect structure
+    Mat Mat::Get(const Mat::Rect &rect)
+    {
+        return (Get(rect.y, rect.height, rect.x, rect.width));
+    }
+    
+    // Copy operator
+    Mat &Mat::operator=(const Mat &m)
+    {
+        if (this == &m) {
+            return *this;
+        }
+    
+        // matrix dimensions not equal, note the dimension will be changed! (for non-sub-matrix)
+        if (this->rows != m.rows || this->cols != m.cols) {
+            // left operand is a sub-matrix - error
+            if (this->sub_matrix) {
+                std::cerr << "operator = Error for sub-matrices: operands matrices dimensions " << this->rows << "x" << this->cols << " and " << m.rows << "x" << m.cols << " do not match" << std::endl;
+                return *this;
+            }
+            if (!this->ext_buff) {
+                delete[] this->data;
+            }
+            this->ext_buff = false;
+            this->rows = m.rows;
+            this->cols = m.cols;
+            this->stride = this->cols;
+            this->padding = 0;
+            this->sub_matrix = false;
+            allocate();
+        }
+    
+        for (int row = 0; row < this->rows; row++) {
+            memcpy(this->data + (row * this->stride), m.data + (row * m.stride), this->cols * sizeof(float));
+        }
+        return *this;
+    }
+
+
+
+
+
+
+
+
+
 }
