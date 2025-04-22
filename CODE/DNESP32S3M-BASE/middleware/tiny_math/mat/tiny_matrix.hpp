@@ -133,14 +133,14 @@ namespace tiny
 
         /* === Data Manipulation === */
         /**
-         * Make copy of matrix.
+         * Make copy of matrix. Memory not shared.
          * @param[in] src: source matrix
          * @param[in] row_pos: start row position of destination matrix
          * @param[in] col_pos: start col position of destination matrix
          */
         void Copy(const Mat &src, int row_pos, int col_pos);
         /**
-         * @brief copy header of matrix
+         * @brief Copy header of matrix. Memory shared.
          *
          * Make a shallow copy of matrix (no data copy)
          * @param[in] src: source matrix
@@ -339,8 +339,31 @@ namespace tiny
         Mat operator^(int C);
 
         /* === Linear Algebra === */
+        /**
+         * @brief Normalize the matrix
+         *
+         * The method normalize the matrix to unit length.
+         */
         void normalize();
+        /**
+         * @brief Calculate the matrix norm
+         *
+         * The method calculate the matrix norm.
+         *
+         * @return
+         *      - result matrix norm
+         */
         float norm();
+        /**
+         * @brief Calculate the determinant of the matrix
+         *
+         * The method calculate the determinant of the matrix.
+         *
+         * @param n: size of the matrix
+         *
+         * @return
+         *      - result matrix determinant
+         */
         float det(int n);
         /**
          * Matrix transpose.
