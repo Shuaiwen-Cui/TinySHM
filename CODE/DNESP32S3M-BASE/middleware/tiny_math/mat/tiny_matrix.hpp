@@ -231,5 +231,210 @@ namespace tiny
          *      - matrix copy
          */
         Mat &operator=(const Mat &src);
+
+        /**
+         * Access to the matrix elements.
+         * @param[in] row: row position
+         * @param[in] col: column position
+         *
+         * @return
+         *      - element of matrix M[row][col]
+         */
+        inline float &operator()(int row, int col)
+        {
+            return data[row * this->stride + col];
+        }
+        /**
+         * Access to the matrix elements.
+         * @param[in] row: row position
+         * @param[in] col: column position
+         *
+         * @return
+         *      - element of matrix M[row][col]
+         */
+        inline const float &operator()(int row, int col) const
+        {
+            return data[row * this->stride + col];
+        }
+        /**
+         * += operator
+         * The operator use DSP optimized implementation of multiplication.
+         *
+         * @param[in] A: source matrix
+         *
+         * @return
+         *      - result matrix: result += A
+         */
+        Mat &operator+=(const Mat &A);
+
+        /**
+         * += operator
+         * The operator use DSP optimized implementation of multiplication.
+         *
+         * @param[in] C: constant
+         *
+         * @return
+         *      - result matrix: result += C
+         */
+        Mat &operator+=(float C);
+        /**
+         * -= operator
+         * The operator use DSP optimized implementation of multiplication.
+         *
+         * @param[in] A: source matrix
+         *
+         * @return
+         *      - result matrix: result -= A
+         */
+        Mat &operator-=(const Mat &A);
+
+        /**
+         * -= operator
+         * The operator use DSP optimized implementation of multiplication.
+         *
+         * @param[in] C: constant
+         *
+         * @return
+         *      - result matrix: result -= C
+         */
+        Mat &operator-=(float C);
+
+        /**
+         * *= operator
+         * The operator use DSP optimized implementation of multiplication.
+         *
+         * @param[in] A: source matrix
+         *
+         * @return
+         *      - result matrix: result -= A
+         */
+        Mat &operator*=(const Mat &A);
+
+        /**
+         * += with constant operator
+         * The operator use DSP optimized implementation of multiplication.
+         *
+         * @param[in] C: constant value
+         *
+         * @return
+         *      - result matrix: result *= C
+         */
+        Mat &operator*=(float C);
+
+        /**
+         * /= operator
+         *
+         * @param[in] B: source matrix
+         *
+         * @return
+         *      - result matrix: result[i,j] = result[i,j]/B[i,j]
+         */
+        Mat &operator/=(const Mat &B);
+
+        /**
+         * /= with constant operator
+         * The operator use DSP optimized implementation of multiplication.
+         *
+         * @param[in] C: constant value
+         *
+         * @return
+         *      - result matrix: result /= C
+         */
+        Mat &operator/=(float C);
+
+    /**
+     * ^= xor with constant operator
+     * The operator use DSP optimized implementation of multiplication.
+     * @param[in] C: constant value
+     *
+     * @return
+     *      - result matrix: result ^= C
+     */
+    Mat  operator^(int C);        
+
+    /**
+     * Swap two rows between each other.
+     * @param[in] row1: position of first row
+     * @param[in] row2: position of second row
+     */
+    void swapRows(int row1, int row2);
     };
+
+    /**
+     * Matrix transpose.
+     * Change rows and columns between each other.
+     *
+     * @return
+     *      - transposed matrix
+     */
+    Mat t();
+
+    /**
+     * Create identity matrix.
+     * Create a square matrix and fill diagonal with 1.
+     *
+     * @param[in] size: matrix size
+     *
+     * @return
+     *      - matrix [N]x[N] with 1 in diagonal
+     */
+    static Mat eye(int size);
+
+    /**
+     * Create matrix with all elements 1.
+     * Create a square matrix and fill all elements with 1.
+     *
+     * @param[in] size: matrix size
+     *
+     * @return
+     *      - matrix [N]x[N] with 1 in all elements
+     */
+    static Mat ones(int size);
+
+    /**
+     * Create matrix with all elements 1.
+     * Create a matrix and fill all elements with 1.
+     *
+     * @param[in] rows: matrix rows
+     * @param[in] cols: matrix cols
+     *
+     * @return
+     *      - matrix [N]x[N] with 1 in all elements
+     */
+    static Mat ones(int rows, int cols);
+
+    /**
+     * The method fill 0 to the matrix structure.
+     *
+     */
+    void clear(void);
+
+    /**
+     * Return part of matrix from defined position (startRow, startCol) as a matrix[blockRows x blockCols].
+     *
+     * @param[in] startRow: start row position
+     * @param[in] startCol: start column position
+     * @param[in] blockRows: amount of rows in result matrix
+     * @param[in] blockCols: amount of columns in the result matrix
+     *
+     * @return
+     *      - matrix [blockRows]x[blockCols]
+     */
+    Mat block(int startRow, int startCol, int blockRows, int blockCols);
+
+    /**
+     * Normalizes the vector, i.e. divides it by its own norm.
+     * If it's matrix, calculate matrix norm
+     *
+     */
+    void normalize(void);
+
+    /**
+     * Return  norm of the vector.
+     * If it's matrix, calculate matrix norm
+     *
+     * @return
+     *      - matrix norm
+     */
+    float norm(void);
 }
