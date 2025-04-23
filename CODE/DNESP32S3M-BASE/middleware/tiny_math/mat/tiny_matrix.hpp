@@ -329,12 +329,13 @@ namespace tiny
          */
         Mat &operator/=(float C);
         /**
-         * ^= xor with constant operator
+         * ^= exponentiation operator
          * The operator use DSP optimized implementation of multiplication.
-         * @param[in] C: constant value
+         *
+         * @param[in] num: exponent
          *
          * @return
-         *      - result matrix: result ^= C
+         *      - result matrix: result = result^num
          */
         Mat operator^(int C);
 

@@ -128,6 +128,12 @@ plugins:
             API: 应用程序接口
             TEST: 测试
             MATRIX: 矩阵操作
+            TINY_MAT-API: TINY_MAT-接口
+            TINY_MAT-CODE: TINY_MAT-代码
+            TINY_MAT-TEST: TINY_MAT-测试
+            TINY_MATRIX-API: TINY_MATRIX-接口
+            TINY_MATRIX-CODE: TINY_MATRIX-代码
+            TINY_MATRIX-TEST: TINY_MATRIX-测试
             USAGE: 使用方法
             EXAMPLES: 示例
             DSP: 数字信号处理
@@ -289,9 +295,12 @@ nav:
           - CODE: "MATH/VECTOR/code.md"
           - TEST: "MATH/VECTOR/test.md"
       - MATRIX:
-          - API: "MATH/MATRIX/api.md"
-          - CODE: "MATH/MATRIX/code.md"
-          - TEST: "MATH/MATRIX/test.md"
+          - TINY_MAT-API: "MATH/MATRIX/tiny-mat-api.md"
+          - TINY_MAT-CODE: "MATH/MATRIX/tiny-mat-code.md"
+          - TINY_MAT-TEST: "MATH/MATRIX/tiny-mat-test.md"
+          - TINY_MATRIX-API: "MATH/MATRIX/tiny-matrix-api.md"
+          - TINY_MATRIX-CODE: "MATH/MATRIX/tiny-matrix-code.md"
+          - TINY_MATRIX-TEST: "MATH/MATRIX/tiny-matrix-test.md"
   - DSP:
       - "DSP/dsp.md"
   - AI:

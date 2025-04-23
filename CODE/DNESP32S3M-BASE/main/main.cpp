@@ -179,8 +179,8 @@ void app_main()
 
     /* TEST SANDBOX */
     // tiny_vec_test(); // test tiny_vec
-    // tiny_mat_test(); // test tiny_mat
-    tiny_matrix_test(); // test tiny_matrix
+    tiny_mat_test(); // test tiny_mat
+    // tiny_matrix_test(); // test tiny_matrix
 
     /* INFINITE LOOP */
     while (1)
