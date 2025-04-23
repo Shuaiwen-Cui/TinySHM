@@ -1725,25 +1725,6 @@ namespace tiny
         return (m * num);
     }
 
-    Mat operator/(const Mat &m, float num)
-    {
-        if (m.sub_matrix)
-        {
-            Mat temp(m.rows, m.cols);
-#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_mulc_f32(m.data, temp.data, 1 / num, m.rows, m.cols, m.padding, temp.padding, 1, 1);
-#else
-            tiny_mat_multc_f32(m.data, temp.data, 1 / num, m.rows, m.cols, m.padding, temp.padding, 1, 1);
-#endif
-            return temp;
-        }
-        else
-        {
-            Mat temp(m);
-            return (temp /= num);
-        }
-    }
-
     /**
      * / operator, divide of matrix by constant
      * The operator use DSP optimized implementation of multiplication.
