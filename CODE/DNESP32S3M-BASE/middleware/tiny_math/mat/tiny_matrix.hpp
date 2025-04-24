@@ -30,58 +30,100 @@ namespace tiny
 {
     class Mat
     {
-        public:
-            /* === Matrix Metadata === */
-            int row;          //< number of rows
-            int col;          //< number of columns
-            int pad;          //< number of paddings between 2 rows
-            int stride;       //< stride = (number of elements in a row) + padding
-            int element;      //< number of elements = rows * cols
-            int memory;       //< size of the data buffer = rows * stride
-            float *data;      //< pointer to the data buffer
-            float *temp;      //< pointer to the temporary data buffer
-            bool ext_buff;    //< flag indicates that matrix use external buffer
-            bool sub_matrix;  //< flag indicates that matrix is a subset of another matrix
+    public:
+        /* === Matrix Metadata === */
+        int row;         //< number of rows
+        int col;         //< number of columns
+        int pad;         //< number of paddings between 2 rows
+        int stride;      //< stride = (number of elements in a row) + padding
+        int element;     //< number of elements = rows * cols
+        int memory;      //< size of the data buffer = rows * stride
+        float *data;     //< pointer to the data buffer
+        float *temp;     //< pointer to the temporary data buffer
+        bool ext_buff;   //< flag indicates that matrix use external buffer
+        bool sub_matrix; //< flag indicates that matrix is a subset of another matrix
 
-            /* === Rectangular ROI Structure === */
-            struct ROI
-            {
-                int pos_x;        ///< starting column index
-                int pos_y;        ///< starting row index
-                int width;        ///< width of ROI (columns)
-                int height;       ///< height of ROI (rows)
-                
-                // ROI constructor
-                ROI(int pos_x = 0, int pos_y = 0, int width = 0, int height = 0);
+        /* === Rectangular ROI Structure === */
+        struct ROI
+        {
+            int pos_x;  ///< starting column index
+            int pos_y;  ///< starting row index
+            int width;  ///< width of ROI (columns)
+            int height; ///< height of ROI (rows)
 
-                // resize ROI
-                void resize_roi(int pos_x, int pos_y, int width, int height);
+            // ROI constructor
+            ROI(int pos_x = 0, int pos_y = 0, int width = 0, int height = 0);
 
-                // calculate area of ROI
-                int area_roi(void) const;
+            // resize ROI
+            void resize_roi(int pos_x, int pos_y, int width, int height);
 
-            };
-            /* === Printing Functions === */
-            // print matrix info
-            void print_info(void);
+            // calculate area of ROI
+            int area_roi(void) const;
+        };
+        
+        /* === Printing Functions === */
+        // print matrix info
+        void print_info(void);
 
-            // print matrix elements, paddings optional
-            void print_matrix(bool show_padding);
+        // print matrix elements, paddings optional
+        void print_matrix(bool show_padding);
 
-            /* === Constructors & Destructor === */
-            // memory allocation
-            void alloc_mem(); // Allocate internal memory
+        /* === Constructors & Destructor === */
+        // memory allocation
+        void alloc_mem(); // Allocate internal memory
 
-            // constructor
-            Mat();
-            Mat(int rows, int cols);
-            Mat(float *data, int rows, int cols);
-            Mat(float *data, int rows, int cols, int stride);
+        // constructor
+        Mat();
+        Mat(int rows, int cols);
+        Mat(int rows, int cols, int stride);
+        Mat(float *data, int rows, int cols);
+        Mat(float *data, int rows, int cols, int stride);
+        Mat(const Mat &src);
 
-            // destructor
-            ~Mat();
-        protected:
+        // destructor
+        ~Mat();
 
-        private:
+        /* === Element Access === */
+        // access matrix elements - non const
+        inline float &operator()(int row, int col) { return data[row * stride + col]; }
+
+        // access matrix elements - const             
+        inline const float &operator()(int row, int col) const { return data[row * stride + col]; }
+
+        /* === Data Manipulation === */
+        // copy other matrix into this matrix as a sub-matrix
+        tiny_error_t copy_paste(const Mat &src, int row_pos, int col_pos);
+
+        // copy header of other matrix to this matrix
+        tiny_error_t copy_head(const Mat &src);
+
+        // get a view (shallow copy) of sub-matrix (ROI) from this matrix with stride
+        Mat get_roi(int start_row, int start_col, int roi_rows, int roi_cols, int stride);
+
+        // get a view (shallow copy) of sub-matrix (ROI) from this matrix
+        Mat get_roi(int start_row, int start_col, int roi_rows, int roi_cols);
+
+        // get a view (shallow copy) of sub-matrix (ROI) from this matrix using ROI structure
+        Mat get_roi(const Mat::ROI &roi);
+
+        // get a replica (deep copy) of sub-matrix (ROI) 
+        Mat copy_roi(int start_row, int start_col, int roi_rows, int roi_cols);
+
+        // get a replica (deep copy) of sub-matrix (ROI) using ROI structure
+        Mat copy_roi(const Mat::ROI &roi);
+
+        // get a block of matrix
+        Mat block(int start_row, int start_col, int block_rows, int block_cols);
+
+        // swap rows
+        void swap_rows(int row1, int row2);
+
+        // clear matrix
+        void clear(void);
+
+    protected:
+
+    private:
+
     };
 }

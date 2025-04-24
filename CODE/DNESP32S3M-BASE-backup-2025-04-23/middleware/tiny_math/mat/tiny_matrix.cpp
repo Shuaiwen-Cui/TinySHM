@@ -223,7 +223,7 @@ namespace tiny
      */
     Mat Mat::getROI(int startRow, int startCol, int roiRows, int roiCols, int stride)
     {
-        Mat result(this->data, roiRows, roiCols, 0); // this is an illegal matrix, for illegal access
+        Mat result(this->data, roiRows, roiCols, 0); 
 
         if ((startRow + roiRows) > this->rows)
         {
