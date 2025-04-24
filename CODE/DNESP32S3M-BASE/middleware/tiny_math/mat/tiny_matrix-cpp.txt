@@ -22,17 +22,30 @@
 #include <inttypes.h>
 #include <iomanip>
 
-// Namespace
-using std::endl;
-using std::istream;
-using std::ostream;
-
 /* LIBRARIE CONTENTS */
 namespace tiny
 {
+    /* === Rectangular ROI Structure === */
+
+    /**
+     * @brief Constructor with initialization to 0
+     *
+     * @param[in] x: x starting position (start col) of the rectangular area
+     * @param[in] y: y starting position (start row) of the rectangular area
+     * @param[in] width: width (number of cols) of the rectangular area
+     * @param[in] height: height (number of rows) of the rectangular area
+     */
     Mat::Rect::Rect(int x, int y, int width, int height)
         : x(x), y(y), width(width), height(height) {}
 
+    /**
+     * @brief Resize rect area
+     *
+     * @param[in] x: x starting position (start col) of the new rectangular area
+     * @param[in] y: y starting position (start row) of the new rectangular area
+     * @param[in] width: width (number of cols) of the new rectangular area
+     * @param[in] height: height (number of rows) of the new rectangular area
+     */
     void Mat::Rect::resizeRect(int x, int y, int width, int height)
     {
         this->x = x;
@@ -41,31 +54,18 @@ namespace tiny
         this->height = height;
     }
 
+    /**
+     * @brief Get amount of elements in the rect area
+     */
     int Mat::Rect::areaRect(void) const
     {
         return width * height;
     }
 
-    // Constructor with initialization to 0
-    Mat::Mat(int rows, int cols)
-        : rows(rows), cols(cols), stride(cols), padding(0), length(rows * cols),
-          data(nullptr), ext_buff(false), sub_matrix(false)
-    {
-        allocate();
-        std::memset(this->data, 0, this->length * sizeof(float));
-    }
-
-    // Constructor with external buffer
-    Mat::Mat(float *data, int rows, int cols)
-        : rows(rows), cols(cols), stride(cols), padding(0), length(rows * cols),
-          data(data), ext_buff(true), sub_matrix(false) {}
-
-    // Constructor with external buffer and stride
-    Mat::Mat(float *data, int rows, int cols, int stride)
-        : rows(rows), cols(cols), stride(stride), padding(stride - cols), length(rows * cols),
-          data(data), ext_buff(true), sub_matrix(false) {}
-
-    // Default constructor
+    /* === Constructors & Destructor === */
+    /**
+     * Allocate matrix with undefined size.
+     */
     Mat::Mat()
         : rows(1), cols(1), stride(1), padding(0), length(1),
           data(nullptr), ext_buff(false), sub_matrix(false)
@@ -74,24 +74,51 @@ namespace tiny
         std::memset(this->data, 0, this->length * sizeof(float));
     }
 
-    // Destructor
-    Mat::~Mat()
+    /**
+     * @brief Construct a new Mat object (internal allocation)
+     *
+     * @param rows Number of rows
+     * @param cols Number of columns
+     */
+    Mat::Mat(int rows, int cols)
+        : rows(rows), cols(cols), stride(cols), padding(0), length(rows * cols),
+          data(nullptr), ext_buff(false), sub_matrix(false)
     {
-        if (!this->ext_buff && this->data)
-        {
-            delete[] this->data;
-        }
+        allocate();
+        std::memset(this->data, 0, this->length * sizeof(float));
     }
 
-    // Memory allocation for the matrix
-    void Mat::allocate()
-    {
-        this->ext_buff = false;
-        this->length = this->rows * this->cols;
-        this->data = new float[this->length];
-    }
+    /**
+     * @brief Construct a new Mat object (external allocation)
+     *
+     * @param data Pointer to external data buffer
+     * @param rows Number of rows
+     * @param cols Number of columns
+     */
+    Mat::Mat(float *data, int rows, int cols)
+        : rows(rows), cols(cols), stride(cols), padding(0), length(rows * cols),
+          data(data), ext_buff(true), sub_matrix(false) {}
 
-    // Copy constructor - if it is a sub-matrix, only the header is copied, else both header and data are copied
+    /**
+     * @brief Construct a new Mat object (external allocation with stride)
+     *
+     * @param data Pointer to external data buffer
+     * @param rows Number of rows
+     * @param cols Number of columns
+     * @param stride Stride (number of elements in a row)
+     */
+    Mat::Mat(float *data, int rows, int cols, int stride)
+        : rows(rows), cols(cols), stride(stride), padding(stride - cols), length(rows * cols),
+          data(data), ext_buff(true), sub_matrix(false) {}
+
+    /**
+     * @brief Make copy of matrix.
+     *
+     * if src matrix is sub matrix, only the header is copied
+     * if src matrix is matrix, header and data are copied
+     *
+     * @param[in] src: source matrix
+     */
     Mat::Mat(const Mat &m)
         : rows(m.rows), cols(m.cols), stride(m.stride), padding(m.padding), length(m.length),
           data(nullptr), ext_buff(false), sub_matrix(m.sub_matrix)
@@ -108,7 +135,87 @@ namespace tiny
         }
     }
 
-    // Get a sub-matrix (ROI) from the original matrix
+    /**
+     * @brief Destroy the Mat object, freeing internal memory
+     */
+    Mat::~Mat()
+    {
+        if (!this->ext_buff && this->data)
+        {
+            delete[] this->data;
+        }
+    }
+
+    /**
+     * @brief Allocate internal memory buffer
+     */
+    void Mat::allocate()
+    {
+        this->ext_buff = false;
+        this->length = this->rows * this->cols;
+        this->data = new float[this->length];
+    }
+    /* === Element Access === */
+    // Already defined by inline functions in the header file
+
+    /* === Data Manipulation === */
+    /**
+     * Make copy of matrix. Memory not shared.
+     * @param[in] src: source matrix
+     * @param[in] row_pos: start row position of destination matrix
+     * @param[in] col_pos: start col position of destination matrix
+     */
+    void Mat::Copy(const Mat &src, int row_pos, int col_pos)
+    {
+        if ((row_pos + src.rows) > this->rows)
+        {
+            return;
+        }
+        if ((col_pos + src.cols) > this->cols)
+        {
+            return;
+        }
+
+        for (size_t r = 0; r < src.rows; r++)
+        {
+            memcpy(&this->data[(r + row_pos) * this->stride + col_pos], &src.data[r * src.cols], src.cols * sizeof(float));
+        }
+    }
+
+    /**
+     * @brief Copy header of matrix. Memory shared.
+     *
+     * Make a shallow copy of matrix (no data copy)
+     * @param[in] src: source matrix
+     */
+    void Mat::CopyHead(const Mat &src)
+    {
+        if (!this->ext_buff)
+        {
+            delete[] this->data;
+        }
+        this->rows = src.rows;
+        this->cols = src.cols;
+        this->length = src.length;
+        this->padding = src.padding;
+        this->stride = src.stride;
+        this->data = src.data;
+        this->ext_buff = src.ext_buff;
+        this->sub_matrix = src.sub_matrix;
+    }
+
+    /**
+     * @brief Create a subset of matrix as ROI (Region of Interest)
+     *
+     * @param[in] startRow: start row position of source matrix to get the subset matrix from
+     * @param[in] startCol: start col position of source matrix to get the subset matrix from
+     * @param[in] roiRows: size of row elements of source matrix to get the subset matrix from
+     * @param[in] roiCols: size of col elements of source matrix to get the subset matrix from
+     * @param[in] stride: number of cols + padding between 2 rows
+     *
+     * @return
+     *      - result matrix size roiRows x roiCols
+     */
     Mat Mat::getROI(int startRow, int startCol, int roiRows, int roiCols, int stride)
     {
         Mat result(this->data, roiRows, roiCols, 0); // this is an illegal matrix, for illegal access
@@ -131,54 +238,141 @@ namespace tiny
         return result;
     }
 
-    // Get a sub-matrix (ROI) from the original matrix, compact version
+    /**
+     * @brief Create a subset of matrix as ROI (Region of Interest)
+     *
+     * @param[in] startRow: start row position of source matrix to get the subset matrix from
+     * @param[in] startCol: start col position of source matrix to get the subset matrix from
+     * @param[in] roiRows: size of row elements of source matrix to get the subset matrix from
+     * @param[in] roiCols: size of col elements of source matrix to get the subset matrix from
+     *
+     * @return
+     *      - result matrix size roiRows x roiCols
+     */
     Mat Mat::getROI(int startRow, int startCol, int roiRows, int roiCols)
     {
         return (getROI(startRow, startCol, roiRows, roiCols, this->cols));
     }
 
-    // Get a sub-matrix (ROI) from the original matrix using Rect structure
+    /**
+     * @brief Create a subset of matrix as ROI (Region of Interest)
+     *
+     * @param[in] rect: rectangular area of interest
+     *
+     * @return
+     *      - result matrix size rect.rectRows x rect.rectCols
+     */
     Mat Mat::getROI(const Mat::Rect &rect)
     {
         return (getROI(rect.y, rect.x, rect.height, rect.width, this->cols));
     }
 
-    // Make copy of matrix.
-    void Mat::Copy(const Mat &src, int row_pos, int col_pos)
+    /**
+     * Make copy of matrix.
+     * @param[in] row_start: start row position of source matrix to copy
+     * @param[in] row_size: size of wor elements of source matrix to copy
+     * @param[in] col_start: start col position of source matrix to copy
+     * @param[in] col_size: size of wor elements of source matrix to copy
+     *
+     * @return
+     *      - result matrix size row_size x col_size
+     */
+    Mat Mat::Get(int row_start, int row_size, int col_start, int col_size)
     {
-        if ((row_pos + src.rows) > this->rows)
+        Mat result(row_size, col_size);
+
+        if ((row_start + row_size) > this->rows)
         {
-            return;
+            return result;
         }
-        if ((col_pos + src.cols) > this->cols)
+        if ((col_start + col_size) > this->cols)
         {
-            return;
+            return result;
         }
 
-        for (size_t r = 0; r < src.rows; r++)
+        for (size_t r = 0; r < result.rows; r++)
         {
-            memcpy(&this->data[(r + row_pos) * this->stride + col_pos], &src.data[r * src.cols], src.cols * sizeof(float));
+            memcpy(&result.data[r * result.cols], &this->data[(r + row_start) * this->stride + col_start], result.cols * sizeof(float));
+        }
+        return result;
+    }
+
+    /**
+     * Make copy of matrix.
+     * @param[in] rect: rectangular area of interest
+     * @return
+     *      - result matrix size row_size x col_size
+     */
+    Mat Mat::Get(const Mat::Rect &rect)
+    {
+        return (Get(rect.y, rect.height, rect.x, rect.width));
+    }
+
+    /**
+     * Return part of matrix from defined position (startRow, startCol) as a matrix[blockRows x blockCols].
+     *
+     * @param[in] startRow: start row position
+     * @param[in] startCol: start column position
+     * @param[in] blockRows: amount of rows in result matrix
+     * @param[in] blockCols: amount of columns in the result matrix
+     *
+     * @return
+     *      - matrix [blockRows]x[blockCols]
+     */
+    Mat Mat::block(int startRow, int startCol, int blockRows, int blockCols)
+    {
+        Mat result(blockRows, blockCols);
+        for (int i = 0; i < blockRows; ++i)
+        {
+            for (int j = 0; j < blockCols; ++j)
+            {
+                result(i, j) = (*this)(startRow + i, startCol + j);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Swap two rows between each other.
+     * @param[in] row1: position of first row
+     * @param[in] row2: position of second row
+     */
+    void Mat::swapRows(int r1, int r2)
+    {
+        if ((this->rows <= r1) || (this->rows <= r2))
+        {
+            std::cerr << "swapRows Error: row " << r1 << " or " << r2 << " out of matrix row " << this->rows << " range" << std::endl;
+        }
+        else
+        {
+            for (int i = 0; i < this->cols; i++)
+            {
+                float temp = this->data[r1 * this->stride + i];
+                this->data[r1 * this->stride + i] = this->data[r2 * this->stride + i];
+                this->data[r2 * this->stride + i] = temp;
+            }
         }
     }
 
-    // Copy header of matrix
-    void Mat::CopyHead(const Mat &src)
+    /**
+     * The method fill 0 to the matrix structure.
+     *
+     */
+    void Mat::clear()
     {
-        if (!this->ext_buff)
+        for (int row = 0; row < this->rows; row++)
         {
-            delete[] this->data;
+            memset(this->data + (row * this->stride), 0, this->cols * sizeof(float));
         }
-        this->rows = src.rows;
-        this->cols = src.cols;
-        this->length = src.length;
-        this->padding = src.padding;
-        this->stride = src.stride;
-        this->data = src.data;
-        this->ext_buff = src.ext_buff;
-        this->sub_matrix = src.sub_matrix;
     }
 
-    // Print matrix header information
+    /* === Print & Debug === */
+    /**
+     * @brief print matrix header
+     *
+     * Print all information about matrix to the terminal
+     * @param[in] src: source matrix
+     */
     void Mat::PrintHead(void)
     {
         std::cout << "rows     " << this->rows << std::endl;
@@ -192,7 +386,13 @@ namespace tiny
                   << std::endl;
     }
 
-    // Print Matrix
+    /**
+     * @brief print matrix header and data
+     *
+     * Print all information about matrix to the terminal
+     * @param[in] show_padding: show padding information
+     * @param[in] label: label for the matrix
+     */
     void Mat::PrintMatrix(bool show_padding, const std::string &label)
     {
         std::cout << label << "\n";
@@ -214,35 +414,15 @@ namespace tiny
         }
         std::cout << std::endl;
     }
-
-    // Get a sub-matrix (ROI) from the original matrix
-    Mat Mat::Get(int row_start, int row_size, int col_start, int col_size)
-    {
-        Mat result(row_size, col_size);
-
-        if ((row_start + row_size) > this->rows)
-        {
-            return result;
-        }
-        if ((col_start + col_size) > this->cols)
-        {
-            return result;
-        }
-
-        for (size_t r = 0; r < result.rows; r++)
-        {
-            memcpy(&result.data[r * result.cols], &this->data[(r + row_start) * this->stride + col_start], result.cols * sizeof(float));
-        }
-        return result;
-    }
-
-    // Get a sub-matrix (ROI) from the original matrix using Rect structure
-    Mat Mat::Get(const Mat::Rect &rect)
-    {
-        return (Get(rect.y, rect.height, rect.x, rect.width));
-    }
-
-    // Copy operator
+    /* === Arithmetic Operators === */
+    /**
+     * Copy operator
+     *
+     * @param[in] src: source matrix
+     *
+     * @return
+     *      - matrix copy
+     */
     Mat &Mat::operator=(const Mat &m)
     {
         if (this == &m)
@@ -279,6 +459,15 @@ namespace tiny
         return *this;
     }
 
+    /**
+     * += operator
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: source matrix
+     *
+     * @return
+     *      - result matrix: result += A
+     */
     Mat &Mat::operator+=(const Mat &m)
     {
         if ((this->rows != m.rows) || (this->cols != m.cols))
@@ -287,8 +476,9 @@ namespace tiny
             return *this;
         }
 
-        if (this->sub_matrix || m.sub_matrix)
+        if (this->sub_matrix || m.sub_matrix) 
         {
+            // the reason why we need padding is that sub-matrix can be created from the original matrix, which typically has padding.
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
             dspm_add_f32(this->data, m.data, this->data, this->rows, this->cols, this->padding, m.padding, this->padding, 1, 1, 1);
 #else
@@ -306,6 +496,15 @@ namespace tiny
         return *this;
     }
 
+    /**
+     * += operator
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] C: constant
+     *
+     * @return
+     *      - result matrix: result += C
+     */
     Mat &Mat::operator+=(float C)
     {
         if (this->sub_matrix)
@@ -326,6 +525,16 @@ namespace tiny
         }
         return *this;
     }
+
+    /**
+     * -= operator
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: source matrix
+     *
+     * @return
+     *      - result matrix: result -= A
+     */
 
     Mat &Mat::operator-=(const Mat &m)
     {
@@ -354,6 +563,15 @@ namespace tiny
         return *this;
     }
 
+    /**
+     * -= operator
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] C: constant
+     *
+     * @return
+     *      - result matrix: result -= C
+     */
     Mat &Mat::operator-=(float C)
     {
         if (this->sub_matrix)
@@ -375,6 +593,15 @@ namespace tiny
         return *this;
     }
 
+    /**
+     * *= operator
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: source matrix
+     *
+     * @return
+     *      - result matrix: result -= A
+     */
     Mat &Mat::operator*=(const Mat &m)
     {
         if (this->cols != m.rows)
@@ -404,6 +631,15 @@ namespace tiny
         return (*this);
     }
 
+    /**
+     * += with constant operator
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] C: constant value
+     *
+     * @return
+     *      - result matrix: result *= C
+     */
     Mat &Mat::operator*=(float num)
     {
         if (this->sub_matrix)
@@ -425,6 +661,14 @@ namespace tiny
         return *this;
     }
 
+    /**
+     * /= operator
+     *
+     * @param[in] B: source matrix
+     *
+     * @return
+     *      - result matrix: result[i,j] = result[i,j]/B[i,j]
+     */
     Mat &Mat::operator/=(const Mat &B) // note this is element-wise division
     {
         // dimension check
@@ -457,6 +701,15 @@ namespace tiny
         return (*this);
     }
 
+    /**
+     * /= with constant operator
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] C: constant value
+     *
+     * @return
+     *      - result matrix: result /= C
+     */
     Mat &Mat::operator/=(float num)
     {
         if (num == 0)
@@ -484,122 +737,27 @@ namespace tiny
         return *this;
     }
 
-    Mat Mat::expHelper(const Mat &m, int num)
-    {
-        if (num == 0)
-        {
-            return Mat::eye(m.rows);
-        }
-        else if (num == 1)
-        {
-            return m;
-        }
-        else if (num % 2 == 0)
-        { // num is even
-            return expHelper(m * m, num / 2);
-        }
-        else
-        { // num is odd
-            return m * expHelper(m * m, (num - 1) / 2);
-        }
-    }
-
+    /**
+     * ^= exponentiation operator
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] num: exponent
+     *
+     * @return
+     *      - result matrix: result = result^num
+     */
     Mat Mat::operator^(int num)
     {
         Mat temp(*this);
         return expHelper(temp, num);
     }
 
-    void Mat::swapRows(int r1, int r2)
-    {
-        if ((this->rows <= r1) || (this->rows <= r2))
-        {
-            std::cerr << "swapRows Error: row " << r1 << " or " << r2 << " out of matrix row " << this->rows << " range" << std::endl;
-        }
-        else
-        {
-            for (int i = 0; i < this->cols; i++)
-            {
-                float temp = this->data[r1 * this->stride + i];
-                this->data[r1 * this->stride + i] = this->data[r2 * this->stride + i];
-                this->data[r2 * this->stride + i] = temp;
-            }
-        }
-    }
-
-    Mat Mat::t()
-    {
-        Mat ret(this->cols, this->rows);
-        for (int i = 0; i < this->rows; ++i)
-        {
-            for (int j = 0; j < this->cols; ++j)
-            {
-                ret(j, i) = this->data[i * this->stride + j];
-            }
-        }
-        return ret;
-    }
-
-    Mat Mat::eye(int size)
-    {
-        Mat temp(size, size);
-        for (int i = 0; i < temp.rows; ++i)
-        {
-            for (int j = 0; j < temp.cols; ++j)
-            {
-                if (i == j)
-                {
-                    temp(i, j) = 1;
-                }
-                else
-                {
-                    temp(i, j) = 0;
-                }
-            }
-        }
-        return temp;
-    }
-
-    Mat Mat::ones(int size)
-    {
-        return (ones(size, size));
-    }
-
-    Mat Mat::ones(int rows, int cols)
-    {
-        Mat temp(rows, cols);
-        for (int row = 0; row < temp.rows; ++row)
-        {
-            for (int col = 0; col < temp.cols; ++col)
-            {
-                temp(row, col) = 1;
-            }
-        }
-        return temp;
-    }
-
-    void Mat::clear()
-    {
-        for (int row = 0; row < this->rows; row++)
-        {
-            memset(this->data + (row * this->stride), 0, this->cols * sizeof(float));
-        }
-    }
-
-    // Duplicate to Get method
-    Mat Mat::block(int startRow, int startCol, int blockRows, int blockCols)
-    {
-        Mat result(blockRows, blockCols);
-        for (int i = 0; i < blockRows; ++i)
-        {
-            for (int j = 0; j < blockCols; ++j)
-            {
-                result(i, j) = (*this)(startRow + i, startCol + j);
-            }
-        }
-        return result;
-    }
-
+    /* === Linear Algebra === */
+    /**
+     * @brief Normalize the matrix
+     *
+     * The method normalize the matrix to unit length.
+     */
     void Mat::normalize(void) // normalize the matrix
     {
         float sqr_norm = 0;
@@ -614,6 +772,14 @@ namespace tiny
         *this *= sqr_norm;
     }
 
+    /**
+     * @brief Calculate the matrix norm
+     *
+     * The method calculate the matrix norm.
+     *
+     * @return
+     *      - result matrix norm
+     */
     float Mat::norm(void) // calculate matrix norm
     {
         float sqr_norm = 0;
@@ -628,165 +794,125 @@ namespace tiny
         return sqr_norm;
     }
 
-    Mat Mat::solve(Mat A, Mat b)
+    /**
+     * @brief Calculate the determinant of the matrix
+     *
+     * The method calculate the determinant of the matrix.
+     *
+     * @param n: size of the matrix
+     *
+     * @return
+     *      - result matrix determinant
+     */
+    float Mat::det(int n)
     {
-        // Gaussian elimination
-        for (int i = 0; i < A.rows; ++i)
+        float D = 0; // Initialize result
+
+        //  Base case : if matrix contains single element
+        if (n == 1)
         {
-            if (A(i, i) == 0)
-            {
-                // pivot 0 - error
-                std::cerr << "Error: the coefficient matrix has 0 as a pivot. Please fix the input and try again." << std::endl;
-                Mat err_result(0, 0);
-                return err_result;
-            }
-            float a_ii = 1 / A(i, i);
-            for (int j = i + 1; j < A.rows; ++j)
-            {
-                float a_ji = A(j, i) * a_ii;
-                for (int k = i + 1; k < A.cols; ++k)
-                {
-                    A(j, k) -= A(i, k) * a_ji;
-                    if ((A(j, k) < TINY_MATH_MIN_POSITIVE_INPUT_F32) && (A(j, k) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32))
-                    {
-                        A(j, k) = 0;
-                    }
-                }
-                b(j, 0) -= b(i, 0) * a_ji;
-                if (A(j, 0) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && A(j, 0) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
-                {
-                    A(j, 0) = 0;
-                }
-                A(j, i) = 0;
-            }
+            return (*this)(0, 0);
         }
 
-        // Back substitution
-        Mat x(b.rows, 1);
-        x((x.rows - 1), 0) = b((x.rows - 1), 0) / A((x.rows - 1), (x.rows - 1));
-        if (x((x.rows - 1), 0) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && x((x.rows - 1), 0) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
+        Mat temp(this->rows, this->rows); // To store cofactors
+
+        int sign = 1; // To store sign multiplier
+
+        // Iterate for each element of first row
+        for (int f = 0; f < n; f++)
         {
-            x((x.rows - 1), 0) = 0;
+            // Getting Cofactor of A[0][f]
+            Mat temp = this->cofactor(0, f, n);
+            D += (*this)(0, f) * temp.det(n - 1) * sign;
+
+            // terms are to be added with alternate sign
+            sign = -sign;
         }
-        for (int i = x.rows - 2; i >= 0; --i)
-        {
-            float sum = 0;
-            for (int j = i + 1; j < x.rows; ++j)
-            {
-                sum += A(i, j) * x(j, 0);
-            }
-            x(i, 0) = (b(i, 0) - sum) / A(i, i);
-            if (x(i, 0) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && x(i, 0) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
-            {
-                x(i, 0) = 0;
-            }
-        }
-        return x;
+
+        return D;
     }
 
-    Mat Mat::bandSolve(Mat A, Mat b, int k)
+    /**
+     * Matrix transpose.
+     * Change rows and columns between each other.
+     *
+     * @return
+     *      - transposed matrix
+     */
+    Mat Mat::t()
     {
-        // optimized Gaussian elimination
-        int bandsBelow = (k - 1) / 2;
-        for (int i = 0; i < A.rows; ++i)
+        Mat ret(this->cols, this->rows);
+        for (int i = 0; i < this->rows; ++i)
         {
-            if (A(i, i) == 0)
+            for (int j = 0; j < this->cols; ++j)
             {
-                // pivot 0 - error
-                std::cerr << "Error: the coefficient matrix has 0 as a pivot. Please fix the input and try again." << std::endl;
-                Mat err_result(b.rows, 1);
-                memset(err_result.data, 0, b.rows * sizeof(float));
-                return err_result;
-            }
-            float a_ii = 1 / A(i, i);
-            for (int j = i + 1; j < A.rows && j <= i + bandsBelow; ++j)
-            {
-                int k = i + 1;
-                while ((k < A.cols) && (fabs(A(j, k)) > TINY_MATH_MIN_POSITIVE_INPUT_F32))
-                {
-                    A(j, k) -= A(i, k) * (A(j, i) * a_ii);
-                    k++;
-                }
-                b(j, 0) -= b(i, 0) * (A(j, i) * a_ii);
-                A(j, i) = 0;
+                ret(j, i) = this->data[i * this->stride + j];
             }
         }
-
-        // Back substitution
-        Mat x(b.rows, 1);
-        x((x.rows - 1), 0) = b((x.rows - 1), 0) / A((x.rows - 1), (x.rows - 1));
-        for (int i = x.rows - 2; i >= 0; --i)
-        {
-            float sum = 0;
-            for (int j = i + 1; j < x.rows; ++j)
-            {
-                sum += A(i, j) * x(j, 0);
-            }
-            x(i, 0) = (b(i, 0) - sum) / A(i, i);
-        }
-
-        return x;
+        return ret;
     }
 
-    Mat Mat::roots(Mat A, Mat y)
+    /**
+     * Find the inverse matrix
+     *
+     * @return
+     *      - inverse matrix
+     */
+    Mat Mat::inverse()
     {
-        int n = A.cols + 1;
-
-        Mat result(y.rows, 1);
-
-        Mat g_m = Mat::augment(A, y);
-        for (int j = 0; j < A.cols; j++)
+        Mat result(this->rows, this->cols);
+        // Find determinant of matrix
+        float det = this->det(this->rows);
+        if (det == 0)
         {
-            float g_jj = 1 / g_m(j, j);
-            for (int i = 0; i < A.cols; i++)
+            // std::cout << "Singular matrix, can't find its inverse";
+            return result;
+        }
+
+        // Find adjoint
+        Mat adj = this->adjoint();
+
+        // Find Inverse using formula "inverse(A) = adj(A)/det(A)"
+        for (int i = 0; i < this->rows; i++)
+            for (int j = 0; j < this->cols; j++)
             {
-                if (i != j)
-                {
-                    float c = g_m(i, j) * g_jj;
-                    for (int k = 0; k < n; k++)
-                    {
-                        g_m(i, k) = g_m(i, k) - c * g_m(j, k);
-                    }
-                }
+                result(i, j) = adj(i, j) / float(det);
             }
-        }
-        for (int i = 0; i < A.rows; i++)
-        {
-            result(i, 0) = g_m(i, A.cols) / g_m(i, i);
-        }
+
         return result;
     }
 
-    float Mat::dotProduct(Mat a, Mat b)
+    /**
+     * Find pseudo inverse matrix
+     *
+     * @return
+     *      - inverse matrix
+     */
+    Mat Mat::pinv()
     {
-        float sum = 0;
-        for (int i = 0; i < a.rows; ++i)
+        Mat I = Mat::eye(this->rows);
+        Mat AI = Mat::augment(*this, I);
+        Mat U = AI.gaussianEliminate();
+        Mat IAInverse = U.rowReduceFromGaussian();
+        Mat AInverse(this->rows, this->cols);
+        for (int i = 0; i < this->rows; ++i)
         {
-            sum += (a(i, 0) * b(i, 0));
-        }
-        return sum;
-    }
-
-    Mat Mat::augment(Mat A, Mat B)
-    {
-        Mat AB(A.rows, A.cols + B.cols);
-        for (int i = 0; i < AB.rows; ++i)
-        {
-            for (int j = 0; j < AB.cols; ++j)
+            for (int j = 0; j < this->cols; ++j)
             {
-                if (j < A.cols)
-                {
-                    AB(i, j) = A(i, j);
-                }
-                else
-                {
-                    AB(i, j) = B(i, j - A.cols);
-                }
+                AInverse(i, j) = IAInverse(i, j + this->cols);
             }
         }
-        return AB;
+        return AInverse;
     }
 
+    /**
+     * @brief   Gaussian Elimination
+     *
+     * Gaussian Elimination of matrix
+     *
+     * @return
+     *      - result matrix
+     */
     Mat Mat::gaussianEliminate()
     {
         Mat Ab(*this);
@@ -857,6 +983,12 @@ namespace tiny
         return Ab;
     }
 
+    /**
+     * Row reduction for Gaussian elimination
+     *
+     * @return
+     *      - result matrix
+     */
     Mat Mat::rowReduceFromGaussian()
     {
         Mat R(*this);
@@ -918,75 +1050,338 @@ namespace tiny
         return R;
     }
 
-    Mat Mat::pinv()
+    /* === Static Utility Functions === */
+
+    /**
+     * Create identity matrix.
+     * Create a square matrix and fill diagonal with 1.
+     *
+     * @param[in] size: matrix size
+     *
+     * @return
+     *      - matrix [N]x[N] with 1 in diagonal
+     */
+    Mat Mat::eye(int size)
     {
-        Mat I = Mat::eye(this->rows);
-        Mat AI = Mat::augment(*this, I);
-        Mat U = AI.gaussianEliminate();
-        Mat IAInverse = U.rowReduceFromGaussian();
-        Mat AInverse(this->rows, this->cols);
-        for (int i = 0; i < this->rows; ++i)
+        Mat temp(size, size);
+        for (int i = 0; i < temp.rows; ++i)
         {
-            for (int j = 0; j < this->cols; ++j)
+            for (int j = 0; j < temp.cols; ++j)
             {
-                AInverse(i, j) = IAInverse(i, j + this->cols);
+                if (i == j)
+                {
+                    temp(i, j) = 1;
+                }
+                else
+                {
+                    temp(i, j) = 0;
+                }
             }
         }
-        return AInverse;
+        return temp;
+    }
+    
+    /**
+     * Create matrix with all elements 1.
+     * Create a square matrix and fill all elements with 1.
+     *
+     * @param[in] size: matrix size
+     *
+     * @return
+     *      - matrix [N]x[N] with 1 in all elements
+     */
+    Mat Mat::ones(int size)
+    {
+        return (ones(size, size));
     }
 
-    float Mat::det(int n)
+    /**
+     * Create matrix with all elements 1.
+     * Create a matrix and fill all elements with 1.
+     *
+     * @param[in] rows: matrix rows
+     * @param[in] cols: matrix cols
+     *
+     * @return
+     *      - matrix [N]x[N] with 1 in all elements
+     */
+    Mat Mat::ones(int rows, int cols)
     {
-        float D = 0; // Initialize result
-
-        //  Base case : if matrix contains single element
-        if (n == 1)
+        Mat temp(rows, cols);
+        for (int row = 0; row < temp.rows; ++row)
         {
-            return (*this)(0, 0);
-        }
-
-        Mat temp(this->rows, this->rows); // To store cofactors
-
-        int sign = 1; // To store sign multiplier
-
-        // Iterate for each element of first row
-        for (int f = 0; f < n; f++)
-        {
-            // Getting Cofactor of A[0][f]
-            Mat temp = this->cofactor(0, f, n);
-            D += (*this)(0, f) * temp.det(n - 1) * sign;
-
-            // terms are to be added with alternate sign
-            sign = -sign;
-        }
-
-        return D;
-    }
-
-    Mat Mat::inverse()
-    {
-        Mat result(this->rows, this->cols);
-        // Find determinant of matrix
-        float det = this->det(this->rows);
-        if (det == 0)
-        {
-            // std::cout << "Singular matrix, can't find its inverse";
-            return result;
-        }
-
-        // Find adjoint
-        Mat adj = this->adjoint();
-
-        // Find Inverse using formula "inverse(A) = adj(A)/det(A)"
-        for (int i = 0; i < this->rows; i++)
-            for (int j = 0; j < this->cols; j++)
+            for (int col = 0; col < temp.cols; ++col)
             {
-                result(i, j) = adj(i, j) / float(det);
+                temp(row, col) = 1;
             }
+        }
+        return temp;
+    }
 
+    /**
+     * @brief   Solve the matrix
+     *
+     * Solve matrix. Find roots for the matrix A*x = b
+     *
+     * @param[in] A: matrix [N]x[N] with input coefficients
+     * @param[in] b: vector [N]x[1] with result values
+     *
+     * @return
+     *      - matrix [N]x[1] with roots
+     */
+    Mat Mat::solve(Mat A, Mat b)
+    {
+        // Gaussian elimination
+        for (int i = 0; i < A.rows; ++i)
+        {
+            if (A(i, i) == 0)
+            {
+                // pivot 0 - error
+                std::cerr << "Error: the coefficient matrix has 0 as a pivot. Please fix the input and try again." << std::endl;
+                Mat err_result(0, 0);
+                return err_result;
+            }
+            float a_ii = 1 / A(i, i);
+            for (int j = i + 1; j < A.rows; ++j)
+            {
+                float a_ji = A(j, i) * a_ii;
+                for (int k = i + 1; k < A.cols; ++k)
+                {
+                    A(j, k) -= A(i, k) * a_ji;
+                    if ((A(j, k) < TINY_MATH_MIN_POSITIVE_INPUT_F32) && (A(j, k) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32))
+                    {
+                        A(j, k) = 0;
+                    }
+                }
+                b(j, 0) -= b(i, 0) * a_ji;
+                if (A(j, 0) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && A(j, 0) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
+                {
+                    A(j, 0) = 0;
+                }
+                A(j, i) = 0;
+            }
+        }
+
+        // Back substitution
+        Mat x(b.rows, 1);
+        x((x.rows - 1), 0) = b((x.rows - 1), 0) / A((x.rows - 1), (x.rows - 1));
+        if (x((x.rows - 1), 0) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && x((x.rows - 1), 0) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
+        {
+            x((x.rows - 1), 0) = 0;
+        }
+        for (int i = x.rows - 2; i >= 0; --i)
+        {
+            float sum = 0;
+            for (int j = i + 1; j < x.rows; ++j)
+            {
+                sum += A(i, j) * x(j, 0);
+            }
+            x(i, 0) = (b(i, 0) - sum) / A(i, i);
+            if (x(i, 0) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && x(i, 0) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
+            {
+                x(i, 0) = 0;
+            }
+        }
+        return x;
+    }
+
+    /**
+     * @brief   Band solve the matrix
+     *
+     * Solve band matrix. Find roots for the matrix A*x = b with bandwidth k.
+     *
+     * @param[in] A: matrix [N]x[N] with input coefficients
+     * @param[in] b: vector [N]x[1] with result values
+     * @param[in] k: upper bandwidth value
+     *
+     * @return
+     *      - matrix [N]x[1] with roots
+     */
+    Mat Mat::bandSolve(Mat A, Mat b, int k)
+    {
+        // optimized Gaussian elimination
+        int bandsBelow = (k - 1) / 2;
+        for (int i = 0; i < A.rows; ++i)
+        {
+            if (A(i, i) == 0)
+            {
+                // pivot 0 - error
+                std::cerr << "Error: the coefficient matrix has 0 as a pivot. Please fix the input and try again." << std::endl;
+                Mat err_result(b.rows, 1);
+                memset(err_result.data, 0, b.rows * sizeof(float));
+                return err_result;
+            }
+            float a_ii = 1 / A(i, i);
+            for (int j = i + 1; j < A.rows && j <= i + bandsBelow; ++j)
+            {
+                int k = i + 1;
+                while ((k < A.cols) && (fabs(A(j, k)) > TINY_MATH_MIN_POSITIVE_INPUT_F32))
+                {
+                    A(j, k) -= A(i, k) * (A(j, i) * a_ii);
+                    k++;
+                }
+                b(j, 0) -= b(i, 0) * (A(j, i) * a_ii);
+                A(j, i) = 0;
+            }
+        }
+
+        // Back substitution
+        Mat x(b.rows, 1);
+        x((x.rows - 1), 0) = b((x.rows - 1), 0) / A((x.rows - 1), (x.rows - 1));
+        for (int i = x.rows - 2; i >= 0; --i)
+        {
+            float sum = 0;
+            for (int j = i + 1; j < x.rows; ++j)
+            {
+                sum += A(i, j) * x(j, 0);
+            }
+            x(i, 0) = (b(i, 0) - sum) / A(i, i);
+        }
+
+        return x;
+    }
+
+    /**
+     * @brief   Solve the matrix
+     *
+     * Different way to solve the matrix. Find roots for the matrix A*x = y
+     *
+     * @param[in] A: matrix [N]x[N] with input coefficients
+     * @param[in] y: vector [N]x[1] with result values
+     *
+     * @return
+     *      - matrix [N]x[1] with roots
+     */
+    Mat Mat::roots(Mat A, Mat y)
+    {
+        int n = A.cols + 1;
+
+        Mat result(y.rows, 1);
+
+        Mat g_m = Mat::augment(A, y);
+        for (int j = 0; j < A.cols; j++)
+        {
+            float g_jj = 1 / g_m(j, j);
+            for (int i = 0; i < A.cols; i++)
+            {
+                if (i != j)
+                {
+                    float c = g_m(i, j) * g_jj;
+                    for (int k = 0; k < n; k++)
+                    {
+                        g_m(i, k) = g_m(i, k) - c * g_m(j, k);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < A.rows; i++)
+        {
+            result(i, 0) = g_m(i, A.cols) / g_m(i, i);
+        }
         return result;
     }
 
+    /**
+     * @brief   Dotproduct of two vectors
+     *
+     * The method returns dotproduct of two vectors
+     *
+     * @param[in] A: Input vector A Nx1
+     * @param[in] B: Input vector B Nx1
+     *
+     * @return
+     *      - dotproduct value
+     */
+    float Mat::dotProduct(Mat a, Mat b)
+    {
+        float sum = 0;
+        for (int i = 0; i < a.rows; ++i)
+        {
+            sum += (a(i, 0) * b(i, 0));
+        }
+        return sum;
+    }
+
+    /**
+     * @brief   Augmented matrices (concatenate two matrices horizontally)
+     *
+     * Augmented matrices
+     *
+     * @param[in] A: Input vector A MxN
+     * @param[in] B: Input vector B MxK
+     *
+     * @return
+     *      - Augmented matrix Mx(N+K)
+     */
+    Mat Mat::augment(Mat A, Mat B)
+    {
+        Mat AB(A.rows, A.cols + B.cols);
+        for (int i = 0; i < AB.rows; ++i)
+        {
+            for (int j = 0; j < AB.cols; ++j)
+            {
+                if (j < A.cols)
+                {
+                    AB(i, j) = A(i, j);
+                }
+                else
+                {
+                    AB(i, j) = B(i, j - A.cols);
+                }
+            }
+        }
+        return AB;
+    }
+
+    /* === Private Utility Functions === */
+    /**
+     * @brief   Calculate cofactor matrix
+     *
+     * Calculate cofactor matrix of the matrix
+     *
+     * @param[in] row: row position
+     * @param[in] col: column position
+     * @param[in] n: size of the matrix
+     *
+     * @return
+     *      - cofactor matrix
+     */
+    Mat Mat::cofactor(int row, int col, int n)
+    {
+        int i = 0, j = 0;
+        Mat result(n, n);
+        // Looping for each element of the matrix
+        for (int r = 0; r < n; r++)
+        {
+            for (int c = 0; c < n; c++)
+            {
+                //  Copying into temporary matrix only those element
+                //  which are not in given row and column
+                if (r != row && c != col)
+                {
+                    result(i, j++) = (*this)(r, c);
+
+                    // Row is filled, so increase row index and
+                    // reset col index
+                    if (j == this->rows - 1)
+                    {
+                        j = 0;
+                        i++;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @brief   Calculate adjoint matrix
+     *
+     * Calculate adjoint matrix of the matrix
+     *
+     * @return
+     *      - adjoint matrix
+     */
     Mat Mat::adjoint()
     {
         Mat adj(this->rows, this->cols);
@@ -1019,7 +1414,48 @@ namespace tiny
         return adj;
     }
 
-    ostream &operator<<(ostream &os, const Mat &m)
+    /**
+     * @brief   Calculate matrix exponential
+     *
+     * Calculate matrix exponential of the matrix
+     *
+     * @param[in] m: input matrix
+     * @param[in] num: number of iterations
+     *
+     * @return
+     *      - matrix exponential
+     */
+    Mat Mat::expHelper(const Mat &m, int num)
+    {
+        if (num == 0)
+        {
+            return Mat::eye(m.rows);
+        }
+        else if (num == 1)
+        {
+            return m;
+        }
+        else if (num % 2 == 0)
+        { // num is even
+            return expHelper(m * m, num / 2);
+        }
+        else
+        { // num is odd
+            return m * expHelper(m * m, (num - 1) / 2);
+        }
+    }
+    /* === Stream Operators === */
+
+    /* === Stream Operators === */
+    /**
+     * Print matrix to the standard iostream.
+     * @param[in] os: output stream
+     * @param[in] m: matrix to print
+     *
+     * @return
+     *      - output stream
+     */
+    std::ostream &operator<<(std::ostream &os, const Mat &m)
     {
         for (int i = 0; i < m.rows; ++i)
         {
@@ -1028,22 +1464,38 @@ namespace tiny
             {
                 os << " " << m(i, j);
             }
-            os << endl;
+            os << std::endl;
         }
         return os;
     }
 
-    ostream &operator<<(ostream &os, const Mat::Rect &rect)
+    /**
+     * Print rectangular ROI to the standard iostream.
+     * @param[in] os: output stream
+     * @param[in] rect: ROI
+     *
+     * @return
+     *      - output stream
+     */
+    std::ostream &operator<<(std::ostream &os, const Mat::Rect &rect)
     {
-        os << "row start " << rect.y << endl;
-        os << "col start " << rect.x << endl;
-        os << "row count " << rect.height << endl;
-        os << "col count " << rect.width << endl;
+        os << "row start " << rect.y << std::endl;
+        os << "col start " << rect.x << std::endl;
+        os << "row count " << rect.height << std::endl;
+        os << "col count " << rect.width << std::endl;
 
         return os;
     }
-
-    istream &operator>>(istream &is, Mat &m)
+    
+    /**
+     * Fill the matrix from iostream.
+     * @param[in] is: input stream
+     * @param[in] m: matrix to fill
+     *
+     * @return
+     *      - input stream
+     */
+    std::istream &operator>>(std::istream &is, Mat &m)
     {
         for (int i = 0; i < m.rows; ++i)
         {
@@ -1055,6 +1507,17 @@ namespace tiny
         return is;
     }
 
+    /* === Global Arithmetic Operators === */
+    /**
+     * + operator, sum of two matrices
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] B: Input matrix B
+     *
+     * @return
+     *     - result matrix A+B
+     */
     Mat operator+(const Mat &m1, const Mat &m2)
     {
         if ((m1.rows != m2.rows) || (m1.cols != m2.cols))
@@ -1081,6 +1544,16 @@ namespace tiny
         }
     }
 
+    /**
+     * + operator, sum of matrix with constant
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] C: Input constant
+     *
+     * @return
+     *     - result matrix A+C
+     */
     Mat operator+(const Mat &m, float C)
     {
         if (m.sub_matrix)
@@ -1100,28 +1573,16 @@ namespace tiny
         }
     }
 
-    bool operator==(const Mat &m1, const Mat &m2)
-    {
-        if ((m1.cols != m2.cols) || (m1.rows != m2.rows))
-        {
-            return false;
-        }
-
-        for (int row = 0; row < m1.rows; row++)
-        {
-            for (int col = 0; col < m1.cols; col++)
-            {
-                if (m1(row, col) != m2(row, col))
-                {
-                    std::cout << "operator == Error: " << row << " " << col << ", m1.data=" << m1(row, col) << ", m2.data=" << m2(row, col) << std::endl;
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
+    /**
+     * - operator, subtraction of two matrices
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] B: Input matrix B
+     *
+     * @return
+     *     - result matrix A-B
+     */
     Mat operator-(const Mat &m1, const Mat &m2)
     {
         if ((m1.rows != m2.rows) || (m1.cols != m2.cols))
@@ -1148,6 +1609,16 @@ namespace tiny
         }
     }
 
+    /**
+     * - operator, subtraction of matrix with constant
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] C: Input constant
+     *
+     * @return
+     *     - result matrix A-C
+     */
     Mat operator-(const Mat &m, float C)
     {
         if (m.sub_matrix)
@@ -1167,6 +1638,16 @@ namespace tiny
         }
     }
 
+    /**
+     * * operator, multiplication of two matrices.
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] B: Input matrix B
+     *
+     * @return
+     *     - result matrix A*B
+     */
     Mat operator*(const Mat &m1, const Mat &m2)
     {
         if (m1.cols != m2.rows)
@@ -1197,6 +1678,16 @@ namespace tiny
         return temp;
     }
 
+    /**
+     * * operator, multiplication of matrix with constant
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] C: floating point value
+     *
+     * @return
+     *     - result matrix A*B
+     */
     Mat operator*(const Mat &m, float num)
     {
         if (m.sub_matrix)
@@ -1215,12 +1706,32 @@ namespace tiny
             return (temp *= num);
         }
     }
-
+    
+    /**
+     * * operator, multiplication of matrix with constant
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] C: floating point value
+     * @param[in] A: Input matrix A
+     *
+     * @return
+     *     - result matrix C*A
+     */
     Mat operator*(float num, const Mat &m)
     {
         return (m * num);
     }
 
+    /**
+     * / operator, divide of matrix by constant
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] C: floating point value
+     *
+     * @return
+     *     - result matrix A/C
+     */
     Mat operator/(const Mat &m, float num)
     {
         if (m.sub_matrix)
@@ -1240,6 +1751,15 @@ namespace tiny
         }
     }
 
+    /**
+     * / operator, divide matrix A by matrix B (element-wise)
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] B: Input matrix B
+     *
+     * @return
+     *     - result matrix C, where C[i,j] = A[i,j]/B[i,j]
+     */
     Mat operator/(const Mat &A, const Mat &B)
     {
         if ((A.rows != B.rows) || (A.cols != B.cols))
@@ -1259,5 +1779,39 @@ namespace tiny
         }
         return temp;
     }
+
+    /**
+     * == operator, compare two matrices
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] B: Input matrix B
+     *
+     * @return
+     *      - true if matrices are the same
+     *      - false if matrices are different
+     */
+    bool operator==(const Mat &m1, const Mat &m2)
+    {
+        if ((m1.cols != m2.cols) || (m1.rows != m2.rows))
+        {
+            return false;
+        }
+
+        for (int row = 0; row < m1.rows; row++)
+        {
+            for (int col = 0; col < m1.cols; col++)
+            {
+                if (m1(row, col) != m2(row, col))
+                {
+                    std::cout << "operator == Error: " << row << " " << col << ", m1.data=" << m1(row, col) << ", m2.data=" << m2(row, col) << std::endl;
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
 
 }
