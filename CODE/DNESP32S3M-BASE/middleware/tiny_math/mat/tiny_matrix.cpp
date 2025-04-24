@@ -162,7 +162,7 @@ namespace tiny
         alloc_mem();
         if (this->data == nullptr)
         {
-            std::cerr << "[Error] Memory allocation failed in alloc_mem()\n";
+            std::cerr << "[>>> Error ! <<<] Memory allocation failed in alloc_mem()\n";
         }
         std::memset(this->data, 0, this->memory * sizeof(float));
     }
@@ -175,7 +175,7 @@ namespace tiny
      * @param cols Number of columns
      */
     Mat::Mat(int rows, int cols)
-    {
+    {   
         this->row = rows;
         this->col = cols;
         this->pad = 0;
@@ -189,7 +189,7 @@ namespace tiny
         alloc_mem();
         if (this->data == nullptr)
         {
-            std::cerr << "[Error] Memory allocation failed in alloc_mem()\n";
+            std::cerr << "[>>> Error ! <<<] Memory allocation failed in alloc_mem()\n";
         }
         std::memset(this->data, 0, this->memory * sizeof(float));
     }
@@ -216,7 +216,7 @@ namespace tiny
         alloc_mem();
         if (this->data == nullptr)
         {
-            std::cerr << "[Error] Memory allocation failed in alloc_mem()\n";
+            std::cerr << "[>>> Error ! <<<] Memory allocation failed in alloc_mem()\n";
         }
         std::memset(this->data, 0, this->memory * sizeof(float));
     }
@@ -290,7 +290,7 @@ namespace tiny
             alloc_mem();
             if (this->data == nullptr)
             {
-                std::cerr << "[Error] Memory allocation failed in alloc_mem()\n";
+                std::cerr << "[>>> Error ! <<<] Memory allocation failed in alloc_mem()\n";
             }
             std::memcpy(this->data, src.data, this->memory * sizeof(float));
         }
@@ -330,12 +330,12 @@ namespace tiny
     {
         if ((row_pos + src.row) > this->row)
         {
-            std::cerr << "[Error] Invalid row position " << std::endl;
+            std::cerr << "[>>> Error ! <<<] Invalid row position " << std::endl;
             return TINY_ERR_INVALID_ARG;
         }
         if ((col_pos + src.col) > this->col)
         {
-            std::cerr << "[Error] Invalid column position " << std::endl;
+            std::cerr << "[>>> Error ! <<<] Invalid column position " << std::endl;
             return TINY_ERR_INVALID_ARG;
         }
         for (size_t r = 0; r < src.row; r++)
@@ -386,19 +386,27 @@ namespace tiny
      */
     Mat Mat::get_roi(int start_row, int start_col, int roi_rows, int roi_cols, int stride)
     {
-        Mat result(this->data, roi_rows, roi_cols, 0);
-
         if ((start_row + roi_rows) > this->row)
         {
-            return result;
+            std::cerr << "[>>> Error ! <<<] Invalid row position " << std::endl;
+            return Mat();
         }
 
         if ((start_col + roi_cols) > this->col)
-        {
-            return result;
+        {   
+            std::cerr << "[>>> Error ! <<<] Invalid column position " << std::endl;
+            return Mat();
         }
 
-        const int ptr_move = start_row * this->col + start_col;
+        if ( (start_col + stride) > this->stride )
+        {
+            std::cerr << "[>>> Error ! <<<] Invalid stride " << std::endl;
+            return Mat();
+        }
+
+        Mat result(this->data, roi_rows, roi_cols, 0); // data_buffer, rows, cols, stride
+
+        const int ptr_move = start_row * this->stride + start_col;
         float *new_data_ptr = this->data + ptr_move;
 
         result.data = new_data_ptr;
@@ -421,7 +429,7 @@ namespace tiny
      */
     Mat Mat::get_roi(int start_row, int start_col, int roi_rows, int roi_cols)
     {
-        return (get_roi(start_row, start_col, roi_rows, roi_cols, this->col));
+        return (get_roi(start_row, start_col, roi_rows, roi_cols, this->stride));
     }
 
     /**

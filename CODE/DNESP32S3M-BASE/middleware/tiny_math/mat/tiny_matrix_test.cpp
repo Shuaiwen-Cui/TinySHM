@@ -139,7 +139,33 @@ void test_roi_operations()
     matC.print_info();
     matC.print_matrix(true);
 
-    // Test 3: Get ROI
+    // Test 3: Get ROI - low level function
+    std::cout << "[Test3: Get ROI - low level function]\n";
+    std::cout << "get ROI with overrange dimensions - rows:\n";
+    tiny::Mat roi1 = matB.get_roi(1, 1, 3, 2, 5);
+    roi1.print_info();
+    roi1.print_matrix(true);
+    std::cout << "get ROI with overrange dimensions - cols:\n";
+    tiny::Mat roi2 = matB.get_roi(1, 1, 2, 4, 5);
+    roi2.print_info();
+    roi2.print_matrix(true);
+    std::cout << "get ROI with suitable dimensions:\n";
+    tiny::Mat roi3 = matB.get_roi(1, 1, 2, 2, 3);
+    roi3.print_info();
+    roi3.print_matrix(true);
+
+    // Test 4: Get ROI - without stride
+    std::cout << "[Test4: Get ROI - without stride]\n";
+    tiny::Mat roi4 = matB.get_roi(1, 1, 2, 2);
+    roi4.print_info();
+    roi4.print_matrix(true);
+
+    // Test 5: Get ROI - using ROI structure
+    std::cout << "[Test5: Get ROI - using ROI structure]\n";
+    tiny::Mat::ROI roi_struct(1, 1, 2, 2);
+    tiny::Mat roi5 = matB.get_roi(roi_struct);
+    roi5.print_info();
+    roi5.print_matrix(true);
 
 }
 
