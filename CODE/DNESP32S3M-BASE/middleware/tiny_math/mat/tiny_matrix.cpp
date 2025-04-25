@@ -625,6 +625,13 @@ namespace tiny
      * @param A The matrix to add
      * @return Mat& Reference to the current matrix
      */
+    /**
+     * @name Mat::operator+=(const Mat &A)
+     * @brief Element-wise addition of another matrix to this matrix.
+     *
+     * @param A The matrix to add
+     * @return Mat& Reference to the current matrix
+     */
     Mat &Mat::operator+=(const Mat &A)
     {
         // 1. Dimension check
@@ -636,19 +643,27 @@ namespace tiny
             return *this;
         }
 
-        // 2. Select addition method based on matrix type
-        if (this->sub_matrix || A.sub_matrix)
+        // 2. Determine if padding handling is needed
+        bool need_padding_handling = (this->pad > 0) || (A.pad > 0);
+
+        if (need_padding_handling)
         {
-            // Row-wise addition for sub-matrix or mixed cases
+            // Padding-aware addition
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_add_f32(this->data, A.data, this->data, this->row, this->col, this->pad, A.pad, this->pad, 1, 1, 1);
+            dspm_add_f32(this->data, A.data, this->data,
+                         this->row, this->col,
+                         this->pad, A.pad, this->pad,
+                         1, 1, 1);
 #else
-            tiny_mat_add_f32(this->data, A.data, this->data, this->row, this->col, this->pad, A.pad, this->pad, 1, 1, 1);
+            tiny_mat_add_f32(this->data, A.data, this->data,
+                             this->row, this->col,
+                             this->pad, A.pad, this->pad,
+                             1, 1, 1);
 #endif
         }
         else
         {
-            // Vectorized addition for full matrix
+            // Vectorized addition for contiguous memory
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
             dsps_add_f32(this->data, A.data, this->data, this->memory, 1, 1, 1);
 #else
@@ -665,27 +680,53 @@ namespace tiny
      *
      * @param C The constant to add
      */
+    /**
+     * @name Mat::operator+=(float C)
+     * @brief Element-wise addition of a constant to this matrix.
+     *
+     * @param C The constant to add
+     * @return Mat& Reference to the current matrix
+     */
     Mat &Mat::operator+=(float C)
     {
-        if (this->sub_matrix)
+        // check whether padding is presented
+        bool need_padding_handling = (this->pad > 0);
+
+        if (need_padding_handling)
         {
+            // Padding-aware constant addition
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_addc_f32(this->data, this->data, C, this->row, this->col, this->pad, this->pad, 1, 1);
+            dspm_addc_f32(this->data, this->data, C,
+                          this->row, this->col,
+                          this->pad, this->pad,
+                          1, 1);
 #else
-            tiny_mat_addc_f32(this->data, this->data, C, this->row, this->col, this->pad, this->pad, 1, 1);
+            tiny_mat_addc_f32(this->data, this->data, C,
+                              this->row, this->col,
+                              this->pad, this->pad,
+                              1, 1);
 #endif
         }
         else
         {
+            // Vectorized constant addition
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
             dsps_addc_f32(this->data, this->data, this->memory, C, 1, 1);
 #else
             tiny_vec_addc_f32(this->data, this->data, this->memory, C, 1, 1);
 #endif
         }
+
         return *this;
     }
 
+    /**
+     * @name Mat::operator-=(const Mat &A)
+     * @brief Element-wise subtraction of another matrix from this matrix.
+     *
+     * @param A The matrix to subtract
+     * @return Mat& Reference to the current matrix
+     */
     /**
      * @name Mat::operator-=(const Mat &A)
      * @brief Element-wise subtraction of another matrix from this matrix.
@@ -704,19 +745,27 @@ namespace tiny
             return *this;
         }
 
-        // 2. Select subtraction method based on matrix type
-        if (this->sub_matrix || A.sub_matrix)
+        // 2. Determine if padding handling is needed
+        bool need_padding_handling = (this->pad > 0) || (A.pad > 0);
+
+        if (need_padding_handling)
         {
-            // Row-wise subtraction for sub-matrix or mixed cases
+            // Padding-aware subtraction
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_sub_f32(this->data, A.data, this->data, this->row, this->col, this->pad, A.pad, this->pad, 1, 1, 1);
+            dspm_sub_f32(this->data, A.data, this->data,
+                         this->row, this->col,
+                         this->pad, A.pad, this->pad,
+                         1, 1, 1);
 #else
-            tiny_mat_sub_f32(this->data, A.data, this->data, this->row, this->col, this->pad, A.pad, this->pad, 1, 1, 1);
+            tiny_mat_sub_f32(this->data, A.data, this->data,
+                             this->row, this->col,
+                             this->pad, A.pad, this->pad,
+                             1, 1, 1);
 #endif
         }
         else
         {
-            // Vectorized subtraction for full matrix
+            // Vectorized subtraction for contiguous memory
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
             dsps_sub_f32(this->data, A.data, this->data, this->memory, 1, 1, 1);
 #else
@@ -733,43 +782,282 @@ namespace tiny
      *
      * @param C The constant to subtract
      */
+    /**
+     * @name Mat::operator-=(float C)
+     * @brief Element-wise subtraction of a constant from this matrix.
+     *
+     * @param C The constant to subtract
+     * @return Mat& Reference to the current matrix
+     */
     Mat &Mat::operator-=(float C)
     {
-        if (this->sub_matrix)
+        bool need_padding_handling = (this->pad > 0);
+
+        if (need_padding_handling)
         {
+            // Padding-aware constant subtraction
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_addc_f32(this->data, this->data, -C, this->row, this->col, this->pad, this->pad, 1, 1);
+            // Note: ESP32 DSP does not provide dspm_subc_f32, using dspm_addc_f32 with -C
+            dspm_addc_f32(this->data, this->data, -C,
+                          this->row, this->col,
+                          this->pad, this->pad,
+                          1, 1);
 #else
-            tiny_mat_addc_f32(this->data, this->data, -C, this->row, this->col, this->pad, this->pad, 1, 1);
+            tiny_mat_subc_f32(this->data, this->data, C,
+                              this->row, this->col,
+                              this->pad, this->pad,
+                              1, 1);
 #endif
         }
         else
         {
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            // Note: ESP32 DSP does not provide dsps_subc_f32, using dsps_addc_f32 with -C
             dsps_addc_f32(this->data, this->data, this->memory, -C, 1, 1);
 #else
-            tiny_vec_addc_f32(this->data, this->data, this->memory, -C, 1, 1);
+            tiny_vec_subc_f32(this->data, this->data, this->memory, C, 1, 1);
 #endif
         }
+
         return *this;
     }
 
+    /**
+     * @name Mat::operator*=(const Mat &m)
+     * @brief Matrix multiplication: this = this * m
+     *
+     * @param m The matrix to multiply with
+     * @return Mat& Reference to the current matrix
+     */
+    Mat &Mat::operator*=(const Mat &m)
+    {
+        // 1. Dimension check
+        if (this->col != m.row)
+        {
+            std::cerr << "[Error] Matrix multiplication failed: incompatible dimensions ("
+                      << this->row << "x" << this->col << " * "
+                      << m.row << "x" << m.col << ")\n";
+            return *this;
+        }
 
+        // 2. Prepare temp matrix (incase overwriting the original data)
+        Mat temp = this->copy_roi(0, 0, this->row, this->col);
 
+        // 3. check whether padding is present in either matrix
+        bool need_padding_handling = (this->pad > 0) || (m.pad > 0);
 
+        if (need_padding_handling)
+        {
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_mult_ex_f32(temp.data, m.data, this->data, temp.row, temp.col, m.col, temp.pad, m.pad, this->pad);
+#else
+            tiny_mat_mult_ex_f32(temp.data, m.data, this->data, temp.row, temp.col, m.col, temp.pad, m.pad, this->pad);
+#endif
+        }
+        else
+        {
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_mult_f32(temp.data, m.data, this->data, temp.row, temp.col, m.col);
+#else
+            tiny_mat_mult_f32(temp.data, m.data, this->data, temp.row, temp.col, m.col);
+#endif
+        }
 
+        return *this;
+    }
 
+    /**
+     * @name Mat::operator*=(float num)
+     * @brief Element-wise multiplication by a constant
+     *
+     * @param num The constant multiplier
+     * @return Mat& Reference to the current matrix
+     */
+    Mat &Mat::operator*=(float num)
+    {
+        // check whether padding is present
+        bool need_padding_handling = (this->pad > 0);
 
+        if (need_padding_handling)
+        {
+            // Padding-aware multiplication
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_mulc_f32(this->data, this->data, num,
+                          this->row, this->col,
+                          this->pad, this->pad,
+                          1, 1);
+#else
+            tiny_mat_mulc_f32(this->data, this->data, num,
+                              this->row, this->col,
+                              this->pad, this->pad,
+                              1, 1);
+#endif
+        }
+        else
+        {
+            // No padding, use vectorized multiplication
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dsps_mulc_f32(this->data, this->data, this->memory, num, 1, 1);
+#else
+            tiny_vec_mulc_f32(this->data, this->data, this->memory, num, 1, 1);
+#endif
+        }
 
+        return *this;
+    }
 
+    /**
+     * @name Mat::operator/=(const Mat &B)
+     * @brief Element-wise division: this = this / B
+     *
+     * @param B The matrix divisor
+     * @return Mat& Reference to the current matrix
+     */
+    Mat &Mat::operator/=(const Mat &B)
+    {
+        // 1. Dimension check
+        if ((this->row != B.row) || (this->col != B.col))
+        {
+            std::cerr << "[Error] Matrix division failed: Dimension mismatch ("
+                      << this->row << "x" << this->col << " vs "
+                      << B.row << "x" << B.col << ")\n";
+            return *this;
+        }
 
+        // 2. Zero division check
+        bool zero_found = false;
+        for (int i = 0; i < B.row; ++i)
+        {
+            for (int j = 0; j < B.col; ++j)
+            {
+                if (B(i, j) == 0.0f)
+                {
+                    zero_found = true;
+                    break;
+                }
+            }
+            if (zero_found)
+                break;
+        }
 
+        if (zero_found)
+        {
+            std::cerr << "[Error] Matrix division failed: Division by zero detected.\n";
+            return *this;
+        }
 
+        // 3. Element-wise division
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
+            {
+                (*this)(i, j) /= B(i, j);
+            }
+        }
 
+        return *this;
+    }
 
+    /**
+     * @name Mat::operator/=(float num)
+     * @brief Element-wise division of this matrix by a constant.
+     *
+     * @param num The constant divisor
+     * @return Mat& Reference to the current matrix
+     */
+    Mat &Mat::operator/=(float num)
+    {
+        // 1. Check division by zero
+        if (num == 0.0f)
+        {
+            std::cerr << "[Error] Matrix division by zero is undefined.\n";
+            return *this;
+        }
 
+        // 2. Determine if padding handling is needed
+        bool need_padding_handling = (this->pad > 0);
 
+        float inv_num = 1.0f / num;
 
+        if (need_padding_handling)
+        {
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_mulc_f32(this->data, this->data, inv_num,
+                          this->row, this->col,
+                          this->pad, this->pad,
+                          1, 1);
+#else
+            tiny_mat_mulc_f32(this->data, this->data, inv_num,
+                              this->row, this->col,
+                              this->pad, this->pad,
+                              1, 1);
+#endif
+        }
+        else
+        {
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dsps_mulc_f32(this->data, this->data, this->memory, inv_num, 1, 1);
+#else
+            tiny_vec_mulc_f32(this->data, this->data, this->memory, inv_num, 1, 1);
+#endif
+        }
 
+        return *this;
+    }
+
+    /**
+     * @name Mat::operator^(int num)
+     * @brief Element-wise integer exponentiation. Returns a new matrix where each element is raised to the given power.
+     *
+     * @param num The exponent (integer)
+     * @return Mat New matrix after exponentiation
+     */
+    Mat Mat::operator^(int num)
+    {
+        // Handle special cases
+        if (num == 0)
+        {
+            // Any number to the power of 0 is 1
+            Mat result(this->row, this->col, this->stride);
+            for (int i = 0; i < this->row; ++i)
+            {
+                for (int j = 0; j < this->col; ++j)
+                {
+                    result(i, j) = 1.0f;
+                }
+            }
+            return result;
+        }
+
+        if (num == 1)
+        {
+            // Return a copy of current matrix
+            return Mat(*this);
+        }
+
+        if (num < 0)
+        {
+            std::cerr << "[Error] Negative exponent not supported in operator^.\n";
+            return Mat(*this); // Return a copy without modification
+        }
+
+        // General case: positive exponent > 1
+        Mat result(this->row, this->col, this->stride);
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
+            {
+                float base = (*this)(i, j);
+                float value = 1.0f;
+                for (int k = 0; k < num; ++k)
+                {
+                    value *= base;
+                }
+                result(i, j) = value;
+            }
+        }
+
+        return result;
+    }
 
 }

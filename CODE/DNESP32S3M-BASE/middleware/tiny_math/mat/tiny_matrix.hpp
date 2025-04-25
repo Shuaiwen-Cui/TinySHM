@@ -124,19 +124,39 @@ namespace tiny
         Mat &operator+=(float C);
         Mat &operator-=(const Mat &A);
         Mat &operator-=(float C);
-        // Mat &operator*=(const Mat &A);
-        // Mat &operator*=(float C);
-        // Mat &operator/=(const Mat &B);
-        // Mat &operator/=(float C);
-        // Mat operator^(int C);
+        Mat &operator*=(const Mat &A);
+        Mat &operator*=(float C);
+        Mat &operator/=(const Mat &B);
+        Mat &operator/=(float C);
+        Mat operator^(int C);
 
         /* === Linear Algebra === */
+        // Mat t();
+        // void normalize();
+        // float norm();
+        // float det(int n);
+        // Mat inverse();
+        // Mat pinv();
+        // Mat gaussianEliminate();
+        // Mat rowReduceFromGaussian();
+
+        /* === Static Utility Functions === */
+        // static Mat eye(int size);
+        // static Mat ones(int size);
+        // static Mat ones(int rows, int cols);
+        // static Mat solve(Mat A, Mat b);
+        // static Mat bandSolve(Mat A, Mat b, int k);
+        // static Mat roots(Mat A, Mat y);
+        // static float dotProduct(Mat A, Mat B);
+        // static Mat augment(Mat A, Mat B);
 
 
 
     protected:
 
     private:
-
+    // Mat cofactor(int row, int col, int n);
+    // Mat adjoint();
+    // Mat expHelper(const Mat &m, int num);
     };
 }
