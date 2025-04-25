@@ -889,7 +889,7 @@ namespace dspm
 
         return D;
     }
-
+    
     Mat Mat::adjoint()
     {
         Mat adj(this->rows, this->cols);

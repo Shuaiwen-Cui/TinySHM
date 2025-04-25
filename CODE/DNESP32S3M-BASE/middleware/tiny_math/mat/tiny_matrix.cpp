@@ -1060,4 +1060,492 @@ namespace tiny
         return result;
     }
 
+    /* === Linear Algebra === */
+    /**
+     * @name Mat::transpose
+     * @brief Transpose the matrix.
+     *
+     * @return Transposed matrix
+     */
+    Mat Mat::transpose()
+    {
+        Mat result(this->col, this->row);
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
+            {
+                result(j, i) = this->data[i * this->stride + j];
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @brief Calculate the cofactor matrix by removing specified row and column.
+     *
+     * @param target_row Row index to remove
+     * @param target_col Column index to remove
+     * @return Mat The (n-1)x(n-1) cofactor matrix
+     */
+    Mat Mat::cofactor(int target_row, int target_col)
+    {
+        if (this->row != this->col)
+        {
+            std::cerr << "[Error] Cofactor requires square matrix.\n";
+            return Mat();
+        }
+
+        int n = this->row;
+        Mat result(n - 1, n - 1);
+
+        for (int i = 0, res_i = 0; i < n; ++i)
+        {
+            if (i == target_row)
+                continue;
+
+            for (int j = 0, res_j = 0; j < n; ++j)
+            {
+                if (j == target_col)
+                    continue;
+
+                result.data[res_i * result.stride + res_j] = this->data[i * this->stride + j];
+                res_j++;
+            }
+            res_i++;
+        }
+
+        return result;
+    }
+
+    /**
+     * @name Mat::determinant()
+     * @brief Calculate the determinant of a square matrix using Laplace Expansion.
+     * @brief Low efficiency, only suitable for small matrices!!!
+     *
+     * @return Determinant value (float)
+     */
+    float Mat::determinant()
+    {
+        if (this->row != this->col)
+        {
+            std::cerr << "[Error] Determinant can only be calculated for square matrices.\n";
+            return 0.0f;
+        }
+
+        int n = this->row;
+
+        // Base case: 1x1 matrix
+        if (n == 1)
+            return this->data[0];
+
+        // Base case: 2x2 matrix (optimized)
+        if (n == 2)
+            return this->data[0] * this->data[3] - this->data[1] * this->data[2];
+
+        float D = 0.0f;
+        int sign = 1;
+
+        for (int f = 0; f < n; ++f)
+        {
+            Mat minor = this->cofactor(0, f);                // Get cofactor matrix
+            D += sign * (*this)(0, f) * minor.determinant(); // Recursive call to calculate determinant of the cofactor matrix
+            sign = -sign;                                    // Alternate sign
+        }
+
+        return D;
+    }
+
+    /**
+     * @name Mat::adjoint()
+     * @brief Calculate the adjoint (adjugate) matrix of a square matrix.
+     *
+     * @return Mat The adjoint matrix
+     */
+    Mat Mat::adjoint()
+    {
+        if (this->row != this->col)
+        {
+            std::cerr << "[Error] Adjoint can only be computed for square matrices.\n";
+            return Mat();
+        }
+
+        int n = this->row;
+        Mat adj(n, n);
+
+        // Special case for 1x1 matrix
+        if (n == 1)
+        {
+            adj(0, 0) = 1.0f;
+            return adj;
+        }
+
+        for (int i = 0; i < n; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                // Calculate cofactor matrix of element (i, j)
+                Mat cof = this->cofactor(i, j);
+
+                int sign = ((i + j) % 2 == 0) ? 1 : -1;
+
+                // Adjoint is transpose of cofactor matrix
+                adj(j, i) = sign * cof.determinant();
+            }
+        }
+
+        return adj;
+    }
+
+    /**
+     * @brief Normalize the matrix using L2 norm (Frobenius norm).
+     *        After normalization, ||Matrix|| = 1
+     */
+    void Mat::normalize()
+    {
+        float norm_sq = 0.0f;
+
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
+            {
+                float val = (*this)(i, j);
+                norm_sq += val * val;
+            }
+        }
+
+        if (norm_sq == 0.0f)
+        {
+            std::cerr << "[Warning] Cannot normalize a zero matrix.\n";
+            return;
+        }
+
+        float inv_norm = 1.0f / sqrtf(norm_sq);
+        *this *= inv_norm;
+    }
+
+    /**
+     * @name Mat::norm() const
+     * @brief Calculate the Frobenius norm (L2 norm) of the matrix.
+     *
+     * @return float The computed matrix norm
+     */
+    float Mat::norm() const
+    {
+        float sum_sq = 0.0f;
+
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
+            {
+                float val = (*this)(i, j); // Access valid matrix element
+                sum_sq += val * val;
+            }
+        }
+
+        return sqrtf(sum_sq);
+    }
+
+    /**
+     * @name Mat::inverse()
+     * @brief Compute the inverse of a square matrix using adjoint method.
+     *
+     * @return Mat The inverse matrix. If singular, returns a zero matrix.
+     */
+    Mat Mat::inverse()
+    {
+        if (this->row != this->col)
+        {
+            std::cerr << "[Error] Inverse can only be computed for square matrices.\n";
+            return Mat();
+        }
+
+        int n = this->row;
+
+        float det_val = this->determinant();
+        if (det_val == 0.0f)
+        {
+            std::cerr << "[Error] Singular matrix, inverse does not exist.\n";
+            return Mat(n, n); // Return zero matrix
+        }
+
+        Mat adj = this->adjoint();
+
+        // Inverse = adjoint / determinant
+        Mat inv(n, n);
+        float inv_det = 1.0f / det_val;
+
+        for (int i = 0; i < n; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                inv(i, j) = adj(i, j) * inv_det;
+            }
+        }
+
+        return inv;
+    }
+
+    /**
+     * @name Mat::eye(int size)
+     * @brief Generate an identity matrix of given size.
+     *
+     * @param size Dimension of the square identity matrix
+     * @return Mat Identity matrix (size x size)
+     */
+    Mat Mat::eye(int size)
+    {
+        Mat identity(size, size);
+
+        // Set diagonal elements to 1, rest are initialized as 0
+        for (int i = 0; i < size; ++i)
+        {
+            identity(i, i) = 1.0f;
+        }
+
+        return identity;
+    }
+
+    /**
+     * @name Mat::augment(const Mat &A, const Mat &B)
+     * @brief Augment two matrices horizontally [A | B].
+     *
+     * @param A Left matrix
+     * @param B Right matrix
+     * @return Mat Augmented matrix [A B]
+     */
+    Mat Mat::augment(const Mat &A, const Mat &B)
+    {
+        // 1. Check if row counts match
+        if (A.row != B.row)
+        {
+            std::cerr << "[Error] Cannot augment matrices: Row counts do not match ("
+                      << A.row << " vs " << B.row << ")\n";
+            return Mat();
+        }
+
+        // 2. Create new matrix with combined columns
+        Mat AB(A.row, A.col + B.col);
+
+        // 3. Copy data from A and B
+        for (int i = 0; i < A.row; ++i)
+        {
+            // Copy A
+            for (int j = 0; j < A.col; ++j)
+            {
+                AB(i, j) = A(i, j);
+            }
+            // Copy B
+            for (int j = 0; j < B.col; ++j)
+            {
+                AB(i, A.col + j) = B(i, j);
+            }
+        }
+
+        return AB;
+    }
+
+    /**
+     * @name Mat::ones(int size)
+     * @brief Create a square matrix filled with ones.
+     *
+     * @param size Size of the square matrix (rows = cols)
+     * @return Mat Square matrix [size x size] with all elements = 1
+     */
+    Mat Mat::ones(int size)
+    {
+        return Mat::ones(size, size);
+    }
+
+    /**
+     * @name Mat::ones(int rows, int cols)
+     * @brief Create a matrix of specified size filled with ones.
+     *
+     * @param rows Number of rows
+     * @param cols Number of columns
+     * @return Mat Matrix [rows x cols] with all elements = 1
+     */
+    Mat Mat::ones(int rows, int cols)
+    {
+        Mat result(rows, cols);
+
+        for (int i = 0; i < rows; ++i)
+        {
+            for (int j = 0; j < cols; ++j)
+            {
+                result(i, j) = 1.0f;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * @name Mat::gaussian_eliminate
+     * @brief Perform Gaussian Elimination to convert matrix to Row Echelon Form (REF).
+     *
+     * @return Mat The upper triangular matrix (REF form)
+     */
+    Mat Mat::gaussian_eliminate() const
+    {
+        Mat result(*this); // Copy of the original matrix
+        int rows = result.row;
+        int cols = result.col;
+
+        int lead = 0; // Leading column tracker
+
+        for (int r = 0; r < rows; ++r)
+        {
+            if (lead >= cols)
+                break;
+
+            int i = r;
+
+            // Find pivot row
+            while (result(i, lead) == 0)
+            {
+                i++;
+                if (i == rows)
+                {
+                    i = r;
+                    lead++;
+                    if (lead == cols)
+                        return result;
+                }
+            }
+
+            // Swap if pivot is not in current row
+            if (i != r)
+                result.swap_rows(i, r);
+
+            // Eliminate rows below
+            for (int j = r + 1; j < rows; ++j)
+            {
+                if (result(j, lead) == 0)
+                    continue;
+
+                float factor = result(j, lead) / result(r, lead);
+                for (int k = lead; k < cols; ++k)
+                {
+                    result(j, k) -= factor * result(r, k);
+
+                    if (fabs(result(j, k)) < TINY_MATH_MIN_POSITIVE_INPUT_F32)
+                        result(j, k) = 0.0f;
+                }
+            }
+
+            lead++;
+        }
+
+        return result;
+    }
+
+    /**
+     * @name Mat::row_reduce_from_gaussian()
+     * @brief Convert a matrix (assumed in row echelon form) to Reduced Row Echelon Form (RREF).
+     *
+     * @return Mat The matrix in RREF form
+     */
+    Mat Mat::row_reduce_from_gaussian()
+    {
+        Mat R(*this); // Make a copy to preserve original matrix
+        int rows = R.row;
+        int cols = R.col;
+
+        int pivot_row = rows - 1;
+        int pivot_col = cols - 2;
+
+        while (pivot_row >= 0)
+        {
+            // Locate pivot in current row
+            int current_pivot_col = -1;
+            for (int k = 0; k < cols; ++k)
+            {
+                if (R(pivot_row, k) != 0)
+                {
+                    current_pivot_col = k;
+                    break;
+                }
+            }
+
+            if (current_pivot_col != -1)
+            {
+                // Normalize pivot row
+                float pivot_val = R(pivot_row, current_pivot_col);
+                for (int s = current_pivot_col; s < cols; ++s)
+                {
+                    R(pivot_row, s) /= pivot_val;
+                    if (fabs(R(pivot_row, s)) < TINY_MATH_MIN_POSITIVE_INPUT_F32)
+                    {
+                        R(pivot_row, s) = 0.0f;
+                    }
+                }
+
+                // Eliminate above pivot
+                for (int t = pivot_row - 1; t >= 0; --t)
+                {
+                    float factor = R(t, current_pivot_col);
+                    for (int s = current_pivot_col; s < cols; ++s)
+                    {
+                        R(t, s) -= factor * R(pivot_row, s);
+                        if (fabs(R(t, s)) < TINY_MATH_MIN_POSITIVE_INPUT_F32)
+                        {
+                            R(t, s) = 0.0f;
+                        }
+                    }
+                }
+            }
+
+            pivot_row--;
+        }
+
+        return R;
+    }
+
+    /**
+     * @name Mat::gaussian_inverse()
+     * @brief Compute the inverse of a square matrix using Gauss-Jordan elimination.
+     *
+     * @return Mat The inverse matrix if invertible, otherwise returns empty matrix.
+     */
+    Mat Mat::gaussian_inverse()
+    {
+        if (this->row != this->col)
+        {
+            std::cerr << "[Error] Inversion requires a square matrix.\n";
+            return Mat();
+        }
+
+        // Step 1: Create augmented matrix [A | I]
+        Mat I = Mat::eye(this->row);            // Identity matrix
+        Mat augmented = Mat::augment(*this, I); // Augment matrix A with I
+
+        // Step 2: Apply Gauss-Jordan elimination to get [I | A_inv]
+        Mat rref = augmented.gaussian_eliminate().row_reduce_from_gaussian();
+
+        // Check if the left half is the identity matrix
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
+            {
+                if (fabs(rref(i, j) - I(i, j)) > TINY_MATH_MIN_POSITIVE_INPUT_F32)
+                {
+                    std::cerr << "[Error] Matrix is singular, cannot compute inverse.\n";
+                    return Mat();
+                }
+            }
+        }
+
+        // Step 3: Extract the right half as the inverse matrix
+        Mat inverse(this->row, this->col);
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
+            {
+                inverse(i, j) = rref(i, j + this->col); // Extract the right part
+            }
+        }
+
+        return inverse;
+    }
+
 }

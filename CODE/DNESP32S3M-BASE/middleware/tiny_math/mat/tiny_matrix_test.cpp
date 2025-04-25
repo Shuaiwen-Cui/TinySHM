@@ -702,6 +702,549 @@ void test_matrix_exponentiation()
     result5.print_matrix(true);
 }
 
+// Group 5: Linear Algebra
+// Test 5.1 Transpose
+void test_matrix_transpose()
+{
+    std::cout << "\n[Matrix Transpose Test]\n";
+
+    // Test 1: Basic 2x3 matrix transpose
+    std::cout << "\n[Test 1] Transpose of 2x3 Matrix\n";
+    tiny::Mat mat1(2, 3);
+    int val = 1;
+    for (int i = 0; i < 2; ++i)
+        for (int j = 0; j < 3; ++j)
+            mat1(i, j) = val++;
+
+    std::cout << "Original 2x3 Matrix:\n";
+    mat1.print_matrix(true);
+
+    tiny::Mat transposed1 = mat1.transpose();
+    std::cout << "Transposed 3x2 Matrix:\n";
+    transposed1.print_matrix(true);
+
+    // Test 2: Square matrix transpose (3x3)
+    std::cout << "\n[Test 2] Transpose of 3x3 Square Matrix\n";
+    tiny::Mat mat2(3, 3);
+    val = 1;
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            mat2(i, j) = val++;
+
+    std::cout << "Original 3x3 Matrix:\n";
+    mat2.print_matrix(true);
+
+    tiny::Mat transposed2 = mat2.transpose();
+    std::cout << "Transposed 3x3 Matrix:\n";
+    transposed2.print_matrix(true);
+
+    // Test 3: Matrix with padding (4x2, stride=3)
+    std::cout << "\n[Test 3] Transpose of Matrix with Padding\n";
+    float data[12] = {1, 2, 0, 3, 4, 0, 5, 6, 0, 7, 8, 0};  // stride=3, 4 rows
+    tiny::Mat mat3(data, 4, 2, 3);
+    std::cout << "Original 4x2 Matrix (with padding):\n";
+    mat3.print_matrix(true);
+
+    tiny::Mat transposed3 = mat3.transpose();
+    std::cout << "Transposed 2x4 Matrix:\n";
+    transposed3.print_matrix(true);
+
+    // Test 4: Transpose of empty matrix
+    std::cout << "\n[Test 4] Transpose of Empty Matrix\n";
+    tiny::Mat mat4;
+    mat4.print_matrix(true);
+
+    tiny::Mat transposed4 = mat4.transpose();
+    transposed4.print_matrix(true);
+}
+
+// Test 5.2 cofactor calculation - prepare the matrix for cofactor calculation
+void test_matrix_cofactor()
+{
+    std::cout << "\n[Matrix Cofactor Test]\n";
+
+    // Test 1: 3x3 Matrix - Standard Case
+    std::cout << "\n[Test 1] Cofactor of 3x3 Matrix (remove row 1, col 1)\n";
+    tiny::Mat mat1(3, 3);
+    int val = 1;
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            mat1(i, j) = val++;
+
+    std::cout << "Original 3x3 Matrix:\n";
+    mat1.print_matrix(true);
+
+    tiny::Mat cof1 = mat1.cofactor(1, 1);
+    std::cout << "Cofactor Matrix (remove row 1, col 1):\n";
+    cof1.print_matrix(true);  // Expected: [[1,3],[7,9]]
+
+    // Test 2: Remove first row and first column
+    std::cout << "\n[Test 2] Remove row 0, col 0\n";
+    tiny::Mat cof2 = mat1.cofactor(0, 0);
+    cof2.print_matrix(true);  // Expected: [[5,6],[8,9]]
+
+    // Test 3: Remove last row and last column
+    std::cout << "\n[Test 3] Remove row 2, col 2\n";
+    tiny::Mat cof3 = mat1.cofactor(2, 2);
+    cof3.print_matrix(true);  // Expected: [[1,2],[4,5]]
+
+    // Test 4: 4x4 Matrix Example
+    std::cout << "\n[Test 4] Cofactor of 4x4 Matrix (remove row 2, col 1)\n";
+    tiny::Mat mat4(4, 4);
+    val = 1;
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j)
+            mat4(i, j) = val++;
+
+    mat4.print_matrix(true);
+    tiny::Mat cof4 = mat4.cofactor(2, 1);
+    std::cout << "Cofactor Matrix:\n";
+    cof4.print_matrix(true);
+
+    // Test 5: Non-square Matrix (Expect Error)
+    std::cout << "\n[Test 5] Non-square Matrix (Expect Error)\n";
+    tiny::Mat rectMat(3, 4);
+    rectMat.cofactor(1, 1).print_matrix(true);  // Should trigger error and return empty matrix
+}
+
+// Test 5.3 determinant calculation
+void test_matrix_determinant()
+{
+    std::cout << "\n[Matrix Determinant Test Start]\n";
+
+    /*** Test 1: 1x1 Matrix ***/
+    std::cout << "\n[Test 1] 1x1 Matrix Determinant\n";
+    tiny::Mat mat1(1, 1);
+    mat1(0, 0) = 7;
+    std::cout << "Determinant: " << mat1.determinant() << "  (Expected: 7)\n";
+
+    /*** Test 2: 2x2 Matrix ***/
+    std::cout << "\n[Test 2] 2x2 Matrix Determinant\n";
+    tiny::Mat mat2(2, 2);
+    mat2(0, 0) = 3; mat2(0, 1) = 8;
+    mat2(1, 0) = 4; mat2(1, 1) = 6;
+    std::cout << "Determinant: " << mat2.determinant() << "  (Expected: -14)\n";
+
+    /*** Test 3: 3x3 Matrix ***/
+    std::cout << "\n[Test 3] 3x3 Matrix Determinant\n";
+    tiny::Mat mat3(3, 3);
+    mat3(0,0) = 1; mat3(0,1) = 2; mat3(0,2) = 3;
+    mat3(1,0) = 0; mat3(1,1) = 4; mat3(1,2) = 5;
+    mat3(2,0) = 1; mat3(2,1) = 0; mat3(2,2) = 6;
+    std::cout << "Determinant: " << mat3.determinant() << "  (Expected: 22)\n";
+
+    /*** Test 4: 4x4 Matrix ***/
+    std::cout << "\n[Test 4] 4x4 Matrix Determinant\n";
+    tiny::Mat mat4(4, 4);
+    int val = 1;
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j)
+            mat4(i, j) = val++;
+    std::cout << "Determinant: " << mat4.determinant() << "  (Expected: 0)\n";  
+
+    /*** Test 5: Non-square Matrix (Expect Error) ***/
+    std::cout << "\n[Test 5] Non-square Matrix (Expect Error)\n";
+    tiny::Mat rectMat(3, 4);
+    float det_rect = rectMat.determinant();  // should trigger error
+    std::cout << "Determinant: " << det_rect << "  (Expected: 0 with error message)\n";
+
+    std::cout << "\n[Matrix Determinant Test End]\n";
+}
+
+// Test 5.4 adjoint calculation
+void test_matrix_adjoint()
+{
+    std::cout << "\n[Matrix Adjoint Test Start]\n";
+
+    /*** Test 1: 1x1 Matrix ***/
+    std::cout << "\n[Test 1] Adjoint of 1x1 Matrix\n";
+    tiny::Mat mat1(1, 1);
+    mat1(0, 0) = 5;
+    tiny::Mat adj1 = mat1.adjoint();
+    adj1.print_matrix(true);  // Expected: [1]
+
+    /*** Test 2: 2x2 Matrix ***/
+    std::cout << "\n[Test 2] Adjoint of 2x2 Matrix\n";
+    tiny::Mat mat2(2, 2);
+    mat2(0, 0) = 1; mat2(0, 1) = 2;
+    mat2(1, 0) = 3; mat2(1, 1) = 4;
+    tiny::Mat adj2 = mat2.adjoint();
+    adj2.print_matrix(true);  // Expected: [4, -2; -3, 1]
+
+    /*** Test 3: 3x3 Matrix ***/
+    std::cout << "\n[Test 3] Adjoint of 3x3 Matrix\n";
+    tiny::Mat mat3(3, 3);
+    mat3(0,0) = 1; mat3(0,1) = 2; mat3(0,2) = 3;
+    mat3(1,0) = 0; mat3(1,1) = 4; mat3(1,2) = 5;
+    mat3(2,0) = 1; mat3(2,1) = 0; mat3(2,2) = 6;
+    tiny::Mat adj3 = mat3.adjoint();
+    adj3.print_matrix(true);
+    // No simple expected value, but should compute correctly
+
+    /*** Test 4: Non-Square Matrix (Expect Error) ***/
+    std::cout << "\n[Test 4] Adjoint of Non-Square Matrix (Expect Error)\n";
+    tiny::Mat rectMat(2, 3);
+    tiny::Mat adjRect = rectMat.adjoint();
+    adjRect.print_matrix(true);  // Should be empty or default matrix
+
+    std::cout << "\n[Matrix Adjoint Test End]\n";
+}
+
+// Test 5.5 normalization function
+void test_matrix_normalize()
+{
+    std::cout << "\n[Test: Matrix Normalization]\n";
+
+    /*** Test 1: Standard normalization ***/
+    std::cout << "\n[Test 1] Normalize a standard 2x2 matrix\n";
+    tiny::Mat mat1(2, 2);
+    mat1(0, 0) = 3.0f; mat1(0, 1) = 4.0f;
+    mat1(1, 0) = 3.0f; mat1(1, 1) = 4.0f;
+
+    std::cout << "Before normalization:\n";
+    mat1.print_matrix(true);
+
+    mat1.normalize();
+
+    std::cout << "After normalization (Expected L2 norm = 1):\n";
+    mat1.print_matrix(true);
+
+    /*** Test 2: Matrix with padding ***/
+    std::cout << "\n[Test 2] Normalize a 2x2 matrix with stride=4 (Padding Test)\n";
+    float data_with_padding[8] = {3.0f, 4.0f, 0.0f, 0.0f, 3.0f, 4.0f, 0.0f, 0.0f};
+    tiny::Mat mat2(data_with_padding, 2, 2, 4);  // 2x2 matrix, stride 4
+
+    std::cout << "Before normalization:\n";
+    mat2.print_matrix(true);
+
+    mat2.normalize();
+
+    std::cout << "After normalization:\n";
+    mat2.print_matrix(true);
+
+    /*** Test 3: Zero matrix normalization ***/
+    std::cout << "\n[Test 3] Normalize a zero matrix (Expect warning)\n";
+    tiny::Mat mat3(2, 2);
+    mat3.clear();  // Assuming clear() sets all elements to zero
+
+    mat3.print_matrix(true);
+    mat3.normalize();  // Should trigger warning
+}
+
+// Test 5.6: Matrix Norm Calculation
+void test_matrix_norm()
+{
+    std::cout << "\n[Test: Matrix Norm Calculation]\n";
+
+    /*** Test 1: Simple 2x2 Matrix ***/
+    std::cout << "\n[Test 1] 2x2 Matrix Norm (Expect 5.0)\n";
+    tiny::Mat mat1(2, 2);
+    mat1(0, 0) = 3.0f; mat1(0, 1) = 4.0f;
+    mat1(1, 0) = 0.0f; mat1(1, 1) = 0.0f;
+    float norm1 = mat1.norm();
+    std::cout << "Calculated Norm: " << norm1 << "\n";
+
+    /*** Test 2: Zero Matrix ***/
+    std::cout << "\n[Test 2] Zero Matrix Norm (Expect 0.0)\n";
+    tiny::Mat mat2(3, 3);
+    mat2.clear();  // Assuming clear() sets all elements to zero
+    float norm2 = mat2.norm();
+    std::cout << "Calculated Norm: " << norm2 << "\n";
+
+    /*** Test 3: Matrix with Negative Values ***/
+    std::cout << "\n[Test 3] Matrix with Negative Values\n";
+    tiny::Mat mat3(2, 2);
+    mat3(0, 0) = -1.0f; mat3(0, 1) = -2.0f;
+    mat3(1, 0) = -3.0f; mat3(1, 1) = -4.0f;
+    float norm3 = mat3.norm();
+    std::cout << "Calculated Norm: " << norm3 << "  (Expect sqrt(30) ≈ 5.477)\n";
+
+    /*** Test 4: Matrix with Padding ***/
+    std::cout << "\n[Test 4] 2x2 Matrix with Stride=4 (Padding Test)\n";
+    float data4[8] = {1.0f, 2.0f, 0.0f, 0.0f, 3.0f, 4.0f, 0.0f, 0.0f};
+    tiny::Mat mat4(data4, 2, 2, 4);  // 2x2 matrix, stride 4
+    float norm4 = mat4.norm();
+    std::cout << "Calculated Norm: " << norm4 << "  (Expect sqrt(30) ≈ 5.477)\n";
+}
+
+// Test 5.7: Matrix Inversion
+void test_matrix_inverse()
+{
+    std::cout << "\n[Test: Matrix Inverse Calculation]\n";
+
+    /*** Test 1: 2x2 Regular Matrix ***/
+    std::cout << "\n[Test 1] Inverse of 2x2 Matrix\n";
+    tiny::Mat mat1(2, 2);
+    mat1(0, 0) = 4;  mat1(0, 1) = 7;
+    mat1(1, 0) = 2;  mat1(1, 1) = 6;
+
+    mat1.print_matrix(true);
+    tiny::Mat inv1 = mat1.inverse();
+    std::cout << "Inverse Matrix:\n";
+    inv1.print_matrix(true);
+    std::cout << "Expected Approx:\n[ 0.6  -0.7 ]\n[ -0.2  0.4 ]\n";
+
+    /*** Test 2: Singular Matrix (Determinant = 0) ***/
+    std::cout << "\n[Test 2] Singular Matrix (Expect Error)\n";
+    tiny::Mat mat2(2, 2);
+    mat2(0, 0) = 1;  mat2(0, 1) = 2;
+    mat2(1, 0) = 2;  mat2(1, 1) = 4;   // Rank-deficient, det = 0
+
+    mat2.print_matrix(true);
+    tiny::Mat inv2 = mat2.inverse();
+    std::cout << "Inverse Matrix (Should be zero matrix):\n";
+    inv2.print_matrix(true);
+
+    /*** Test 3: 3x3 Regular Matrix ***/
+    std::cout << "\n[Test 3] Inverse of 3x3 Matrix\n";
+    tiny::Mat mat3(3, 3);
+    mat3(0,0) = 3; mat3(0,1) = 0; mat3(0,2) = 2;
+    mat3(1,0) = 2; mat3(1,1) = 0; mat3(1,2) = -2;
+    mat3(2,0) = 0; mat3(2,1) = 1; mat3(2,2) = 1;
+
+    mat3.print_matrix(true);
+    tiny::Mat inv3 = mat3.inverse();
+    std::cout << "Inverse Matrix:\n";
+    inv3.print_matrix(true);
+
+    /*** Test 4: Non-Square Matrix (Expect Error) ***/
+    std::cout << "\n[Test 4] Non-Square Matrix (Expect Error)\n";
+    tiny::Mat mat4(2, 3);
+    tiny::Mat inv4 = mat4.inverse();
+    inv4.print_matrix(true);
+}
+
+// Test 5.8: Matrix Utilities
+void test_matrix_utilities()
+{
+    std::cout << "\n[Matrix Utilities Test Start]\n";
+
+    /*** Test 1: Identity Matrix (eye) ***/
+    std::cout << "\n[Test 1] Generate Identity Matrix (eye)\n";
+    tiny::Mat I3 = tiny::Mat::eye(3);
+    std::cout << "3x3 Identity Matrix:\n";
+    I3.print_matrix(true);
+
+    tiny::Mat I5 = tiny::Mat::eye(5);
+    std::cout << "5x5 Identity Matrix:\n";
+    I5.print_matrix(true);
+
+    /*** Test 2: Ones Matrix ***/
+    std::cout << "\n[Test 2] Generate Ones Matrix\n";
+    tiny::Mat ones_3x4 = tiny::Mat::ones(3, 4);
+    std::cout << "3x4 Ones Matrix:\n";
+    ones_3x4.print_matrix(true);
+
+    tiny::Mat ones_4x4 = tiny::Mat::ones(4);
+    std::cout << "4x4 Ones Matrix (Square):\n";
+    ones_4x4.print_matrix(true);
+
+    /*** Test 3: Matrix Augmentation ***/
+    std::cout << "\n[Test 3] Augment Two Matrices Horizontally [A | B]\n";
+
+    // Prepare matrices A (2x2) and B (2x3)
+    tiny::Mat A(2, 2);
+    A(0,0) = 1;  A(0,1) = 2;
+    A(1,0) = 3;  A(1,1) = 4;
+
+    tiny::Mat B(2, 3);
+    B(0,0) = 5;  B(0,1) = 6;  B(0,2) = 7;
+    B(1,0) = 8;  B(1,1) = 9;  B(1,2) = 10;
+
+    std::cout << "Matrix A:\n";
+    A.print_matrix(true);
+    std::cout << "Matrix B:\n";
+    B.print_matrix(true);
+
+    tiny::Mat AB = tiny::Mat::augment(A, B);
+    std::cout << "Augmented Matrix [A | B]:\n";
+    AB.print_matrix(true);
+
+    // Test 3.2: Row mismatch case
+    std::cout << "\n[Test 3.2] Augment with Row Mismatch (Expect Error)\n";
+    tiny::Mat C(3, 2);  // 3x2 matrix
+    tiny::Mat invalidAug = tiny::Mat::augment(A, C);
+    invalidAug.print_info();  // Should show empty matrix due to error
+
+    std::cout << "\n[Matrix Utilities Test End]\n";
+}
+
+// Test 5.9: Gaussian Elimination
+void test_gaussian_eliminate()
+{
+    std::cout << "\n[Gaussian Elimination Test]\n";
+
+    /*** Test 1: Simple 3x3 System ***/
+    std::cout << "\n[Test 1] 3x3 Matrix (Simple Upper Triangular)\n";
+    tiny::Mat mat1(3, 3);
+    mat1(0,0) = 2; mat1(0,1) = 1; mat1(0,2) = -1;
+    mat1(1,0) = -3; mat1(1,1) = -1; mat1(1,2) = 2;
+    mat1(2,0) = -2; mat1(2,1) = 1; mat1(2,2) = 2;
+
+    std::cout << "Original Matrix:\n";
+    mat1.print_matrix(true);
+
+    tiny::Mat result1 = mat1.gaussian_eliminate();
+
+    std::cout << "After Gaussian Elimination:\n";
+    result1.print_matrix(true);
+
+    /*** Test 2: 3x4 Augmented Matrix ***/
+    std::cout << "\n[Test 2] 3x4 Augmented Matrix (Linear System Ax = b)\n";
+    tiny::Mat mat2(3, 4);
+    mat2(0,0) = 1; mat2(0,1) = 2; mat2(0,2) = -1; mat2(0,3) =  8;
+    mat2(1,0) = -3; mat2(1,1) = -1; mat2(1,2) = 2; mat2(1,3) = -11;
+    mat2(2,0) = -2; mat2(2,1) = 1; mat2(2,2) = 2; mat2(2,3) = -3;
+
+    std::cout << "Original Augmented Matrix:\n";
+    mat2.print_matrix(true);
+
+    tiny::Mat result2 = mat2.gaussian_eliminate();
+
+    std::cout << "Row Echelon Form:\n";
+    result2.print_matrix(true);
+
+    /*** Test 3: Singular Matrix ***/
+    std::cout << "\n[Test 3] Singular Matrix (No unique solution)\n";
+    tiny::Mat mat3(2, 2);
+    mat3(0,0) = 1; mat3(0,1) = 2;
+    mat3(1,0) = 2; mat3(1,1) = 4;  // Linearly dependent rows
+
+    mat3.print_matrix(true);
+    tiny::Mat result3 = mat3.gaussian_eliminate();
+    std::cout << "After Gaussian Elimination:\n";
+    result3.print_matrix(true);
+
+    /*** Test 4: Zero Matrix ***/
+    std::cout << "\n[Test 4] Zero Matrix\n";
+    tiny::Mat mat4(3, 3);
+    mat4.clear();  // Assuming clear() sets all elements to zero
+    mat4.print_matrix(true);
+
+    tiny::Mat result4 = mat4.gaussian_eliminate();
+    std::cout << "After Gaussian Elimination:\n";
+    result4.print_matrix(true);
+}
+
+// Test 5.10: Row Reduce from Gaussian (RREF Calculation)
+void test_row_reduce_from_gaussian()
+{
+    std::cout << "\n[Test] Row Reduce From Gaussian (RREF Calculation)\n";
+
+    // Example 1: Simple 3x4 augmented matrix (representing a system of equations)
+    std::cout << "\n[Test 1] 3x4 Augmented Matrix\n";
+    tiny::Mat mat1(3, 4);
+
+    // Matrix:
+    // [ 1  2 -1  -4 ]
+    // [ 2  3 -1 -11 ]
+    // [-2  0 -3  22 ]
+    mat1(0,0) = 1;  mat1(0,1) = 2;  mat1(0,2) = -1; mat1(0,3) = -4;
+    mat1(1,0) = 2;  mat1(1,1) = 3;  mat1(1,2) = -1; mat1(1,3) = -11;
+    mat1(2,0) = -2; mat1(2,1) = 0;  mat1(2,2) = -3; mat1(2,3) = 22;
+
+    std::cout << "Original Matrix:\n";
+    mat1.print_matrix(true);
+
+    tiny::Mat rref1 = mat1.gaussian_eliminate().row_reduce_from_gaussian();
+    std::cout << "RREF Result:\n";
+    rref1.print_matrix(true);
+
+    // Example 2: 2x3 Matrix
+    std::cout << "\n[Test 2] 2x3 Matrix\n";
+    tiny::Mat mat2(2, 3);
+    mat2(0,0) = 1; mat2(0,1) = 2;  mat2(0,2) = 3;
+    mat2(1,0) = 4; mat2(1,1) = 5;  mat2(1,2) = 6;
+
+    std::cout << "Original Matrix:\n";
+    mat2.print_matrix(true);
+
+    tiny::Mat rref2 = mat2.gaussian_eliminate().row_reduce_from_gaussian();
+    std::cout << "RREF Result:\n";
+    rref2.print_matrix(true);
+
+    // Example 3: Already reduced matrix (should remain the same)
+    std::cout << "\n[Test 3] Already Reduced Matrix\n";
+    tiny::Mat mat3(2, 3);
+    mat3(0,0) = 1; mat3(0,1) = 0; mat3(0,2) = 2;
+    mat3(1,0) = 0; mat3(1,1) = 1; mat3(1,2) = 3;
+
+    std::cout << "Original Matrix:\n";
+    mat3.print_matrix(true);
+
+    tiny::Mat rref3 = mat3.row_reduce_from_gaussian();
+    std::cout << "RREF Result:\n";
+    rref3.print_matrix(true);
+}
+
+// Test 5.11 gaussian inverse
+void test_gaussian_inverse()
+{
+    std::cout << "\n--- Test: Gaussian Inverse ---\n";
+
+    /*** Test1: Regular 2x2 Matrix ***/
+    std::cout << "[Test 1: 2x2 Matrix Inverse]\n";
+    tiny::Mat mat1(2, 2);
+    mat1(0, 0) = 4; mat1(0, 1) = 7;
+    mat1(1, 0) = 2; mat1(1, 1) = 6;
+    std::cout << "Original matrix (mat1):\n";
+    mat1.print_matrix(true);
+    
+    tiny::Mat invMat1 = mat1.gaussian_inverse();
+    std::cout << "Inverse matrix (mat1):\n";
+    invMat1.print_matrix(true);
+
+    /*** Test2: Identity Matrix (should return identity matrix) ***/
+    std::cout << "[Test 2: Identity Matrix Inverse]\n";
+    tiny::Mat mat2 = tiny::Mat::eye(3);
+    std::cout << "Original matrix (Identity):\n";
+    mat2.print_matrix(true);
+    
+    tiny::Mat invMat2 = mat2.gaussian_inverse();
+    std::cout << "Inverse matrix (Identity):\n";
+    invMat2.print_matrix(true); // Expected: Identity matrix
+
+    /*** Test3: Singular Matrix (should return empty matrix or indicate error) ***/
+    std::cout << "[Test 3: Singular Matrix (Expected: No Inverse)]\n";
+    tiny::Mat mat3(3, 3);
+    mat3(0, 0) = 1; mat3(0, 1) = 2; mat3(0, 2) = 3;
+    mat3(1, 0) = 4; mat3(1, 1) = 5; mat3(1, 2) = 6;
+    mat3(2, 0) = 7; mat3(2, 1) = 8; mat3(2, 2) = 9;  // Determinant is 0
+    std::cout << "Original matrix (singular):\n";
+    mat3.print_matrix(true);
+    
+    tiny::Mat invMat3 = mat3.gaussian_inverse();
+    std::cout << "Inverse matrix (singular):\n";
+    invMat3.print_matrix(true); // Expected: empty matrix or error message
+
+    /*** Test4: 3x3 Matrix with a valid inverse ***/
+    std::cout << "[Test 4: 3x3 Matrix Inverse]\n";
+    tiny::Mat mat4(3, 3);
+    mat4(0, 0) = 4; mat4(0, 1) = 7; mat4(0, 2) = 2;
+    mat4(1, 0) = 3; mat4(1, 1) = 5; mat4(1, 2) = 1;
+    mat4(2, 0) = 8; mat4(2, 1) = 6; mat4(2, 2) = 9;
+    std::cout << "Original matrix (mat4):\n";
+    mat4.print_matrix(true);
+    
+    tiny::Mat invMat4 = mat4.gaussian_inverse();
+    std::cout << "Inverse matrix (mat4):\n";
+    invMat4.print_matrix(true); // Check that the inverse is calculated correctly
+
+    /*** Test5: Non-square Matrix (should return error or empty matrix) ***/
+    std::cout << "[Test 5: Non-square Matrix Inverse (Expected Error)]\n";
+    tiny::Mat mat5(2, 3);
+    mat5(0, 0) = 1; mat5(0, 1) = 2; mat5(0, 2) = 3;
+    mat5(1, 0) = 4; mat5(1, 1) = 5; mat5(1, 2) = 6;
+    std::cout << "Original matrix (non-square):\n";
+    mat5.print_matrix(true);
+    
+    tiny::Mat invMat5 = mat5.gaussian_inverse();
+    std::cout << "Inverse matrix (non-square):\n";
+    invMat5.print_matrix(true); // Expected: Error message or empty matrix
+}
+
+
+
 void tiny_matrix_test()
 {
     std::cout << "============ [tiny_matrix_test start] ============\n";
@@ -724,6 +1267,19 @@ void tiny_matrix_test()
     // test_matrix_division();
     // test_constant_division();
     // test_matrix_exponentiation();
+
+    // Group 5: Linear algebra tests
+    // test_matrix_transpose();
+    // test_matrix_cofactor();
+    // test_matrix_determinant();
+    // test_matrix_adjoint();
+    // test_matrix_normalize();
+    // test_matrix_norm();
+    // test_matrix_inverse();
+    // test_matrix_utilities();
+    // test_gaussian_eliminate();
+    // test_row_reduce_from_gaussian();
+    test_gaussian_inverse();
 
     std::cout << "============ [tiny_matrix_test end] ============\n";
 }

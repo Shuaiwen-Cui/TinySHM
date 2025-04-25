@@ -119,44 +119,47 @@ namespace tiny
         void clear(void);
 
         /* === Arithmetic Operators === */
-        Mat &operator=(const Mat &src); // Copy assignment
-        Mat &operator+=(const Mat &A); // Add matrix
-        Mat &operator+=(float C);
-        Mat &operator-=(const Mat &A);
-        Mat &operator-=(float C);
-        Mat &operator*=(const Mat &A);
-        Mat &operator*=(float C);
-        Mat &operator/=(const Mat &B);
-        Mat &operator/=(float C);
-        Mat operator^(int C);
+        Mat &operator=(const Mat &src);    // Copy assignment
+        Mat &operator+=(const Mat &A);     // Add matrix
+        Mat &operator+=(float C);          // Add constant
+        Mat &operator-=(const Mat &A);     // Subtract matrix
+        Mat &operator-=(float C);          // Subtract constant 
+        Mat &operator*=(const Mat &A);     // Multiply matrix
+        Mat &operator*=(float C);          // Multiply constant
+        Mat &operator/=(const Mat &B);     // Divide matrix
+        Mat &operator/=(float C);          // Divide constant
+        Mat operator^(int C);              // Exponentiation
 
         /* === Linear Algebra === */
-        // Mat t();
-        // void normalize();
-        // float norm();
-        // float det(int n);
-        // Mat inverse();
-        // Mat pinv();
-        // Mat gaussianEliminate();
-        // Mat rowReduceFromGaussian();
+        Mat transpose();                   // Transpose matrix
+        Mat cofactor(int row, int col);    // cofactor matrix extraction
+        float determinant();
+        Mat adjoint(); 
+        void normalize();
+        float norm() const;
+        Mat inverse();
+        static Mat eye(int size);
+        static Mat augment(const Mat &A, const Mat &B);
+        static Mat ones(int rows, int cols);
+        static Mat ones(int size);
+        Mat gaussian_eliminate() const;
+        Mat row_reduce_from_gaussian();
+        Mat gaussian_inverse();
 
         /* === Static Utility Functions === */
-        // static Mat eye(int size);
-        // static Mat ones(int size);
-        // static Mat ones(int rows, int cols);
-        // static Mat solve(Mat A, Mat b);
-        // static Mat bandSolve(Mat A, Mat b, int k);
-        // static Mat roots(Mat A, Mat y);
-        // static float dotProduct(Mat A, Mat B);
-        // static Mat augment(Mat A, Mat B);
+
+        // Mat solve(Mat A, Mat b);
+        // Mat bandSolve(Mat A, Mat b, int k);
+        // Mat roots(Mat A, Mat y);
+        // float dotProduct(Mat A, Mat B);
+
 
 
 
     protected:
 
     private:
-    // Mat cofactor(int row, int col, int n);
-    // Mat adjoint();
+
     // Mat expHelper(const Mat &m, int num);
     };
 }
