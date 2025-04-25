@@ -82,10 +82,10 @@ void test_element_access()
 
 }
 
-// Group 3: ROI operations
+// Group 3: data manipulation
 void test_roi_operations()
 {
-    std::cout << "\n--- Test: ROI Operations ---\n";
+    std::cout << "\n--- Test: Data Manipulation ---\n";
     
     // Material Matrices
     tiny::Mat matA(2,3);
@@ -119,11 +119,14 @@ void test_roi_operations()
     matB.copy_paste(matA, 1, 2);
     std::cout << "matB after copy_paste matA at (1, 2):\n";
     matB.print_matrix(true);
+    std::cout << "nothing changed.\n";
 
     std::cout << "[Test1: Copy ROI - suitable range case]\n";
     matB.copy_paste(matA, 1, 1);
     std::cout << "matB after copy_paste matA at (1, 1):\n";
+    matB.print_info();
     matB.print_matrix(true);
+    std::cout << "successfully copied.\n";
 
     // Test 2: Copy Head
     std::cout << "[Test2: Copy Head]\n";
@@ -139,62 +142,72 @@ void test_roi_operations()
     matC.print_info();
     matC.print_matrix(true);
 
-    // Test 3: Get ROI - low level function
-    std::cout << "[Test3: Get ROI - low level function]\n";
-    std::cout << "get ROI with overrange dimensions - rows:\n";
-    tiny::Mat roi1 = matB.get_roi(1, 1, 3, 2, 5);
-    roi1.print_info();
-    roi1.print_matrix(true);
-    std::cout << "get ROI with overrange dimensions - cols:\n";
-    tiny::Mat roi2 = matB.get_roi(1, 1, 2, 4, 5);
-    roi2.print_info();
-    roi2.print_matrix(true);
-    std::cout << "get ROI with suitable dimensions:\n";
-    tiny::Mat roi3 = matB.get_roi(1, 1, 2, 2, 3);
+    // Test 3: Get a View of ROI - low level function
+    std::cout << "[Test3: Get a View of ROI - low level function]\n";
+    std::cout << "get a view of ROI with overrange dimensions - rows:\n";
+    tiny::Mat roi1 = matB.view_roi(1, 1, 3, 2); // note here, C++ will use the copy constructor, which will copy according to the case (submatrix - shallow copy | normal - deep copy)
+    std::cout << "get a view of ROI with overrange dimensions - cols:\n";
+    tiny::Mat roi2 = matB.view_roi(1, 1, 2, 4); // note here, C++ will use the copy constructor, which will copy according to the case (submatrix - shallow copy | normal - deep copy)
+    std::cout << "get a view of ROI with suitable dimensions:\n";
+    tiny::Mat roi3 = matB.view_roi(1, 1, 2, 2); // note here, C++ will use the copy constructor, which will copy according to the case (submatrix - shallow copy | normal - deep copy)
+    std::cout << "roi3:\n";
     roi3.print_info();
     roi3.print_matrix(true);
 
-    // Test 4: Get ROI - without stride
-    std::cout << "[Test4: Get ROI - without stride]\n";
-    tiny::Mat roi4 = matB.get_roi(1, 1, 2, 2);
+    // Test 4: Get a View of ROI - using ROI structure
+    std::cout << "[Test4: Get a View of ROI - using ROI structure]\n";
+    tiny::Mat::ROI roi_struct(1, 1, 2, 2);
+    tiny::Mat roi4 = matB.view_roi(roi_struct);
     roi4.print_info();
     roi4.print_matrix(true);
+    
+    // Test 5: Copy ROI - low level function
+    std::cout << "[Test5: Copy ROI - low level function]\n";
+    tiny::Mat mat_deep_copy = matB.copy_roi(1, 1, 2, 2);
+    mat_deep_copy.print_info();
+    mat_deep_copy.print_matrix(true);
 
-    // Test 5: Get ROI - using ROI structure
-    std::cout << "[Test5: Get ROI - using ROI structure]\n";
-    tiny::Mat::ROI roi_struct(1, 1, 2, 2);
-    tiny::Mat roi5 = matB.get_roi(roi_struct);
-    roi5.print_info();
-    roi5.print_matrix(true);
+    // Test 6: Copy ROI - using ROI structure
+    std::cout << "[Test6: Copy ROI - using ROI structure]\n";
+    TinyTimeMark_t tic1 = tiny_get_running_time();
+    tiny::Mat::ROI roi_struct2(1, 1, 2, 2);
+    tiny::Mat mat_deep_copy2 = matB.copy_roi(roi_struct2);
+    TinyTimeMark_t toc1 = tiny_get_running_time();
+    TinyTimeMark_t copy_roi_time = toc1 - tic1;
+    std::cout << "time for copy_roi using ROI structure: " << copy_roi_time << " ms\n";
+    mat_deep_copy2.print_info();
+    mat_deep_copy2.print_matrix(true);
 
+    // Test 7: Block
+    std::cout << "[Test7: Block]\n";
+    TinyTimeMark_t tic2 = tiny_get_running_time();
+    tiny::Mat mat_block = matB.block(1, 1, 2, 2);
+    TinyTimeMark_t toc2 = tiny_get_running_time();
+    TinyTimeMark_t block_roi_time = toc2 - tic2;
+    std::cout << "time for block: " << block_roi_time << " ms\n";
+    mat_block.print_info();
+    mat_block.print_matrix(true);
+
+    // swap rows
+    std::cout << "[Test7: Swap Rows]\n";
+    std::cout << "matB before swap:\n";
+    matB.print_info();
+    matB.print_matrix(true);
+    std::cout << "matB after swap:\n";
+    matB.swap_rows(0, 2);
+    matB.print_info();
+    matB.print_matrix(true);
+
+    // clear function
+    std::cout << "[Test8: Clear]\n";
+    std::cout << "matB before clear:\n";
+    matB.print_info();
+    matB.print_matrix(true);
+    std::cout << "matB after clear:\n";
+    matB.clear();
+    matB.print_info();
+    matB.print_matrix(true);
 }
-
-// Group 4: data manipulation
-void test_data_manipulation()
-{
-    std::cout << "\n--- Test: Data Manipulation ---\n";
-    tiny::Mat mat1(3, 3);
-    tiny::Mat mat2(2, 2);
-
-    // 填充mat2
-    mat2(0,0) = 9.9f;
-    mat2(1,1) = 8.8f;
-
-    // Copy-Paste 测试
-    mat1.copy_paste(mat2, 1, 1);
-    mat1.print_matrix(true);
-
-    // Swap Rows 测试
-    mat1.swap_rows(0, 2);
-    std::cout << "[After Swapping Rows 0 and 2]\n";
-    mat1.print_matrix(true);
-
-    // Clear 测试
-    mat1.clear();
-    std::cout << "[After Clear]\n";
-    mat1.print_matrix(true);
-}
-
 
 void tiny_matrix_test()
 {
@@ -208,9 +221,6 @@ void tiny_matrix_test()
 
     // Group 3: ROI operations
     test_roi_operations();
-
-    // Group 4: data manipulation
-    // test_data_manipulation();
 
     std::cout << "============ [tiny_matrix_test end] ============\n";
 }

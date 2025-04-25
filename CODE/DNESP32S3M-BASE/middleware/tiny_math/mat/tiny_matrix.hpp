@@ -63,7 +63,7 @@ namespace tiny
         
         /* === Printing Functions === */
         // print matrix info
-        void print_info(void);
+        void print_info() const;
 
         // print matrix elements, paddings optional
         void print_matrix(bool show_padding);
@@ -97,14 +97,11 @@ namespace tiny
         // copy header of other matrix to this matrix
         tiny_error_t copy_head(const Mat &src);
 
-        // get a view (shallow copy) of sub-matrix (ROI) from this matrix with stride
-        Mat get_roi(int start_row, int start_col, int roi_rows, int roi_cols, int stride);
-
         // get a view (shallow copy) of sub-matrix (ROI) from this matrix
-        Mat get_roi(int start_row, int start_col, int roi_rows, int roi_cols);
+        Mat view_roi(int start_row, int start_col, int roi_rows, int roi_cols) const;
 
         // get a view (shallow copy) of sub-matrix (ROI) from this matrix using ROI structure
-        Mat get_roi(const Mat::ROI &roi);
+        Mat view_roi(const Mat::ROI &roi) const;
 
         // get a replica (deep copy) of sub-matrix (ROI) 
         Mat copy_roi(int start_row, int start_col, int roi_rows, int roi_cols);

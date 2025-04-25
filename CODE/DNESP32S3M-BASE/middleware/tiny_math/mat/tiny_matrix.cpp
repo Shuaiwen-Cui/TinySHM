@@ -53,37 +53,59 @@ namespace tiny
      * @name Mat::PrintHead()
      * @brief Print the header of the matrix.
      */
-    void Mat::print_info(void)
+    void Mat::print_info() const
     {
         std::cout << "Matrix Info >>>\n";
-        std::cout << "rows            " << this->row << std::endl;
-        std::cout << "cols            " << this->col << std::endl;
-        std::cout << "elements        " << this->element << std::endl;
-        std::cout << "paddings        " << this->pad << std::endl;
-        std::cout << "stride          " << this->stride << std::endl;
-        std::cout << "memory          " << this->memory << std::endl;
-        if (this->data != nullptr)
+    
+        // Basic matrix metadata
+        std::cout << "rows            " << this->row << "\n";
+        std::cout << "cols            " << this->col << "\n";
+        std::cout << "elements        " << this->element;
+    
+        // Check if elements match rows * cols
+        if (this->element != this->row * this->col)
         {
-            std::cout << "data pointer    " << static_cast<void *>(data) << std::endl;
+            std::cout << "   [Warning] Mismatch! Expected: " << (this->row * this->col);
         }
-        else
-        {
-            std::cout << "data pointer    nullptr" << std::endl;
-        }
-        if (this->temp != nullptr)
-        {
-            std::cout << "temp pointer    " << static_cast<void *>(temp) << std::endl;
-        }
-        else
-        {
-            std::cout << "temp pointer    nullptr" << std::endl;
-        }
-        std::cout << "ext_buff        " << this->ext_buff << std::endl;
-        std::cout << "sub_matrix      " << this->sub_matrix << std::endl;
-        std::cout << "<<< Matrix Info\n";
-        std::cout << std::endl;
-    }
+        std::cout << "\n";
+    
+        std::cout << "paddings        " << this->pad << "\n";
+        std::cout << "stride          " << this->stride << "\n";
+        std::cout << "memory          " << this->memory << "\n";
+    
+        // Pointer information
+        std::cout << "data pointer    " << static_cast<const void *>(this->data) << "\n";
+        std::cout << "temp pointer    " << static_cast<const void *>(this->temp) << "\n";
 
+        // Flags information
+        std::cout << "ext_buff        " << this->ext_buff;
+        if (this->ext_buff)
+        {
+            std::cout << "   (External buffer or View)";
+        }
+        std::cout << "\n";
+    
+        std::cout << "sub_matrix      " << this->sub_matrix;
+        if (this->sub_matrix)
+        {
+            std::cout << "   (This is a Sub-Matrix View)";
+        }
+        std::cout << "\n";
+    
+        // State warnings
+        if (this->sub_matrix && !this->ext_buff)
+        {
+            std::cout << "[Warning] Sub-matrix is marked but ext_buff is false! Potential logic error.\n";
+        }
+    
+        if (this->data == nullptr)
+        {
+            std::cout << "[Info] No data buffer assigned to this matrix.\n";
+        }
+    
+        std::cout << "<<< Matrix Info\n";
+    }
+    
     /**
      * @name Mat::print_matrix()
      * @brief Print the matrix elements.
@@ -175,7 +197,7 @@ namespace tiny
      * @param cols Number of columns
      */
     Mat::Mat(int rows, int cols)
-    {   
+    {
         this->row = rows;
         this->col = cols;
         this->pad = 0;
@@ -280,21 +302,35 @@ namespace tiny
         this->stride = src.stride;
         this->element = src.element;
         this->memory = src.memory;
-        this->data = nullptr;
-        this->temp = nullptr;
-        this->ext_buff = false;
-        this->sub_matrix = false;
-
-        if (src.data != nullptr)
+    
+        if (src.sub_matrix && src.ext_buff)
         {
-            alloc_mem();
-            if (this->data == nullptr)
+            // if the source is a view (submatrix), do shallow copy
+            this->data = src.data;
+            this->temp = nullptr;
+            this->ext_buff = true;
+            this->sub_matrix = true;
+        }
+        else
+        {
+            // otherwise do deep copy
+            this->data = nullptr;
+            this->temp = nullptr;
+            this->ext_buff = false;
+            this->sub_matrix = false;
+    
+            if (src.data != nullptr)
             {
-                std::cerr << "[>>> Error ! <<<] Memory allocation failed in alloc_mem()\n";
+                alloc_mem();
+                if (this->data == nullptr)
+                {
+                    std::cerr << "[Error] Memory allocation failed in alloc_mem()\n";
+                }
+                std::memcpy(this->data, src.data, this->memory * sizeof(float));
             }
-            std::memcpy(this->data, src.data, this->memory * sizeof(float));
         }
     }
+    
 
     /**
      * @name ~Mat()
@@ -373,81 +409,57 @@ namespace tiny
     }
 
     /**
-     * @name Mat::get_roi(int start_row, int start_col, int roi_rows, int roi_cols, int stride)
-     * @brief Make a shallow copy of ROI matrix. | Make a view of the ROI matrix. Low level function.
+     * @name Mat::view_roi(int start_row, int start_col, int roi_rows, int roi_cols)
+     * @brief Make a shallow copy of ROI matrix. | Make a view of the ROI matrix. Low level function. Unlike ESP-DSP, it is not allowed to setup stride here, stride is automatically calculated inside the function.
      *
      * @param start_row Start row position of source matrix to copy
      * @param start_col Start column position of source matrix to copy
      * @param roi_rows Size of row elements of source matrix to copy
      * @param roi_cols Size of column elements of source matrix to copy
-     * @param stride Number of cols + padding between 2 rows
+     * 
+     * @todo the pointer address is changing every time access, but the result is correct.
      *
      * @return result matrix size row_size x col_size
      */
-    Mat Mat::get_roi(int start_row, int start_col, int roi_rows, int roi_cols, int stride)
+    Mat Mat::view_roi(int start_row, int start_col, int roi_rows, int roi_cols) const
     {
-        if ((start_row + roi_rows) > this->row)
+        if ((start_row + roi_rows) > this->row || (start_col + roi_cols) > this->col)
         {
-            std::cerr << "[>>> Error ! <<<] Invalid row position " << std::endl;
+            std::cerr << "[Error] Invalid ROI request.\n";
             return Mat();
         }
 
-        if ((start_col + roi_cols) > this->col)
-        {   
-            std::cerr << "[>>> Error ! <<<] Invalid column position " << std::endl;
-            return Mat();
-        }
-
-        if ( (start_col + stride) > this->stride )
-        {
-            std::cerr << "[>>> Error ! <<<] Invalid stride " << std::endl;
-            return Mat();
-        }
-
-        Mat result(this->data, roi_rows, roi_cols, 0); // data_buffer, rows, cols, stride
-
-        const int ptr_move = start_row * this->stride + start_col;
-        float *new_data_ptr = this->data + ptr_move;
-
-        result.data = new_data_ptr;
-        result.stride = stride;
-        result.pad = result.stride - result.col;
+        Mat result;
+        result.row = roi_rows;
+        result.col = roi_cols;
+        result.stride = this->stride;
+        result.pad = this->stride - roi_cols;
+        result.element = roi_rows * roi_cols;
+        result.memory = roi_rows * this->stride;
+        result.data = this->data + (start_row * this->stride + start_col);
+        result.temp = nullptr;
+        result.ext_buff = true;
+        result.sub_matrix = true;
 
         return result;
     }
 
     /**
-     * @name Mat::get_roi(int start_row, int start_col, int roi_rows, int roi_cols)
-     * @brief Make a shallow copy of ROI matrix. | Make a view of the ROI matrix. Without stride.
-     *
-     * @param start_row Start row position of source matrix to copy
-     * @param start_col Start column position of source matrix to copy
-     * @param roi_rows Size of row elements of source matrix to copy
-     * @param roi_cols Size of column elements of source matrix to copy
-     *
-     * @return result matrix size row_size x col_size
-     */
-    Mat Mat::get_roi(int start_row, int start_col, int roi_rows, int roi_cols)
-    {
-        return (get_roi(start_row, start_col, roi_rows, roi_cols, this->stride));
-    }
-
-    /**
-     * @name Mat::get_roi(const Mat::ROI &roi)
+     * @name Mat::view_roi(const Mat::ROI &roi)
      * @brief Make a shallow copy of ROI matrix. | Make a view of the ROI matrix. Using ROI structure.
      *
      * @param roi Rectangular area of interest
      *
      * @return result matrix size row_size x col_size
      */
-    Mat Mat::get_roi(const Mat::ROI &roi)
+    Mat Mat::view_roi(const Mat::ROI &roi) const
     {
-        return (get_roi(roi.pos_y, roi.pos_x, roi.height, roi.width));
+        return view_roi(roi.pos_y, roi.pos_x, roi.height, roi.width);
     }
 
     /**
      * @name Mat::copy_roi(int start_row, int start_col, int height, int width)
-     * @brief Make a deep copy of matrix.
+     * @brief Make a deep copy of matrix. Copared to view_roi(), this one is a deep copy, not sharing memory with the source matrix.
      *
      * @param start_row Start row position of source matrix to copy
      * @param start_col Start column position of source matrix to copy
@@ -458,27 +470,33 @@ namespace tiny
      */
     Mat Mat::copy_roi(int start_row, int start_col, int height, int width)
     {
-        Mat result(height, width);
-
         if ((start_row + height) > this->row)
         {
-            return result;
+            std::cerr << "[>>> Error ! <<<] Invalid row position " << std::endl;
+            return Mat();
         }
         if ((start_col + width) > this->col)
         {
-            return result;
+            std::cerr << "[>>> Error ! <<<] Invalid columnn position " << std::endl;
+            return Mat();
         }
 
+        // initiate the result matrix
+        Mat result(height, width);
+
+        // deep copy the data from the source matrix
         for (size_t r = 0; r < result.row; r++)
         {
             memcpy(&result.data[r * result.col], &this->data[(r + start_row) * this->stride + start_col], result.col * sizeof(float));
         }
+
+        // return result;
         return result;
     }
 
     /**
      * @name Mat::copy_roi(const Mat::ROI &roi)
-     * @brief Make a deep copy of matrix. Using ROI structure.
+     * @brief Make a deep copy of matrix. Using ROI structure. Copared to view_roi(), this one is a deep copy, not sharing memory with the source matrix.
      *
      * @param roi Rectangular area of interest
      *
