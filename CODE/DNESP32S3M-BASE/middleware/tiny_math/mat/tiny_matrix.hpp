@@ -122,8 +122,8 @@ namespace tiny
         Mat &operator=(const Mat &src); // Copy assignment
         Mat &operator+=(const Mat &A); // Add matrix
         Mat &operator+=(float C);
-        // Mat &operator-=(const Mat &A);
-        // Mat &operator-=(float C);
+        Mat &operator-=(const Mat &A);
+        Mat &operator-=(float C);
         // Mat &operator*=(const Mat &A);
         // Mat &operator*=(float C);
         // Mat &operator/=(const Mat &B);

@@ -686,6 +686,73 @@ namespace tiny
         return *this;
     }
 
+    /**
+     * @name Mat::operator-=(const Mat &A)
+     * @brief Element-wise subtraction of another matrix from this matrix.
+     *
+     * @param A The matrix to subtract
+     * @return Mat& Reference to the current matrix
+     */
+    Mat &Mat::operator-=(const Mat &A)
+    {
+        // 1. Dimension check
+        if ((this->row != A.row) || (this->col != A.col))
+        {
+            std::cerr << "[Error] Matrix subtraction failed: Dimension mismatch ("
+                      << this->row << "x" << this->col << " vs "
+                      << A.row << "x" << A.col << ")\n";
+            return *this;
+        }
+
+        // 2. Select subtraction method based on matrix type
+        if (this->sub_matrix || A.sub_matrix)
+        {
+            // Row-wise subtraction for sub-matrix or mixed cases
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_sub_f32(this->data, A.data, this->data, this->row, this->col, this->pad, A.pad, this->pad, 1, 1, 1);
+#else
+            tiny_mat_sub_f32(this->data, A.data, this->data, this->row, this->col, this->pad, A.pad, this->pad, 1, 1, 1);
+#endif
+        }
+        else
+        {
+            // Vectorized subtraction for full matrix
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dsps_sub_f32(this->data, A.data, this->data, this->memory, 1, 1, 1);
+#else
+            tiny_vec_sub_f32(this->data, A.data, this->data, this->memory, 1, 1, 1);
+#endif
+        }
+
+        return *this;
+    }
+
+    /**
+     * @name Mat::operator-=(float C)
+     * @brief Element-wise subtraction of a constant from this matrix.
+     *
+     * @param C The constant to subtract
+     */
+    Mat &Mat::operator-=(float C)
+    {
+        if (this->sub_matrix)
+        {
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_addc_f32(this->data, this->data, -C, this->row, this->col, this->pad, this->pad, 1, 1);
+#else
+            tiny_mat_addc_f32(this->data, this->data, -C, this->row, this->col, this->pad, this->pad, 1, 1);
+#endif
+        }
+        else
+        {
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dsps_addc_f32(this->data, this->data, this->memory, -C, 1, 1);
+#else
+            tiny_vec_addc_f32(this->data, this->data, this->memory, -C, 1, 1);
+#endif
+        }
+        return *this;
+    }
 
 
 
@@ -705,7 +772,4 @@ namespace tiny
 
 
 
-
-
-    
 }
