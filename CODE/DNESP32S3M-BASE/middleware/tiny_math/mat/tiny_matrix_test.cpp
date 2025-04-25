@@ -34,19 +34,19 @@ void test_constructor_destructor()
     // test3: constructor with rows and cols, specifying stride, using internal allocation
     std::cout << "[Test3: Constructor with Rows, Cols and Stride]\n";
     tiny::Mat mat3(3, 4, 5);
-    mat3.print_info();    
+    mat3.print_info();
     mat3.print_matrix(true);
 
     // test4: constructor with external data
     std::cout << "[Test4: Constructor with External Data]\n";
-    float data[12] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+    float data[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
     tiny::Mat mat4(data, 3, 4);
     mat4.print_info();
     mat4.print_matrix(true);
 
     // test5: constructor with external data and stride
     std::cout << "[Test5: Constructor with External Data and Stride]\n";
-    float data_stride[15] = { 0, 1, 2, 3, 0, 4, 5, 6, 7, 0, 8, 9, 10, 11, 0 };
+    float data_stride[15] = {0, 1, 2, 3, 0, 4, 5, 6, 7, 0, 8, 9, 10, 11, 0};
     tiny::Mat mat5(data_stride, 3, 4, 5);
     mat5.print_info();
     mat5.print_matrix(true);
@@ -74,31 +74,30 @@ void test_element_access()
     mat(1, 2) = 6.6f;
     mat.print_info();
     mat.print_matrix(true);
-    
+
     // Test 2: const access
     std::cout << "[Test2: Const Access]\n";
     const tiny::Mat const_mat = mat;
     std::cout << "const_mat(0, 0): " << const_mat(0, 0) << "\n";
-
 }
 
 // Group 3: data manipulation
 void test_roi_operations()
 {
     std::cout << "\n--- Test: Data Manipulation ---\n";
-    
+
     // Material Matrices
-    tiny::Mat matA(2,3);
+    tiny::Mat matA(2, 3);
     for (int i = 0; i < 2; ++i)
     {
         for (int j = 0; j < 3; ++j)
         {
             matA(i, j) = i * 3 + j + 1;
-            matA(i, j) = matA(i, j)/10;
+            matA(i, j) = matA(i, j) / 10;
         }
     }
 
-    float data[15] = { 0, 1, 2, 3, 0, 4, 5, 6, 7, 0, 8, 9, 10, 11, 0 };
+    float data[15] = {0, 1, 2, 3, 0, 4, 5, 6, 7, 0, 8, 9, 10, 11, 0};
     tiny::Mat matB(data, 3, 4, 5);
 
     tiny::Mat matC;
@@ -160,7 +159,7 @@ void test_roi_operations()
     tiny::Mat roi4 = matB.view_roi(roi_struct);
     roi4.print_info();
     roi4.print_matrix(true);
-    
+
     // Test 5: Copy ROI - low level function
     std::cout << "[Test5: Copy ROI - low level function]\n";
     tiny::Mat mat_deep_copy = matB.copy_roi(1, 1, 2, 2);
@@ -209,6 +208,147 @@ void test_roi_operations()
     matB.print_matrix(true);
 }
 
+// Group 4: arithmetic operators
+void test_arithmetic_operators()
+{
+    std::cout << "\n--- Test: Arithmetic Operators ---\n";
+
+    // Test 1: operator=
+    std::cout << "\n[Test1: Assignment Operator Tests]\n";
+
+    // Test 1.1: Same dimension assignment
+    std::cout << "[Test 1.1] Assign matrices with same dimensions:\n";
+    tiny::Mat assignMat_dst_1(2, 3);
+    tiny::Mat assignMat_src_1(2, 3);
+
+    for (int i = 0; i < 2; ++i)
+        for (int j = 0; j < 3; ++j)
+            assignMat_src_1(i, j) = static_cast<float>(i * 3 + j + 1);
+
+    assignMat_dst_1 = assignMat_src_1;
+    assignMat_dst_1.print_info();
+    assignMat_dst_1.print_matrix(true);
+
+    // Test 1.2: Different dimension assignment
+    std::cout << "[Test 1.2] Assign matrices with different dimensions:\n";
+    tiny::Mat assignMat_dst_2(4, 2);
+    assignMat_dst_2 = assignMat_src_1;
+    assignMat_dst_2.print_info();
+    assignMat_dst_2.print_matrix(true);
+
+    // Test 1.3: Assignment to sub-matrix (should fail)
+    std::cout << "[Test 1.3] Attempt to assign to a sub-matrix (expect error):\n";
+    float data[15] = {0, 1, 2, 3, 0, 4, 5, 6, 7, 0, 8, 9, 10, 11, 0};
+    tiny::Mat baseMat_1(data, 3, 4, 5);
+    tiny::Mat assignMat_sub_1 = baseMat_1.view_roi(1, 1, 2, 2);
+    assignMat_sub_1 = assignMat_src_1; // Should trigger error
+    assignMat_sub_1.print_info();
+    assignMat_sub_1.print_matrix(true);
+
+    // Test 1.4: Self-assignment
+    std::cout << "[Test 1.4] Self-assignment test:\n";
+    assignMat_src_1 = assignMat_src_1;
+    assignMat_src_1.print_info();
+    assignMat_src_1.print_matrix(true);
+
+    // Test 2: operator+ (Matrix)
+    std::cout << "\n[Test2: Operator + (Matrix)]\n";
+
+    // Test 2.1: Full matrix addition (same dimensions)
+    std::cout << "[Test 2.1] Full matrix addition (same dimensions):\n";
+    tiny::Mat addMat_A(2, 3);
+    tiny::Mat addMat_B(2, 3);
+
+    // Initialize matrices
+    for (int i = 0; i < 2; ++i)
+        for (int j = 0; j < 3; ++j)
+        {
+            addMat_A(i, j) = static_cast<float>(i * 3 + j + 1);
+            addMat_B(i, j) = 1.0f; // Each element +1
+        }
+
+    addMat_A += addMat_B;
+    addMat_A.print_info();
+    addMat_A.print_matrix(true);
+
+    // Test 2.2: Sub-matrix addition
+    std::cout << "[Test 2.2] Sub-matrix addition:\n";
+    float subMat_data_1[20] = {0, 1, 2, 3, 0, 4, 5, 6, 7, 0, 8, 9, 10, 11, 0, 12, 13, 14, 15, 0};
+    tiny::Mat baseMat(subMat_data_1, 4, 4, 5);
+    tiny::Mat subMat1 = baseMat.view_roi(1, 1, 2, 2);
+    tiny::Mat subMat2 = baseMat.view_roi(1, 1, 2, 2);
+
+    subMat1 += subMat2;
+    subMat1.print_info();
+    subMat1.print_matrix(true);
+
+    // Test 2.3: Full matrix + Sub-matrix addition
+    std::cout << "[Test 2.3] Full matrix + Sub-matrix addition:\n";
+    tiny::Mat fullMat(2, 2);
+    for (int i = 0; i < 2; ++i)
+        for (int j = 0; j < 2; ++j)
+            fullMat(i, j) = 2.0f;
+
+    fullMat += subMat2;
+    fullMat.print_info();
+    fullMat.print_matrix(true);
+
+    // Test 2.4: Dimension mismatch (expect error)
+    std::cout << "[Test 2.4] Dimension mismatch (expect error):\n";
+    tiny::Mat wrongDimMat(3, 3);
+    fullMat += wrongDimMat; // Should trigger error
+    fullMat.print_info();
+    fullMat.print_matrix(true);
+
+    // Test 3: operator+= (constant addition)
+    std::cout << "\n[Test3: Addition Operator += Constant Tests]\n";
+
+    // Test 3.1: Full matrix + constant
+    std::cout << "[Test 3.1] Full matrix + constant:\n";
+    tiny::Mat constAddMat_1(2, 3);
+    for (int i = 0; i < 2; ++i)
+        for (int j = 0; j < 3; ++j)
+            constAddMat_1(i, j) = static_cast<float>(i * 3 + j); 
+
+    constAddMat_1 += 5.0f; 
+    constAddMat_1.print_info();
+    constAddMat_1.print_matrix(true);
+
+    // Test 3.2: Sub-matrix + constant
+    std::cout << "[Test 3.2] Sub-matrix + constant:\n";
+    float const_subMat_data_1[20] = {0, 1, 2, 3, 0, 4, 5, 6, 7, 0, 8, 9, 10, 11, 0, 12, 13, 14, 15, 0};
+    tiny::Mat constBaseMat(const_subMat_data_1, 4, 4, 5);
+    tiny::Mat constSubMat = constBaseMat.view_roi(1, 1, 2, 2);
+
+    constSubMat += 3.0f; 
+    constSubMat.print_info();
+    constSubMat.print_matrix(true);
+
+    // Test 3.3: Add zero
+    std::cout << "[Test 3.3] Full matrix + 0 (no change expected):\n";
+    tiny::Mat constAddMat_2(2, 2);
+    constAddMat_2(0, 0) = 1.0f;
+    constAddMat_2(0, 1) = 2.0f;
+    constAddMat_2(1, 0) = 3.0f;
+    constAddMat_2(1, 1) = 4.0f;
+
+    constAddMat_2 += 0.0f;
+    constAddMat_2.print_info();
+    constAddMat_2.print_matrix(true);
+
+    // Test 3.4: Add negative constant
+    std::cout << "[Test 3.4] Full matrix + negative constant:\n";
+    tiny::Mat constAddMat_3(2, 2);
+    constAddMat_3(0, 0) = 10.0f;
+    constAddMat_3(0, 1) = 20.0f;
+    constAddMat_3(1, 0) = 30.0f;
+    constAddMat_3(1, 1) = 40.0f;
+
+    constAddMat_3 += -15.0f;
+    constAddMat_3.print_info();
+    constAddMat_3.print_matrix(true);
+}
+
 void tiny_matrix_test()
 {
     std::cout << "============ [tiny_matrix_test start] ============\n";
@@ -220,7 +360,10 @@ void tiny_matrix_test()
     // test_element_access();
 
     // Group 3: ROI operations
-    test_roi_operations();
+    // test_roi_operations();
+
+    // Group 4: arithmetic operators
+    test_arithmetic_operators();
 
     std::cout << "============ [tiny_matrix_test end] ============\n";
 }

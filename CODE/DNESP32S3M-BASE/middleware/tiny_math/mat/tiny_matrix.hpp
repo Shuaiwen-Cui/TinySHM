@@ -118,6 +118,22 @@ namespace tiny
         // clear matrix
         void clear(void);
 
+        /* === Arithmetic Operators === */
+        Mat &operator=(const Mat &src); // Copy assignment
+        Mat &operator+=(const Mat &A); // Add matrix
+        Mat &operator+=(float C);
+        // Mat &operator-=(const Mat &A);
+        // Mat &operator-=(float C);
+        // Mat &operator*=(const Mat &A);
+        // Mat &operator*=(float C);
+        // Mat &operator/=(const Mat &B);
+        // Mat &operator/=(float C);
+        // Mat operator^(int C);
+
+        /* === Linear Algebra === */
+
+
+
     protected:
 
     private:

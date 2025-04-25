@@ -56,23 +56,23 @@ namespace tiny
     void Mat::print_info() const
     {
         std::cout << "Matrix Info >>>\n";
-    
+
         // Basic matrix metadata
         std::cout << "rows            " << this->row << "\n";
         std::cout << "cols            " << this->col << "\n";
         std::cout << "elements        " << this->element;
-    
+
         // Check if elements match rows * cols
         if (this->element != this->row * this->col)
         {
             std::cout << "   [Warning] Mismatch! Expected: " << (this->row * this->col);
         }
         std::cout << "\n";
-    
+
         std::cout << "paddings        " << this->pad << "\n";
         std::cout << "stride          " << this->stride << "\n";
         std::cout << "memory          " << this->memory << "\n";
-    
+
         // Pointer information
         std::cout << "data pointer    " << static_cast<const void *>(this->data) << "\n";
         std::cout << "temp pointer    " << static_cast<const void *>(this->temp) << "\n";
@@ -84,28 +84,28 @@ namespace tiny
             std::cout << "   (External buffer or View)";
         }
         std::cout << "\n";
-    
+
         std::cout << "sub_matrix      " << this->sub_matrix;
         if (this->sub_matrix)
         {
             std::cout << "   (This is a Sub-Matrix View)";
         }
         std::cout << "\n";
-    
+
         // State warnings
         if (this->sub_matrix && !this->ext_buff)
         {
             std::cout << "[Warning] Sub-matrix is marked but ext_buff is false! Potential logic error.\n";
         }
-    
+
         if (this->data == nullptr)
         {
             std::cout << "[Info] No data buffer assigned to this matrix.\n";
         }
-    
+
         std::cout << "<<< Matrix Info\n";
     }
-    
+
     /**
      * @name Mat::print_matrix()
      * @brief Print the matrix elements.
@@ -302,7 +302,7 @@ namespace tiny
         this->stride = src.stride;
         this->element = src.element;
         this->memory = src.memory;
-    
+
         if (src.sub_matrix && src.ext_buff)
         {
             // if the source is a view (submatrix), do shallow copy
@@ -318,7 +318,7 @@ namespace tiny
             this->temp = nullptr;
             this->ext_buff = false;
             this->sub_matrix = false;
-    
+
             if (src.data != nullptr)
             {
                 alloc_mem();
@@ -330,7 +330,6 @@ namespace tiny
             }
         }
     }
-    
 
     /**
      * @name ~Mat()
@@ -416,7 +415,7 @@ namespace tiny
      * @param start_col Start column position of source matrix to copy
      * @param roi_rows Size of row elements of source matrix to copy
      * @param roi_cols Size of column elements of source matrix to copy
-     * 
+     *
      * @todo the pointer address is changing every time access, but the result is correct.
      *
      * @return result matrix size row_size x col_size
@@ -565,4 +564,148 @@ namespace tiny
         }
     }
 
+    /* === Arithmetic Operators === */
+    /**
+     * @name &Mat::operator=(const Mat &src)
+     * @brief Copy assignment operator - copy the elements of the source matrix into the destination matrix. Compared to the copy constructor, this one is used for existing matrix to copy the elements. The copy constructor is used for the first time to create a new matrix and copy the elements at the same time.
+     *
+     * @param src
+     * @return Mat&
+     */
+    Mat &Mat::operator=(const Mat &src)
+    {
+        // 1. Self-assignment check
+        if (this == &src)
+        {
+            return *this;
+        }
+
+        // 2. Forbid assignment to sub-matrix views
+        if (this->sub_matrix)
+        {
+            std::cerr << "[Error] Assignment to a sub-matrix is not allowed.\n";
+            return *this;
+        }
+
+        // 3. If dimensions differ, reallocate memory
+        if (this->row != src.row || this->col != src.col)
+        {
+            if (!this->ext_buff && this->data != nullptr)
+            {
+                delete[] this->data;
+            }
+
+            // Update dimensions and memory info
+            this->row = src.row;
+            this->col = src.col;
+            this->stride = src.col; // Follow source's logical stride
+            this->pad = 0;
+            this->element = this->row * this->col;
+            this->memory = this->row * this->stride;
+
+            this->ext_buff = false;
+            this->sub_matrix = false;
+
+            alloc_mem();
+        }
+
+        // 4. Data copy (row-wise)
+        for (int r = 0; r < this->row; ++r)
+        {
+            std::memcpy(this->data + r * this->stride, src.data + r * src.stride, this->col * sizeof(float));
+        }
+
+        return *this;
+    }
+
+    /**
+     * @name Mat::operator+=(const Mat &A)
+     * @brief Element-wise addition of another matrix to this matrix.
+     *
+     * @param A The matrix to add
+     * @return Mat& Reference to the current matrix
+     */
+    Mat &Mat::operator+=(const Mat &A)
+    {
+        // 1. Dimension check
+        if ((this->row != A.row) || (this->col != A.col))
+        {
+            std::cerr << "[Error] Matrix addition failed: Dimension mismatch ("
+                      << this->row << "x" << this->col << " vs "
+                      << A.row << "x" << A.col << ")\n";
+            return *this;
+        }
+
+        // 2. Select addition method based on matrix type
+        if (this->sub_matrix || A.sub_matrix)
+        {
+            // Row-wise addition for sub-matrix or mixed cases
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_add_f32(this->data, A.data, this->data, this->row, this->col, this->pad, A.pad, this->pad, 1, 1, 1);
+#else
+            tiny_mat_add_f32(this->data, A.data, this->data, this->row, this->col, this->pad, A.pad, this->pad, 1, 1, 1);
+#endif
+        }
+        else
+        {
+            // Vectorized addition for full matrix
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dsps_add_f32(this->data, A.data, this->data, this->memory, 1, 1, 1);
+#else
+            tiny_vec_add_f32(this->data, A.data, this->data, this->memory, 1, 1, 1);
+#endif
+        }
+
+        return *this;
+    }
+
+    /**
+     * @name Mat::operator+=(float C)
+     * @brief Element-wise addition of a constant to this matrix.
+     *
+     * @param C The constant to add
+     */
+    Mat &Mat::operator+=(float C)
+    {
+        if (this->sub_matrix)
+        {
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_addc_f32(this->data, this->data, C, this->row, this->col, this->pad, this->pad, 1, 1);
+#else
+            tiny_mat_addc_f32(this->data, this->data, C, this->row, this->col, this->pad, this->pad, 1, 1);
+#endif
+        }
+        else
+        {
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dsps_addc_f32(this->data, this->data, this->memory, C, 1, 1);
+#else
+            tiny_vec_addc_f32(this->data, this->data, this->memory, C, 1, 1);
+#endif
+        }
+        return *this;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 }
