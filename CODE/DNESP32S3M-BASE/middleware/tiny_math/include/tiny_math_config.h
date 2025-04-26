@@ -42,7 +42,7 @@ extern "C"
 #define MCU_PLATFORM_RISCV       3
 
 // choose one platform
-#define MCU_PLATFORM_SELECTED    MCU_PLATFORM_ESP32
+#define MCU_PLATFORM_SELECTED    MCU_PLATFORM_ESP32 
 
 
 #ifdef __cplusplus

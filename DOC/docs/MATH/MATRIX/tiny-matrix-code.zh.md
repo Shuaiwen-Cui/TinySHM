@@ -1,6 +1,6 @@
 # 代码
 
-## tiny_matrix.h
+## tiny_matrix.hpp
 
 ```cpp
 /**
@@ -37,655 +37,151 @@ namespace tiny
     {
     public:
         /* === Matrix Metadata === */
-        int rows;        /*!< Amount of rows*/
-        int cols;        /*!< Amount of columns*/
-        int stride;      /*!< Stride = (number of elements in a row) + padding*/
-        int padding;     /*!< Padding between 2 rows*/
-        int length;      /*!< Total amount of data in data array*/
-        float *data;     /*!< Buffer with matrix data*/
-        bool ext_buff;   /*!< Flag indicates that matrix use external buffer*/
-        bool sub_matrix; /*!< Flag indicates that matrix is a subset of another matrix*/
+        int row;         //< number of rows
+        int col;         //< number of columns
+        int pad;         //< number of paddings between 2 rows
+        int stride;      //< stride = (number of elements in a row) + padding
+        int element;     //< number of elements = rows * cols
+        int memory;      //< size of the data buffer = rows * stride
+        float *data;     //< pointer to the data buffer
+        float *temp;     //< pointer to the temporary data buffer
+        bool ext_buff;   //< flag indicates that matrix use external buffer
+        bool sub_matrix; //< flag indicates that matrix is a subset of another matrix
 
         /* === Rectangular ROI Structure === */
-        /**
-         * @brief Rectangular area
-         *
-         * The Rect is used for creating regions of interest ROI(s). The ROI is then used as a sub-matrix
-         */
-        struct Rect
+        struct ROI
         {
-            int x;      ///< starting column index
-            int y;      ///< starting row index
+            int pos_x;  ///< starting column index
+            int pos_y;  ///< starting row index
             int width;  ///< width of ROI (columns)
             int height; ///< height of ROI (rows)
 
-            /**
-             * @brief Constructor with initialization to 0
-             *
-             * @param[in] x: x starting position (start col) of the rectangular area
-             * @param[in] y: y starting position (start row) of the rectangular area
-             * @param[in] width: width (number of cols) of the rectangular area
-             * @param[in] height: height (number of rows) of the rectangular area
-             */
-            Rect(int x = 0, int y = 0, int width = 0, int height = 0);
+            // ROI constructor
+            ROI(int pos_x = 0, int pos_y = 0, int width = 0, int height = 0);
 
-            /**
-             * @brief Resize rect area
-             *
-             * @param[in] x: x starting position (start col) of the new rectangular area
-             * @param[in] y: y starting position (start row) of the new rectangular area
-             * @param[in] width: width (number of cols) of the new rectangular area
-             * @param[in] height: height (number of rows) of the new rectangular area
-             */
-            void resizeRect(int x, int y, int width, int height);
+            // resize ROI
+            void resize_roi(int pos_x, int pos_y, int width, int height);
 
-            /**
-             * @brief Get amount of elements in the rect area
-             */
-            int areaRect(void) const;
+            // calculate area of ROI
+            int area_roi(void) const;
         };
+        
+        /* === Printing Functions === */
+        // print matrix info
+        void print_info() const;
+
+        // print matrix elements, paddings optional
+        void print_matrix(bool show_padding);
 
         /* === Constructors & Destructor === */
-        /**
-         * Allocate matrix with undefined size.
-         */
+        // memory allocation
+        void alloc_mem(); // Allocate internal memory
+
+        // constructor
         Mat();
-        /**
-         * @brief Construct a new Mat object (internal allocation)
-         *
-         * @param rows Number of rows
-         * @param cols Number of columns
-         */
         Mat(int rows, int cols);
-        /**
-         * @brief Construct a new Mat object (external allocation)
-         *
-         * @param data Pointer to external data buffer
-         * @param rows Number of rows
-         * @param cols Number of columns
-         */
+        Mat(int rows, int cols, int stride);
         Mat(float *data, int rows, int cols);
-        /**
-         * @brief Construct a new Mat object (external allocation with stride)
-         *
-         * @param data Pointer to external data buffer
-         * @param rows Number of rows
-         * @param cols Number of columns
-         * @param stride Stride (number of elements in a row)
-         */
         Mat(float *data, int rows, int cols, int stride);
-        /**
-         * @brief Make copy of matrix.
-         *
-         * if src matrix is sub matrix, only the header is copied
-         * if src matrix is matrix, header and data are copied
-         *
-         * @param[in] src: source matrix
-         */
         Mat(const Mat &src);
-        /**
-         * @brief Destroy the Mat object, freeing internal memory
-         */
+
+        // destructor
         ~Mat();
-        /**
-         * @brief Allocate internal memory buffer
-         */
-        void allocate(); // Allocate internal memory
 
         /* === Element Access === */
-        inline float &operator()(int row, int col) { return data[row * stride + col]; }             // for non-const
-        inline const float &operator()(int row, int col) const { return data[row * stride + col]; } // for const
+        // access matrix elements - non const
+        inline float &operator()(int row, int col) { return data[row * stride + col]; }
+
+        // access matrix elements - const             
+        inline const float &operator()(int row, int col) const { return data[row * stride + col]; }
 
         /* === Data Manipulation === */
-        /**
-         * Make copy of matrix. Memory not shared.
-         * @param[in] src: source matrix
-         * @param[in] row_pos: start row position of destination matrix
-         * @param[in] col_pos: start col position of destination matrix
-         */
-        void Copy(const Mat &src, int row_pos, int col_pos);
-        /**
-         * @brief Copy header of matrix. Memory shared.
-         *
-         * Make a shallow copy of matrix (no data copy)
-         * @param[in] src: source matrix
-         */
-        void CopyHead(const Mat &src);
-        /**
-         * @brief Create a subset of matrix as ROI (Region of Interest)
-         *
-         * @param[in] startRow: start row position of source matrix to get the subset matrix from
-         * @param[in] startCol: start col position of source matrix to get the subset matrix from
-         * @param[in] roiRows: size of row elements of source matrix to get the subset matrix from
-         * @param[in] roiCols: size of col elements of source matrix to get the subset matrix from
-         * @param[in] stride: number of cols + padding between 2 rows
-         *
-         * @return
-         *      - result matrix size roiRows x roiCols
-         */
-        Mat getROI(int startRow, int startCol, int roiRows, int roiCols, int stride);
-        /**
-         * @brief Create a subset of matrix as ROI (Region of Interest)
-         *
-         * @param[in] startRow: start row position of source matrix to get the subset matrix from
-         * @param[in] startCol: start col position of source matrix to get the subset matrix from
-         * @param[in] roiRows: size of row elements of source matrix to get the subset matrix from
-         * @param[in] roiCols: size of col elements of source matrix to get the subset matrix from
-         *
-         * @return
-         *      - result matrix size roiRows x roiCols
-         */
-        Mat getROI(int startRow, int startCol, int roiRows, int roiCols);
-        /**
-         * @brief Create a subset of matrix as ROI (Region of Interest)
-         *
-         * @param[in] rect: rectangular area of interest
-         *
-         * @return
-         *      - result matrix size rect.rectRows x rect.rectCols
-         */
-        Mat getROI(const Rect &rect);
-        /**
-         * Make copy of matrix.
-         * @param[in] row_start: start row position of source matrix to copy
-         * @param[in] row_size: size of wor elements of source matrix to copy
-         * @param[in] col_start: start col position of source matrix to copy
-         * @param[in] col_size: size of wor elements of source matrix to copy
-         *
-         * @return
-         *      - result matrix size row_size x col_size
-         */
-        Mat Get(int row_start, int row_size, int col_start, int col_size);
-        /**
-         * Make copy of matrix.
-         * @param[in] rect: rectangular area of interest
-         * @return
-         *      - result matrix size row_size x col_size
-         */
-        Mat Get(const Rect &rect);
-        /**
-         * Return part of matrix from defined position (startRow, startCol) as a matrix[blockRows x blockCols].
-         *
-         * @param[in] startRow: start row position
-         * @param[in] startCol: start column position
-         * @param[in] blockRows: amount of rows in result matrix
-         * @param[in] blockCols: amount of columns in the result matrix
-         *
-         * @return
-         *      - matrix [blockRows]x[blockCols]
-         */
-        Mat block(int startRow, int startCol, int blockRows, int blockCols);
-        /**
-         * Swap two rows between each other.
-         * @param[in] row1: position of first row
-         * @param[in] row2: position of second row
-         */
-        void swapRows(int row1, int row2);
-        /**
-         * The method fill 0 to the matrix structure.
-         *
-         */
-        void clear();
+        // copy other matrix into this matrix as a sub-matrix
+        tiny_error_t copy_paste(const Mat &src, int row_pos, int col_pos);
 
-        /* === Print & Debug === */
-        /**
-         * @brief print matrix header
-         *
-         * Print all information about matrix to the terminal
-         * @param[in] src: source matrix
-         */
-        void PrintHead();
-        /**
-         * @brief print matrix header and data
-         *
-         * Print all information about matrix to the terminal
-         * @param[in] show_padding: show padding information
-         * @param[in] label: label for the matrix
-         */
-        void PrintMatrix(bool show_padding, const std::string &label);
+        // copy header of other matrix to this matrix
+        tiny_error_t copy_head(const Mat &src);
+
+        // get a view (shallow copy) of sub-matrix (ROI) from this matrix
+        Mat view_roi(int start_row, int start_col, int roi_rows, int roi_cols) const;
+
+        // get a view (shallow copy) of sub-matrix (ROI) from this matrix using ROI structure
+        Mat view_roi(const Mat::ROI &roi) const;
+
+        // get a replica (deep copy) of sub-matrix (ROI) 
+        Mat copy_roi(int start_row, int start_col, int roi_rows, int roi_cols);
+
+        // get a replica (deep copy) of sub-matrix (ROI) using ROI structure
+        Mat copy_roi(const Mat::ROI &roi);
+
+        // get a block of matrix
+        Mat block(int start_row, int start_col, int block_rows, int block_cols);
+
+        // swap rows
+        void swap_rows(int row1, int row2);
+
+        // clear matrix
+        void clear(void);
 
         /* === Arithmetic Operators === */
-        /**
-         * Copy operator
-         *
-         * @param[in] src: source matrix
-         *
-         * @return
-         *      - matrix copy
-         */
-        Mat &operator=(const Mat &src); // Copy assignment
-        /**
-         * += operator
-         * The operator use DSP optimized implementation of multiplication.
-         *
-         * @param[in] A: source matrix
-         *
-         * @return
-         *      - result matrix: result += A
-         */
-        Mat &operator+=(const Mat &A);
-        /**
-         * += operator
-         * The operator use DSP optimized implementation of multiplication.
-         *
-         * @param[in] C: constant
-         *
-         * @return
-         *      - result matrix: result += C
-         */
-        Mat &operator+=(float C);
-        /**
-         * -= operator
-         * The operator use DSP optimized implementation of multiplication.
-         *
-         * @param[in] A: source matrix
-         *
-         * @return
-         *      - result matrix: result -= A
-         */
-        Mat &operator-=(const Mat &A);
-        /**
-         * -= operator
-         * The operator use DSP optimized implementation of multiplication.
-         *
-         * @param[in] C: constant
-         *
-         * @return
-         *      - result matrix: result -= C
-         */
-        Mat &operator-=(float C);
-        /**
-         * *= operator
-         * The operator use DSP optimized implementation of multiplication.
-         *
-         * @param[in] A: source matrix
-         *
-         * @return
-         *      - result matrix: result -= A
-         */
-        Mat &operator*=(const Mat &A);
-        /**
-         * += with constant operator
-         * The operator use DSP optimized implementation of multiplication.
-         *
-         * @param[in] C: constant value
-         *
-         * @return
-         *      - result matrix: result *= C
-         */
-        Mat &operator*=(float C);
-        /**
-         * /= operator
-         *
-         * @param[in] B: source matrix
-         *
-         * @return
-         *      - result matrix: result[i,j] = result[i,j]/B[i,j]
-         */
-        Mat &operator/=(const Mat &B);
-        /**
-         * /= with constant operator
-         * The operator use DSP optimized implementation of multiplication.
-         *
-         * @param[in] C: constant value
-         *
-         * @return
-         *      - result matrix: result /= C
-         */
-        Mat &operator/=(float C);
-        /**
-         * ^= exponentiation operator
-         * The operator use DSP optimized implementation of multiplication.
-         *
-         * @param[in] num: exponent
-         *
-         * @return
-         *      - result matrix: result = result^num
-         */
-        Mat operator^(int C);
+        Mat &operator=(const Mat &src);    // Copy assignment
+        Mat &operator+=(const Mat &A);     // Add matrix
+        Mat &operator+=(float C);          // Add constant
+        Mat &operator-=(const Mat &A);     // Subtract matrix
+        Mat &operator-=(float C);          // Subtract constant 
+        Mat &operator*=(const Mat &A);     // Multiply matrix
+        Mat &operator*=(float C);          // Multiply constant
+        Mat &operator/=(const Mat &B);     // Divide matrix
+        Mat &operator/=(float C);          // Divide constant
+        Mat operator^(int C);              // Exponentiation
 
         /* === Linear Algebra === */
-        /**
-         * @brief Normalize the matrix
-         *
-         * The method normalize the matrix to unit length.
-         */
+        Mat transpose();                   // Transpose matrix
+        Mat cofactor(int row, int col);    // cofactor matrix extraction
+        float determinant();
+        Mat adjoint(); 
         void normalize();
-        /**
-         * @brief Calculate the matrix norm
-         *
-         * The method calculate the matrix norm.
-         *
-         * @return
-         *      - result matrix norm
-         */
-        float norm();
-        /**
-         * @brief Calculate the determinant of the matrix
-         *
-         * The method calculate the determinant of the matrix.
-         *
-         * @param n: size of the matrix
-         *
-         * @return
-         *      - result matrix determinant
-         */
-        float det(int n);
-        /**
-         * Matrix transpose.
-         * Change rows and columns between each other.
-         *
-         * @return
-         *      - transposed matrix
-         */
-        Mat t();
-        /**
-         * Find the inverse matrix
-         *
-         * @return
-         *      - inverse matrix
-         */
-        Mat inverse();
-        /**
-         * Find pseudo inverse matrix
-         *
-         * @return
-         *      - inverse matrix
-         */
-        Mat pinv();
-        /**
-         * @brief   Gaussian Elimination
-         *
-         * Gaussian Elimination of matrix
-         *
-         * @return
-         *      - result matrix
-         */
-        Mat gaussianEliminate();
-        /**
-         * Row reduction for Gaussian elimination
-         *
-         * @return
-         *      - result matrix
-         */
-        Mat rowReduceFromGaussian();
-
-        /* === Static Utility Functions === */
-        /**
-         * Create identity matrix.
-         * Create a square matrix and fill diagonal with 1.
-         *
-         * @param[in] size: matrix size
-         *
-         * @return
-         *      - matrix [N]x[N] with 1 in diagonal
-         */
+        float norm() const;
+        Mat inverse_adjoint();
         static Mat eye(int size);
-        /**
-         * Create matrix with all elements 1.
-         * Create a square matrix and fill all elements with 1.
-         *
-         * @param[in] size: matrix size
-         *
-         * @return
-         *      - matrix [N]x[N] with 1 in all elements
-         */
-        static Mat ones(int size);
-        /**
-         * Create matrix with all elements 1.
-         * Create a matrix and fill all elements with 1.
-         *
-         * @param[in] rows: matrix rows
-         * @param[in] cols: matrix cols
-         *
-         * @return
-         *      - matrix [N]x[N] with 1 in all elements
-         */
+        static Mat augment(const Mat &A, const Mat &B);
         static Mat ones(int rows, int cols);
-        /**
-         * @brief   Solve the matrix
-         *
-         * Solve matrix. Find roots for the matrix A*x = b
-         *
-         * @param[in] A: matrix [N]x[N] with input coefficients
-         * @param[in] b: vector [N]x[1] with result values
-         *
-         * @return
-         *      - matrix [N]x[1] with roots
-         */
-        static Mat solve(Mat A, Mat b);
-        /**
-         * @brief   Band solve the matrix
-         *
-         * Solve band matrix. Find roots for the matrix A*x = b with bandwidth k.
-         *
-         * @param[in] A: matrix [N]x[N] with input coefficients
-         * @param[in] b: vector [N]x[1] with result values
-         * @param[in] k: upper bandwidth value
-         *
-         * @return
-         *      - matrix [N]x[1] with roots
-         */
-        static Mat bandSolve(Mat A, Mat b, int k);
-        /**
-         * @brief   Solve the matrix
-         *
-         * Different way to solve the matrix. Find roots for the matrix A*x = y
-         *
-         * @param[in] A: matrix [N]x[N] with input coefficients
-         * @param[in] y: vector [N]x[1] with result values
-         *
-         * @return
-         *      - matrix [N]x[1] with roots
-         */
-        static Mat roots(Mat A, Mat y);
-        /**
-         * @brief   Dotproduct of two vectors
-         *
-         * The method returns dotproduct of two vectors
-         *
-         * @param[in] A: Input vector A Nx1
-         * @param[in] B: Input vector B Nx1
-         *
-         * @return
-         *      - dotproduct value
-         */
-        static float dotProduct(Mat A, Mat B);
-        /**
-         * @brief   Augmented matrices (concatenate two matrices horizontally)
-         *
-         * Augmented matrices
-         *
-         * @param[in] A: Input vector A MxN
-         * @param[in] B: Input vector B MxK
-         *
-         * @return
-         *      - Augmented matrix Mx(N+K)
-         */
-        static Mat augment(Mat A, Mat B);
+        static Mat ones(int size);
+        Mat gaussian_eliminate() const;
+        Mat row_reduce_from_gaussian();
+        Mat inverse_gje(); // Inverse using Gaussian-Jordan elimination
+        float dotprod(const Mat &A, const Mat &B);
+        Mat solve(const Mat &A, const Mat &b);
+        Mat band_solve(Mat A, Mat b, int k);
+        Mat roots(Mat A, Mat y);
+        
+    protected:
 
     private:
-        /* === Private Utility Functions === */
-        /**
-         * @brief   Calculate cofactor matrix
-         *
-         * Calculate cofactor matrix of the matrix
-         *
-         * @param[in] row: row position
-         * @param[in] col: column position
-         * @param[in] n: size of the matrix
-         *
-         * @return
-         *      - cofactor matrix
-         */
-        Mat cofactor(int row, int col, int n);
-        /**
-         * @brief   Calculate adjoint matrix
-         *
-         * Calculate adjoint matrix of the matrix
-         *
-         * @return
-         *      - adjoint matrix
-         */
-        Mat adjoint();
-        /**
-         * @brief   Calculate matrix exponential
-         *
-         * Calculate matrix exponential of the matrix
-         *
-         * @param[in] m: input matrix
-         * @param[in] num: number of iterations
-         *
-         * @return
-         *      - matrix exponential
-         */
-        Mat expHelper(const Mat &m, int num);
+
     };
 
     /* === Stream Operators === */
-    /**
-     * Print matrix to the standard iostream.
-     * @param[in] os: output stream
-     * @param[in] m: matrix to print
-     *
-     * @return
-     *      - output stream
-     */
     std::ostream &operator<<(std::ostream &os, const Mat &m);
-    /**
-     * Print rectangular ROI to the standard iostream.
-     * @param[in] os: output stream
-     * @param[in] rect: ROI
-     *
-     * @return
-     *      - output stream
-     */
-    std::ostream &operator<<(std::ostream &os, const Mat::Rect &rect);
-    /**
-     * Fill the matrix from iostream.
-     * @param[in] is: input stream
-     * @param[in] m: matrix to fill
-     *
-     * @return
-     *      - input stream
-     */
+    std::ostream &operator<<(std::ostream &os, const Mat::ROI &roi);
     std::istream &operator>>(std::istream &is, Mat &m);
 
     /* === Global Arithmetic Operators === */
-    /**
-     * + operator, sum of two matrices
-     * The operator use DSP optimized implementation of multiplication.
-     *
-     * @param[in] A: Input matrix A
-     * @param[in] B: Input matrix B
-     *
-     * @return
-     *     - result matrix A+B
-     */
     Mat operator+(const Mat &A, const Mat &B);
-    /**
-     * + operator, sum of matrix with constant
-     * The operator use DSP optimized implementation of multiplication.
-     *
-     * @param[in] A: Input matrix A
-     * @param[in] C: Input constant
-     *
-     * @return
-     *     - result matrix A+C
-     */
     Mat operator+(const Mat &A, float C);
-    /**
-     * - operator, subtraction of two matrices
-     * The operator use DSP optimized implementation of multiplication.
-     *
-     * @param[in] A: Input matrix A
-     * @param[in] B: Input matrix B
-     *
-     * @return
-     *     - result matrix A-B
-     */
     Mat operator-(const Mat &A, const Mat &B);
-    /**
-     * - operator, subtraction of matrix with constant
-     * The operator use DSP optimized implementation of multiplication.
-     *
-     * @param[in] A: Input matrix A
-     * @param[in] C: Input constant
-     *
-     * @return
-     *     - result matrix A-C
-     */
     Mat operator-(const Mat &A, float C);
-    /**
-     * * operator, multiplication of two matrices.
-     * The operator use DSP optimized implementation of multiplication.
-     *
-     * @param[in] A: Input matrix A
-     * @param[in] B: Input matrix B
-     *
-     * @return
-     *     - result matrix A*B
-     */
     Mat operator*(const Mat &A, const Mat &B);
-    /**
-     * * operator, multiplication of matrix with constant
-     * The operator use DSP optimized implementation of multiplication.
-     *
-     * @param[in] A: Input matrix A
-     * @param[in] C: floating point value
-     *
-     * @return
-     *     - result matrix A*B
-     */
     Mat operator*(const Mat &A, float C);
-    /**
-     * * operator, multiplication of matrix with constant
-     * The operator use DSP optimized implementation of multiplication.
-     *
-     * @param[in] C: floating point value
-     * @param[in] A: Input matrix A
-     *
-     * @return
-     *     - result matrix C*A
-     */
     Mat operator*(float C, const Mat &A);
-    /**
-     * / operator, divide of matrix by constant
-     * The operator use DSP optimized implementation of multiplication.
-     *
-     * @param[in] A: Input matrix A
-     * @param[in] C: floating point value
-     *
-     * @return
-     *     - result matrix A/C
-     */
     Mat operator/(const Mat &A, float C);
-    /**
-     * / operator, divide matrix A by matrix B (element-wise)
-     *
-     * @param[in] A: Input matrix A
-     * @param[in] B: Input matrix B
-     *
-     * @return
-     *     - result matrix C, where C[i,j] = A[i,j]/B[i,j]
-     */
     Mat operator/(const Mat &A, const Mat &B);
-    /**
-     * == operator, compare two matrices
-     *
-     * @param[in] A: Input matrix A
-     * @param[in] B: Input matrix B
-     *
-     * @return
-     *      - true if matrices are the same
-     *      - false if matrices are different
-     */
     bool operator==(const Mat &A, const Mat &B);
 
 }
 ```
 
-## tiny_matrix.c
+## tiny_matrix.cpp
 
 ```cpp
 /**
@@ -712,90 +208,272 @@ namespace tiny
 #include <inttypes.h>
 #include <iomanip>
 
-// Namespace
-using std::endl;
-using std::istream;
-using std::ostream;
-
 /* LIBRARIE CONTENTS */
 namespace tiny
 {
     /* === Rectangular ROI Structure === */
-
     /**
-     * @brief Constructor with initialization to 0
-     *
-     * @param[in] x: x starting position (start col) of the rectangular area
-     * @param[in] y: y starting position (start row) of the rectangular area
-     * @param[in] width: width (number of cols) of the rectangular area
-     * @param[in] height: height (number of rows) of the rectangular area
+     * @brief Construct a new Mat:: R O I:: R O I object
+     * 
+     * @param pos_x 
+     * @param pos_y 
+     * @param width 
+     * @param height 
      */
-    Mat::Rect::Rect(int x, int y, int width, int height)
-        : x(x), y(y), width(width), height(height) {}
-
-    /**
-     * @brief Resize rect area
-     *
-     * @param[in] x: x starting position (start col) of the new rectangular area
-     * @param[in] y: y starting position (start row) of the new rectangular area
-     * @param[in] width: width (number of cols) of the new rectangular area
-     * @param[in] height: height (number of rows) of the new rectangular area
-     */
-    void Mat::Rect::resizeRect(int x, int y, int width, int height)
+    Mat::ROI::ROI(int pos_x, int pos_y, int width, int height)
     {
-        this->x = x;
-        this->y = y;
+        this->pos_x = pos_x;
+        this->pos_y = pos_y;
         this->width = width;
         this->height = height;
     }
 
     /**
-     * @brief Get amount of elements in the rect area
+     * @brief resize the ROI structure
+     * 
+     * @param pos_x starting column
+     * @param pos_y starting row
+     * @param width number of columns
+     * @param height number of rows
      */
-    int Mat::Rect::areaRect(void) const
+    void Mat::ROI::resize_roi(int pos_x, int pos_y, int width, int height)
     {
-        return width * height;
+        this->pos_x = pos_x;
+        this->pos_y = pos_y;
+        this->width = width;
+        this->height = height;
+    }
+
+    /**
+     * @brief calculate the area of the ROI structure - how many elements covered
+     * 
+     * @return int 
+     */
+    int Mat::ROI::area_roi(void) const
+    {
+        return this->width * this->height;
+    }
+
+    /* === Printing Functions === */
+    /**
+     * @name Mat::PrintHead()
+     * @brief Print the header of the matrix.
+     */
+    void Mat::print_info() const
+    {
+        std::cout << "Matrix Info >>>\n";
+
+        // Basic matrix metadata
+        std::cout << "rows            " << this->row << "\n";
+        std::cout << "cols            " << this->col << "\n";
+        std::cout << "elements        " << this->element;
+
+        // Check if elements match rows * cols
+        if (this->element != this->row * this->col)
+        {
+            std::cout << "   [Warning] Mismatch! Expected: " << (this->row * this->col);
+        }
+        std::cout << "\n";
+
+        std::cout << "paddings        " << this->pad << "\n";
+        std::cout << "stride          " << this->stride << "\n";
+        std::cout << "memory          " << this->memory << "\n";
+
+        // Pointer information
+        std::cout << "data pointer    " << static_cast<const void *>(this->data) << "\n";
+        std::cout << "temp pointer    " << static_cast<const void *>(this->temp) << "\n";
+
+        // Flags information
+        std::cout << "ext_buff        " << this->ext_buff;
+        if (this->ext_buff)
+        {
+            std::cout << "   (External buffer or View)";
+        }
+        std::cout << "\n";
+
+        std::cout << "sub_matrix      " << this->sub_matrix;
+        if (this->sub_matrix)
+        {
+            std::cout << "   (This is a Sub-Matrix View)";
+        }
+        std::cout << "\n";
+
+        // State warnings
+        if (this->sub_matrix && !this->ext_buff)
+        {
+            std::cout << "[Warning] Sub-matrix is marked but ext_buff is false! Potential logic error.\n";
+        }
+
+        if (this->data == nullptr)
+        {
+            std::cout << "[Info] No data buffer assigned to this matrix.\n";
+        }
+
+        std::cout << "<<< Matrix Info\n";
+    }
+
+    /**
+     * @name Mat::print_matrix()
+     * @brief Print the matrix elements.
+     *
+     * @param show_padding If true, print the padding elements as well.
+     */
+    void Mat::print_matrix(bool show_padding)
+    {
+        std::cout << "Matrix Elements >>>\n";
+        for (int i = 0; i < this->row; ++i)
+        {
+            // print the non-padding elements
+            for (int j = 0; j < this->col; ++j)
+            {
+                std::cout << std::setw(12) << this->data[i * this->stride + j] << " ";
+            }
+
+            // if padding is enabled, print the padding elements
+            if (show_padding)
+            {
+                // print a separator first
+                std::cout << "      |";
+
+                // print the padding elements
+                for (int j = this->col; j < this->stride; ++j)
+                {
+                    if (j == this->col)
+                    {
+                        std::cout << std::setw(7) << this->data[i * this->stride + j] << " ";
+                    }
+                    else
+                    {
+                        // print the padding elements
+                        std::cout << std::setw(12) << this->data[i * this->stride + j] << " ";
+                    }
+                }
+            }
+
+            // print a new line after each row
+            std::cout << "\n";
+        }
+
+        std::cout << "<<< Matrix Elements\n";
+        std::cout << std::endl;
     }
 
     /* === Constructors & Destructor === */
+    // memory allocation
     /**
-     * Allocate matrix with undefined size.
+     * @name Mat::allocate()
+     * @brief Allocate memory for the matrix according to the memory required.
      */
-    Mat::Mat()
-        : rows(1), cols(1), stride(1), padding(0), length(1),
-          data(nullptr), ext_buff(false), sub_matrix(false)
+    void Mat::alloc_mem()
     {
-        allocate();
-        std::memset(this->data, 0, this->length * sizeof(float));
+        this->ext_buff = false;
+        this->memory = this->row * this->stride;
+        this->data = new float[this->memory];
     }
 
     /**
-     * @brief Construct a new Mat object (internal allocation)
+     * @name Mat::Mat()
+     * @brief Constructor - default constructor: create a 1x1 matrix with only a zero element.
+     */
+    Mat::Mat()
+    {
+        this->row = 1;
+        this->col = 1;
+        this->pad = 0;
+        this->stride = 1;
+        this->element = 1;
+        this->memory = 1;
+        this->data = nullptr;
+        this->temp = nullptr;
+        this->ext_buff = false;
+        this->sub_matrix = false;
+        alloc_mem();
+        if (this->data == nullptr)
+        {
+            std::cerr << "[>>> Error ! <<<] Memory allocation failed in alloc_mem()\n";
+        }
+        std::memset(this->data, 0, this->memory * sizeof(float));
+    }
+
+    /**
+     * @name Mat::Mat(int rows, int cols)
+     * @brief Constructor - create a matrix with the specified number of rows and columns.
      *
      * @param rows Number of rows
      * @param cols Number of columns
      */
     Mat::Mat(int rows, int cols)
-        : rows(rows), cols(cols), stride(cols), padding(0), length(rows * cols),
-          data(nullptr), ext_buff(false), sub_matrix(false)
     {
-        allocate();
-        std::memset(this->data, 0, this->length * sizeof(float));
+        this->row = rows;
+        this->col = cols;
+        this->pad = 0;
+        this->stride = cols;
+        this->element = rows * cols;
+        this->memory = rows * cols;
+        this->data = nullptr;
+        this->temp = nullptr;
+        this->ext_buff = false;
+        this->sub_matrix = false;
+        alloc_mem();
+        if (this->data == nullptr)
+        {
+            std::cerr << "[>>> Error ! <<<] Memory allocation failed in alloc_mem()\n";
+        }
+        std::memset(this->data, 0, this->memory * sizeof(float));
+    }
+    /**
+     * @name Mat::Mat(int rows, int cols, int stride)
+     * @brief Constructor - create a matrix with the specified number of rows, columns and stride.
+     *
+     * @param rows Number of rows
+     * @param cols Number of columns
+     * @param stride Stride (number of elements in a row)
+     */
+    Mat::Mat(int rows, int cols, int stride)
+    {
+        this->row = rows;
+        this->col = cols;
+        this->pad = stride - cols;
+        this->stride = stride;
+        this->element = rows * cols;
+        this->memory = rows * stride;
+        this->data = nullptr;
+        this->temp = nullptr;
+        this->ext_buff = false;
+        this->sub_matrix = false;
+        alloc_mem();
+        if (this->data == nullptr)
+        {
+            std::cerr << "[>>> Error ! <<<] Memory allocation failed in alloc_mem()\n";
+        }
+        std::memset(this->data, 0, this->memory * sizeof(float));
     }
 
     /**
-     * @brief Construct a new Mat object (external allocation)
+     * @name Mat::Mat(float *data, int rows, int cols)
+     * @brief Constructor - create a matrix with the specified number of rows, columns and external data.
      *
      * @param data Pointer to external data buffer
      * @param rows Number of rows
      * @param cols Number of columns
      */
     Mat::Mat(float *data, int rows, int cols)
-        : rows(rows), cols(cols), stride(cols), padding(0), length(rows * cols),
-          data(data), ext_buff(true), sub_matrix(false) {}
+    {
+        this->row = rows;
+        this->col = cols;
+        this->pad = 0;
+        this->stride = cols;
+        this->element = rows * cols;
+        this->memory = rows * cols; // for external data, this item is actually not used
+        this->data = data;
+        this->temp = nullptr;
+        this->ext_buff = true;
+        this->sub_matrix = false;
+    }
 
     /**
-     * @brief Construct a new Mat object (external allocation with stride)
+     * @name Mat::Mat(float *data, int rows, int cols, int stride)
+     * @brief Constructor - create a matrix with the specified number of rows, columns and external data.
      *
      * @param data Pointer to external data buffer
      * @param rows Number of rows
@@ -803,35 +481,65 @@ namespace tiny
      * @param stride Stride (number of elements in a row)
      */
     Mat::Mat(float *data, int rows, int cols, int stride)
-        : rows(rows), cols(cols), stride(stride), padding(stride - cols), length(rows * cols),
-          data(data), ext_buff(true), sub_matrix(false) {}
+    {
+        this->row = rows;
+        this->col = cols;
+        this->pad = stride - cols;
+        this->stride = stride;
+        this->element = rows * cols;
+        this->memory = rows * stride; // for external data, this item is actually not used
+        this->data = data;
+        this->temp = nullptr;
+        this->ext_buff = true;
+        this->sub_matrix = false;
+    }
 
     /**
-     * @brief Make copy of matrix.
+     * @name Mat::Mat(const Mat &src)
+     * @brief Copy constructor - create a matrix with the same properties as the source matrix.
      *
-     * if src matrix is sub matrix, only the header is copied
-     * if src matrix is matrix, header and data are copied
-     *
-     * @param[in] src: source matrix
+     * @param src Source matrix
      */
-    Mat::Mat(const Mat &m)
-        : rows(m.rows), cols(m.cols), stride(m.stride), padding(m.padding), length(m.length),
-          data(nullptr), ext_buff(false), sub_matrix(m.sub_matrix)
+    Mat::Mat(const Mat &src)
     {
-        if (m.sub_matrix)
+        this->row = src.row;
+        this->col = src.col;
+        this->pad = src.pad;
+        this->stride = src.stride;
+        this->element = src.element;
+        this->memory = src.memory;
+
+        if (src.sub_matrix && src.ext_buff)
         {
-            this->data = m.data;
+            // if the source is a view (submatrix), do shallow copy
+            this->data = src.data;
+            this->temp = nullptr;
             this->ext_buff = true;
+            this->sub_matrix = true;
         }
         else
         {
-            allocate();
-            std::memcpy(this->data, m.data, this->length * sizeof(float));
+            // otherwise do deep copy
+            this->data = nullptr;
+            this->temp = nullptr;
+            this->ext_buff = false;
+            this->sub_matrix = false;
+
+            if (src.data != nullptr)
+            {
+                alloc_mem();
+                if (this->data == nullptr)
+                {
+                    std::cerr << "[Error] Memory allocation failed in alloc_mem()\n";
+                }
+                std::memcpy(this->data, src.data, this->memory * sizeof(float));
+            }
         }
     }
 
     /**
-     * @brief Destroy the Mat object, freeing internal memory
+     * @name ~Mat()
+     * @brief Destructor - free the memory allocated for the matrix.
      */
     Mat::~Mat()
     {
@@ -839,1106 +547,1393 @@ namespace tiny
         {
             delete[] this->data;
         }
+        if (this->temp)
+        {
+            delete[] this->temp;
+        }
     }
 
-    /**
-     * @brief Allocate internal memory buffer
-     */
-    void Mat::allocate()
-    {
-        this->ext_buff = false;
-        this->length = this->rows * this->cols;
-        this->data = new float[this->length];
-    }
     /* === Element Access === */
     // Already defined by inline functions in the header file
 
     /* === Data Manipulation === */
+
     /**
-     * Make copy of matrix. Memory not shared.
-     * @param[in] src: source matrix
-     * @param[in] row_pos: start row position of destination matrix
-     * @param[in] col_pos: start col position of destination matrix
+     * @name Mat::copy_paste(const Mat &src, int row_pos, int col_pos)
+     * @brief Copy the elements of the source matrix into the destination matrix. The dimension of the current matrix must be larger than the source matrix.
+     * @brief This one does not share memory with the source matrix.
+     *
+     * @param src Source matrix
+     * @param row_pos Start row position of the destination matrix
+     * @param col_pos Start column position of the destination matrix
      */
-    void Mat::Copy(const Mat &src, int row_pos, int col_pos)
+    tiny_error_t Mat::copy_paste(const Mat &src, int row_pos, int col_pos)
     {
-        if ((row_pos + src.rows) > this->rows)
+        if ((row_pos + src.row) > this->row)
         {
-            return;
+            std::cerr << "[>>> Error ! <<<] Invalid row position " << std::endl;
+            return TINY_ERR_INVALID_ARG;
         }
-        if ((col_pos + src.cols) > this->cols)
+        if ((col_pos + src.col) > this->col)
         {
-            return;
+            std::cerr << "[>>> Error ! <<<] Invalid column position " << std::endl;
+            return TINY_ERR_INVALID_ARG;
+        }
+        for (size_t r = 0; r < src.row; r++)
+        {
+            memcpy(&this->data[(r + row_pos) * this->stride + col_pos], &src.data[r * src.col], src.col * sizeof(float));
         }
 
-        for (size_t r = 0; r < src.rows; r++)
-        {
-            memcpy(&this->data[(r + row_pos) * this->stride + col_pos], &src.data[r * src.cols], src.cols * sizeof(float));
-        }
+        return TINY_OK;
     }
 
     /**
-     * @brief Copy header of matrix. Memory shared.
+     * @name Mat::copy_head(const Mat &src)
+     * @brief Copy the header of the source matrix into the destination matrix. The data pointer is shared.
      *
-     * Make a shallow copy of matrix (no data copy)
-     * @param[in] src: source matrix
+     * @param src Source matrix
      */
-    void Mat::CopyHead(const Mat &src)
+    tiny_error_t Mat::copy_head(const Mat &src)
     {
         if (!this->ext_buff)
         {
             delete[] this->data;
         }
-        this->rows = src.rows;
-        this->cols = src.cols;
-        this->length = src.length;
-        this->padding = src.padding;
+        this->row = src.row;
+        this->col = src.col;
+        this->element = src.element;
+        this->pad = src.pad;
         this->stride = src.stride;
+        this->memory = src.memory;
         this->data = src.data;
+        this->temp = src.temp;
         this->ext_buff = src.ext_buff;
         this->sub_matrix = src.sub_matrix;
+
+        return TINY_OK;
     }
 
     /**
-     * @brief Create a subset of matrix as ROI (Region of Interest)
+     * @name Mat::view_roi(int start_row, int start_col, int roi_rows, int roi_cols)
+     * @brief Make a shallow copy of ROI matrix. | Make a view of the ROI matrix. Low level function. Unlike ESP-DSP, it is not allowed to setup stride here, stride is automatically calculated inside the function.
      *
-     * @param[in] startRow: start row position of source matrix to get the subset matrix from
-     * @param[in] startCol: start col position of source matrix to get the subset matrix from
-     * @param[in] roiRows: size of row elements of source matrix to get the subset matrix from
-     * @param[in] roiCols: size of col elements of source matrix to get the subset matrix from
-     * @param[in] stride: number of cols + padding between 2 rows
+     * @param start_row Start row position of source matrix to copy
+     * @param start_col Start column position of source matrix to copy
+     * @param roi_rows Size of row elements of source matrix to copy
+     * @param roi_cols Size of column elements of source matrix to copy
      *
-     * @return
-     *      - result matrix size roiRows x roiCols
+     * @todo the pointer address is changing every time access, but the result is correct.
+     *
+     * @return result matrix size row_size x col_size
      */
-    Mat Mat::getROI(int startRow, int startCol, int roiRows, int roiCols, int stride)
+    Mat Mat::view_roi(int start_row, int start_col, int roi_rows, int roi_cols) const
     {
-        Mat result(this->data, roiRows, roiCols, 0); // this is an illegal matrix, for illegal access
-
-        if ((startRow + roiRows) > this->rows)
+        if ((start_row + roi_rows) > this->row || (start_col + roi_cols) > this->col)
         {
-            return result;
-        }
-        if ((startCol + roiCols) > this->cols)
-        {
-            return result;
+            std::cerr << "[Error] Invalid ROI request.\n";
+            return Mat();
         }
 
-        const int ptr_move = startRow * this->cols + startCol;
-        float *new_data_ptr = this->data + ptr_move;
+        Mat result;
+        result.row = roi_rows;
+        result.col = roi_cols;
+        result.stride = this->stride;
+        result.pad = this->stride - roi_cols;
+        result.element = roi_rows * roi_cols;
+        result.memory = roi_rows * this->stride;
+        result.data = this->data + (start_row * this->stride + start_col);
+        result.temp = nullptr;
+        result.ext_buff = true;
+        result.sub_matrix = true;
 
-        result.data = new_data_ptr;
-        result.stride = stride;
-        result.padding = result.stride - result.cols;
         return result;
     }
 
     /**
-     * @brief Create a subset of matrix as ROI (Region of Interest)
+     * @name Mat::view_roi(const Mat::ROI &roi)
+     * @brief Make a shallow copy of ROI matrix. | Make a view of the ROI matrix. Using ROI structure.
      *
-     * @param[in] startRow: start row position of source matrix to get the subset matrix from
-     * @param[in] startCol: start col position of source matrix to get the subset matrix from
-     * @param[in] roiRows: size of row elements of source matrix to get the subset matrix from
-     * @param[in] roiCols: size of col elements of source matrix to get the subset matrix from
+     * @param roi Rectangular area of interest
      *
-     * @return
-     *      - result matrix size roiRows x roiCols
+     * @return result matrix size row_size x col_size
      */
-    Mat Mat::getROI(int startRow, int startCol, int roiRows, int roiCols)
+    Mat Mat::view_roi(const Mat::ROI &roi) const
     {
-        return (getROI(startRow, startCol, roiRows, roiCols, this->cols));
+        return view_roi(roi.pos_y, roi.pos_x, roi.height, roi.width);
     }
 
     /**
-     * @brief Create a subset of matrix as ROI (Region of Interest)
+     * @name Mat::copy_roi(int start_row, int start_col, int height, int width)
+     * @brief Make a deep copy of matrix. Copared to view_roi(), this one is a deep copy, not sharing memory with the source matrix.
      *
-     * @param[in] rect: rectangular area of interest
+     * @param start_row Start row position of source matrix to copy
+     * @param start_col Start column position of source matrix to copy
+     * @param height Size of row elements of source matrix to copy
+     * @param width Size of column elements of source matrix to copy
      *
-     * @return
-     *      - result matrix size rect.rectRows x rect.rectCols
+     * @return result matrix size row_size x col_size
      */
-    Mat Mat::getROI(const Mat::Rect &rect)
+    Mat Mat::copy_roi(int start_row, int start_col, int height, int width)
     {
-        return (getROI(rect.y, rect.x, rect.height, rect.width, this->cols));
-    }
-
-    /**
-     * Make copy of matrix.
-     * @param[in] row_start: start row position of source matrix to copy
-     * @param[in] row_size: size of wor elements of source matrix to copy
-     * @param[in] col_start: start col position of source matrix to copy
-     * @param[in] col_size: size of wor elements of source matrix to copy
-     *
-     * @return
-     *      - result matrix size row_size x col_size
-     */
-    Mat Mat::Get(int row_start, int row_size, int col_start, int col_size)
-    {
-        Mat result(row_size, col_size);
-
-        if ((row_start + row_size) > this->rows)
+        if ((start_row + height) > this->row)
         {
-            return result;
+            std::cerr << "[>>> Error ! <<<] Invalid row position " << std::endl;
+            return Mat();
         }
-        if ((col_start + col_size) > this->cols)
+        if ((start_col + width) > this->col)
         {
-            return result;
+            std::cerr << "[>>> Error ! <<<] Invalid columnn position " << std::endl;
+            return Mat();
         }
 
-        for (size_t r = 0; r < result.rows; r++)
+        // initiate the result matrix
+        Mat result(height, width);
+
+        // deep copy the data from the source matrix
+        for (size_t r = 0; r < result.row; r++)
         {
-            memcpy(&result.data[r * result.cols], &this->data[(r + row_start) * this->stride + col_start], result.cols * sizeof(float));
+            memcpy(&result.data[r * result.col], &this->data[(r + start_row) * this->stride + start_col], result.col * sizeof(float));
         }
+
+        // return result;
         return result;
     }
 
     /**
-     * Make copy of matrix.
-     * @param[in] rect: rectangular area of interest
-     * @return
-     *      - result matrix size row_size x col_size
+     * @name Mat::copy_roi(const Mat::ROI &roi)
+     * @brief Make a deep copy of matrix. Using ROI structure. Copared to view_roi(), this one is a deep copy, not sharing memory with the source matrix.
+     *
+     * @param roi Rectangular area of interest
+     *
+     * @return result matrix size row_size x col_size
      */
-    Mat Mat::Get(const Mat::Rect &rect)
+    Mat Mat::copy_roi(const Mat::ROI &roi)
     {
-        return (Get(rect.y, rect.height, rect.x, rect.width));
+        return (copy_roi(roi.pos_y, roi.pos_x, roi.height, roi.width));
     }
 
     /**
-     * Return part of matrix from defined position (startRow, startCol) as a matrix[blockRows x blockCols].
+     * @name Mat::block(int start_row, int start_col, int block_rows, int block_cols)
+     * @brief Get a block of matrix.
      *
-     * @param[in] startRow: start row position
-     * @param[in] startCol: start column position
-     * @param[in] blockRows: amount of rows in result matrix
-     * @param[in] blockCols: amount of columns in the result matrix
-     *
-     * @return
-     *      - matrix [blockRows]x[blockCols]
+     * @param start_row
+     * @param start_col
+     * @param block_rows
+     * @param block_cols
+     * @return Mat
      */
-    Mat Mat::block(int startRow, int startCol, int blockRows, int blockCols)
+    Mat Mat::block(int start_row, int start_col, int block_rows, int block_cols)
     {
-        Mat result(blockRows, blockCols);
-        for (int i = 0; i < blockRows; ++i)
+        Mat result(block_rows, block_cols);
+        for (int i = 0; i < block_rows; ++i)
         {
-            for (int j = 0; j < blockCols; ++j)
+            for (int j = 0; j < block_cols; ++j)
             {
-                result(i, j) = (*this)(startRow + i, startCol + j);
+                result(i, j) = (*this)(start_row + i, start_col + j);
             }
         }
         return result;
     }
 
     /**
-     * Swap two rows between each other.
-     * @param[in] row1: position of first row
-     * @param[in] row2: position of second row
+     * @name Mat::swap_rows(int row1, int row2)
+     * @brief Swap two rows of the matrix.
+     *
+     * @param row1 The index of the first row to swap
+     * @param row2 The index of the second row to swap
      */
-    void Mat::swapRows(int r1, int r2)
+    void Mat::swap_rows(int row1, int row2)
     {
-        if ((this->rows <= r1) || (this->rows <= r2))
+        if ((this->row <= row1) || (this->row <= row2))
         {
-            std::cerr << "swapRows Error: row " << r1 << " or " << r2 << " out of matrix row " << this->rows << " range" << std::endl;
+            std::cerr << "Error: row index out of range" << std::endl;
         }
         else
         {
-            for (int i = 0; i < this->cols; i++)
-            {
-                float temp = this->data[r1 * this->stride + i];
-                this->data[r1 * this->stride + i] = this->data[r2 * this->stride + i];
-                this->data[r2 * this->stride + i] = temp;
-            }
+            float *temp_row = new float[this->col];
+            memcpy(temp_row, &this->data[row1 * this->stride], this->col * sizeof(float));
+            memcpy(&this->data[row1 * this->stride], &this->data[row2 * this->stride], this->col * sizeof(float));
+            memcpy(&this->data[row2 * this->stride], temp_row, this->col * sizeof(float));
+            delete[] temp_row;
         }
     }
 
     /**
-     * The method fill 0 to the matrix structure.
-     *
+     * @name Mat::clear()
+     * @brief Clear the matrix by setting all elements to zero.
      */
-    void Mat::clear()
+    void Mat::clear(void)
     {
-        for (int row = 0; row < this->rows; row++)
+        for (int row = 0; row < this->row; row++)
         {
-            memset(this->data + (row * this->stride), 0, this->cols * sizeof(float));
+            memset(this->data + (row * this->stride), 0, this->col * sizeof(float));
         }
     }
 
-    /* === Print & Debug === */
-    /**
-     * @brief print matrix header
-     *
-     * Print all information about matrix to the terminal
-     * @param[in] src: source matrix
-     */
-    void Mat::PrintHead(void)
-    {
-        std::cout << "rows     " << this->rows << std::endl;
-        std::cout << "cols     " << this->cols << std::endl;
-        std::cout << "lenght   " << this->length << std::endl;
-        std::cout << "data     " << this->data << std::endl;
-        std::cout << "ext_buff " << this->ext_buff << std::endl;
-        std::cout << "sub_mat  " << this->sub_matrix << std::endl;
-        std::cout << "stride   " << this->stride << std::endl;
-        std::cout << "padding  " << this->padding << std::endl
-                  << std::endl;
-    }
-
-    /**
-     * @brief print matrix header and data
-     *
-     * Print all information about matrix to the terminal
-     * @param[in] show_padding: show padding information
-     * @param[in] label: label for the matrix
-     */
-    void Mat::PrintMatrix(bool show_padding, const std::string &label)
-    {
-        std::cout << label << "\n";
-        std::cout << "rows: " << rows << ", cols: " << cols << "\n";
-        std::cout << "stride: " << stride << ", length: " << length << "\n";
-        std::cout << "ext_buff: " << ext_buff << ", sub_matrix: " << sub_matrix << "\n";
-        std::cout << "data pointer: " << static_cast<void *>(data) << "\n";
-        std::cout << "data (row-major):\n";
-
-        int display_cols = show_padding ? stride : cols;
-
-        for (int i = 0; i < rows; ++i)
-        {
-            for (int j = 0; j < display_cols; ++j)
-            {
-                std::cout << std::setw(8) << data[i * stride + j] << " ";
-            }
-            std::cout << "\n";
-        }
-        std::cout << std::endl;
-    }
     /* === Arithmetic Operators === */
     /**
-     * Copy operator
+     * @name &Mat::operator=(const Mat &src)
+     * @brief Copy assignment operator - copy the elements of the source matrix into the destination matrix. Compared to the copy constructor, this one is used for existing matrix to copy the elements. The copy constructor is used for the first time to create a new matrix and copy the elements at the same time.
      *
-     * @param[in] src: source matrix
-     *
-     * @return
-     *      - matrix copy
+     * @param src
+     * @return Mat&
      */
-    Mat &Mat::operator=(const Mat &m)
+    Mat &Mat::operator=(const Mat &src)
     {
-        if (this == &m)
+        // 1. Self-assignment check
+        if (this == &src)
         {
             return *this;
         }
 
-        // matrix dimensions not equal, note the dimension will be changed! (for non-sub-matrix)
-        if (this->rows != m.rows || this->cols != m.cols)
+        // 2. Forbid assignment to sub-matrix views
+        if (this->sub_matrix)
         {
-            // left operand is a sub-matrix - error
-            if (this->sub_matrix)
-            {
-                std::cerr << "operator = Error for sub-matrices: operands matrices dimensions " << this->rows << "x" << this->cols << " and " << m.rows << "x" << m.cols << " do not match" << std::endl;
-                return *this;
-            }
-            if (!this->ext_buff)
+            std::cerr << "[Error] Assignment to a sub-matrix is not allowed.\n";
+            return *this;
+        }
+
+        // 3. If dimensions differ, reallocate memory
+        if (this->row != src.row || this->col != src.col)
+        {
+            if (!this->ext_buff && this->data != nullptr)
             {
                 delete[] this->data;
             }
+
+            // Update dimensions and memory info
+            this->row = src.row;
+            this->col = src.col;
+            this->stride = src.col; // Follow source's logical stride
+            this->pad = 0;
+            this->element = this->row * this->col;
+            this->memory = this->row * this->stride;
+
             this->ext_buff = false;
-            this->rows = m.rows;
-            this->cols = m.cols;
-            this->stride = this->cols;
-            this->padding = 0;
             this->sub_matrix = false;
-            allocate();
+
+            alloc_mem();
         }
 
-        for (int row = 0; row < this->rows; row++)
+        // 4. Data copy (row-wise)
+        for (int r = 0; r < this->row; ++r)
         {
-            memcpy(this->data + (row * this->stride), m.data + (row * m.stride), this->cols * sizeof(float));
+            std::memcpy(this->data + r * this->stride, src.data + r * src.stride, this->col * sizeof(float));
         }
+
         return *this;
     }
 
     /**
-     * += operator
-     * The operator use DSP optimized implementation of multiplication.
+     * @name Mat::operator+=(const Mat &A)
+     * @brief Element-wise addition of another matrix to this matrix.
      *
-     * @param[in] A: source matrix
-     *
-     * @return
-     *      - result matrix: result += A
+     * @param A The matrix to add
+     * @return Mat& Reference to the current matrix
      */
-    Mat &Mat::operator+=(const Mat &m)
+    /**
+     * @name Mat::operator+=(const Mat &A)
+     * @brief Element-wise addition of another matrix to this matrix.
+     *
+     * @param A The matrix to add
+     * @return Mat& Reference to the current matrix
+     */
+    Mat &Mat::operator+=(const Mat &A)
     {
-        if ((this->rows != m.rows) || (this->cols != m.cols))
+        // 1. Dimension check
+        if ((this->row != A.row) || (this->col != A.col))
         {
-            std::cerr << "operator += Error: matrices do not have equal dimensions" << std::endl;
+            std::cerr << "[Error] Matrix addition failed: Dimension mismatch ("
+                      << this->row << "x" << this->col << " vs "
+                      << A.row << "x" << A.col << ")\n";
             return *this;
         }
 
-        if (this->sub_matrix || m.sub_matrix)
+        // 2. Determine if padding handling is needed
+        bool need_padding_handling = (this->pad > 0) || (A.pad > 0);
+
+        if (need_padding_handling)
         {
+            // Padding-aware addition
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_add_f32(this->data, m.data, this->data, this->rows, this->cols, this->padding, m.padding, this->padding, 1, 1, 1);
+            dspm_add_f32(this->data, A.data, this->data,
+                         this->row, this->col,
+                         this->pad, A.pad, this->pad,
+                         1, 1, 1);
 #else
-            tiny_mat_add_f32(this->data, m.data, this->data, this->rows, this->cols, this->padding, m.padding, this->padding, 1, 1, 1);
+            tiny_mat_add_f32(this->data, A.data, this->data,
+                             this->row, this->col,
+                             this->pad, A.pad, this->pad,
+                             1, 1, 1);
 #endif
         }
         else
         {
+            // Vectorized addition for contiguous memory
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dsps_add_f32(this->data, m.data, this->data, this->length, 1, 1, 1);
+            dsps_add_f32(this->data, A.data, this->data, this->memory, 1, 1, 1);
 #else
-            tiny_vec_add_f32(this->data, m.data, this->data, this->length, 1, 1, 1);
+            tiny_vec_add_f32(this->data, A.data, this->data, this->memory, 1, 1, 1);
 #endif
         }
+
         return *this;
     }
 
     /**
-     * += operator
-     * The operator use DSP optimized implementation of multiplication.
+     * @name Mat::operator+=(float C)
+     * @brief Element-wise addition of a constant to this matrix.
      *
-     * @param[in] C: constant
+     * @param C The constant to add
+     */
+    /**
+     * @name Mat::operator+=(float C)
+     * @brief Element-wise addition of a constant to this matrix.
      *
-     * @return
-     *      - result matrix: result += C
+     * @param C The constant to add
+     * @return Mat& Reference to the current matrix
      */
     Mat &Mat::operator+=(float C)
     {
-        if (this->sub_matrix)
+        // check whether padding is presented
+        bool need_padding_handling = (this->pad > 0);
+
+        if (need_padding_handling)
         {
+            // Padding-aware constant addition
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_addc_f32(this->data, this->data, C, this->rows, this->cols, this->padding, this->padding, 1, 1);
+            dspm_addc_f32(this->data, this->data, C,
+                          this->row, this->col,
+                          this->pad, this->pad,
+                          1, 1);
 #else
-            tiny_mat_addc_f32(this->data, this->data, C, this->rows, this->cols, this->padding, this->padding, 1, 1);
+            tiny_mat_addc_f32(this->data, this->data, C,
+                              this->row, this->col,
+                              this->pad, this->pad,
+                              1, 1);
 #endif
         }
         else
         {
+            // Vectorized constant addition
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dsps_addc_f32_ansi(this->data, this->data, this->length, C, 1, 1);
+            dsps_addc_f32(this->data, this->data, this->memory, C, 1, 1);
 #else
-            tiny_vec_addc_f32(this->data, this->data, this->length, C, 1, 1);
+            tiny_vec_addc_f32(this->data, this->data, this->memory, C, 1, 1);
 #endif
         }
+
         return *this;
     }
 
     /**
-     * -= operator
-     * The operator use DSP optimized implementation of multiplication.
+     * @name Mat::operator-=(const Mat &A)
+     * @brief Element-wise subtraction of another matrix from this matrix.
      *
-     * @param[in] A: source matrix
-     *
-     * @return
-     *      - result matrix: result -= A
+     * @param A The matrix to subtract
+     * @return Mat& Reference to the current matrix
      */
-
-    Mat &Mat::operator-=(const Mat &m)
+    /**
+     * @name Mat::operator-=(const Mat &A)
+     * @brief Element-wise subtraction of another matrix from this matrix.
+     *
+     * @param A The matrix to subtract
+     * @return Mat& Reference to the current matrix
+     */
+    Mat &Mat::operator-=(const Mat &A)
     {
-        if ((this->rows != m.rows) || (this->cols != m.cols))
+        // 1. Dimension check
+        if ((this->row != A.row) || (this->col != A.col))
         {
-            std::cerr << "operator -= Error: matrices do not have equal dimensions" << std::endl;
+            std::cerr << "[Error] Matrix subtraction failed: Dimension mismatch ("
+                      << this->row << "x" << this->col << " vs "
+                      << A.row << "x" << A.col << ")\n";
             return *this;
         }
 
-        if (this->sub_matrix || m.sub_matrix)
+        // 2. Determine if padding handling is needed
+        bool need_padding_handling = (this->pad > 0) || (A.pad > 0);
+
+        if (need_padding_handling)
         {
+            // Padding-aware subtraction
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_sub_f32(this->data, m.data, this->data, this->rows, this->cols, this->padding, m.padding, this->padding, 1, 1, 1);
+            dspm_sub_f32(this->data, A.data, this->data,
+                         this->row, this->col,
+                         this->pad, A.pad, this->pad,
+                         1, 1, 1);
 #else
-            tiny_mat_sub_f32(this->data, m.data, this->data, this->rows, this->cols, this->padding, m.padding, this->padding, 1, 1, 1);
+            tiny_mat_sub_f32(this->data, A.data, this->data,
+                             this->row, this->col,
+                             this->pad, A.pad, this->pad,
+                             1, 1, 1);
 #endif
         }
         else
         {
+            // Vectorized subtraction for contiguous memory
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dsps_sub_f32(this->data, m.data, this->data, this->length, 1, 1, 1);
+            dsps_sub_f32(this->data, A.data, this->data, this->memory, 1, 1, 1);
 #else
-            tiny_vec_sub_f32(this->data, m.data, this->data, this->length, 1, 1, 1);
+            tiny_vec_sub_f32(this->data, A.data, this->data, this->memory, 1, 1, 1);
 #endif
         }
+
         return *this;
     }
 
     /**
-     * -= operator
-     * The operator use DSP optimized implementation of multiplication.
+     * @name Mat::operator-=(float C)
+     * @brief Element-wise subtraction of a constant from this matrix.
      *
-     * @param[in] C: constant
+     * @param C The constant to subtract
+     */
+    /**
+     * @name Mat::operator-=(float C)
+     * @brief Element-wise subtraction of a constant from this matrix.
      *
-     * @return
-     *      - result matrix: result -= C
+     * @param C The constant to subtract
+     * @return Mat& Reference to the current matrix
      */
     Mat &Mat::operator-=(float C)
     {
-        if (this->sub_matrix)
+        bool need_padding_handling = (this->pad > 0);
+
+        if (need_padding_handling)
         {
+            // Padding-aware constant subtraction
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_addc_f32(this->data, this->data, -C, this->rows, this->cols, this->padding, this->padding, 1, 1);
+            // Note: ESP32 DSP does not provide dspm_subc_f32, using dspm_addc_f32 with -C
+            dspm_addc_f32(this->data, this->data, -C,
+                          this->row, this->col,
+                          this->pad, this->pad,
+                          1, 1);
 #else
-            tiny_mat_addc_f32(this->data, this->data, -C, this->rows, this->cols, this->padding, this->padding, 1, 1);
+            tiny_mat_subc_f32(this->data, this->data, C,
+                              this->row, this->col,
+                              this->pad, this->pad,
+                              1, 1);
 #endif
         }
         else
         {
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dsps_addc_f32_ansi(this->data, this->data, this->length, -C, 1, 1);
+            // Note: ESP32 DSP does not provide dsps_subc_f32, using dsps_addc_f32 with -C
+            dsps_addc_f32(this->data, this->data, this->memory, -C, 1, 1);
 #else
-            tiny_vec_addc_f32(this->data, this->data, this->length, -C, 1, 1);
+            tiny_vec_subc_f32(this->data, this->data, this->memory, C, 1, 1);
 #endif
         }
+
         return *this;
     }
 
     /**
-     * *= operator
-     * The operator use DSP optimized implementation of multiplication.
+     * @name Mat::operator*=(const Mat &m)
+     * @brief Matrix multiplication: this = this * m
      *
-     * @param[in] A: source matrix
-     *
-     * @return
-     *      - result matrix: result -= A
+     * @param m The matrix to multiply with
+     * @return Mat& Reference to the current matrix
      */
     Mat &Mat::operator*=(const Mat &m)
     {
-        if (this->cols != m.rows)
+        // 1. Dimension check
+        if (this->col != m.row)
         {
-            std::cerr << "operator *= Error: matrices do not have equal dimensions" << std::endl;
+            std::cerr << "[Error] Matrix multiplication failed: incompatible dimensions ("
+                      << this->row << "x" << this->col << " * "
+                      << m.row << "x" << m.col << ")\n";
             return *this;
         }
 
-        if (this->sub_matrix || m.sub_matrix)
+        // 2. Prepare temp matrix (incase overwriting the original data)
+        Mat temp = this->copy_roi(0, 0, this->row, this->col);
+
+        // 3. check whether padding is present in either matrix
+        bool need_padding_handling = (this->pad > 0) || (m.pad > 0);
+
+        if (need_padding_handling)
         {
-            Mat temp = this->Get(0, this->rows, 0, this->cols);
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_mult_ex_f32(temp.data, m.data, this->data, temp.rows, temp.cols, m.cols, temp.padding, m.padding, this->padding);
+            dspm_mult_ex_f32(temp.data, m.data, this->data, temp.row, temp.col, m.col, temp.pad, m.pad, this->pad);
 #else
-            tiny_mat_mult_ex_f32(temp.data, m.data, this->data, temp.rows, temp.cols, m.cols, temp.padding, m.padding, this->padding);
+            tiny_mat_mult_ex_f32(temp.data, m.data, this->data, temp.row, temp.col, m.col, temp.pad, m.pad, this->pad);
 #endif
         }
         else
         {
-            Mat temp = *this;
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_mult_f32(temp.data, m.data, this->data, temp.rows, temp.cols, m.cols);
+            dspm_mult_f32(temp.data, m.data, this->data, temp.row, temp.col, m.col);
 #else
-            tiny_mat_mult_f32(temp.data, m.data, this->data, temp.rows, temp.cols, m.cols);
+            tiny_mat_mult_f32(temp.data, m.data, this->data, temp.row, temp.col, m.col);
 #endif
         }
-        return (*this);
+
+        return *this;
     }
 
     /**
-     * += with constant operator
-     * The operator use DSP optimized implementation of multiplication.
+     * @name Mat::operator*=(float num)
+     * @brief Element-wise multiplication by a constant
      *
-     * @param[in] C: constant value
-     *
-     * @return
-     *      - result matrix: result *= C
+     * @param num The constant multiplier
+     * @return Mat& Reference to the current matrix
      */
     Mat &Mat::operator*=(float num)
     {
-        if (this->sub_matrix)
+        // check whether padding is present
+        bool need_padding_handling = (this->pad > 0);
+
+        if (need_padding_handling)
         {
+            // Padding-aware multiplication
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_mulc_f32(this->data, this->data, num, this->rows, this->cols, this->padding, this->padding, 1, 1);
+            dspm_mulc_f32(this->data, this->data, num,
+                          this->row, this->col,
+                          this->pad, this->pad,
+                          1, 1);
 #else
-            tiny_mat_mulc_f32(this->data, this->data, num, this->rows, this->cols, this->padding, this->padding, 1, 1);
+            tiny_mat_multc_f32(this->data, this->data, num, this->row, this->col, this->pad, this->pad, 1, 1);
 #endif
         }
         else
         {
+            // No padding, use vectorized multiplication
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dsps_mulc_f32_ansi(this->data, this->data, this->length, num, 1, 1);
+            dsps_mulc_f32(this->data, this->data, this->memory, num, 1, 1);
 #else
-            tiny_vec_mulc_f32(this->data, this->data, this->length, num, 1, 1);
+            tiny_vec_mulc_f32(this->data, this->data, this->memory, num, 1, 1);
 #endif
         }
+
         return *this;
     }
 
     /**
-     * /= operator
+     * @name Mat::operator/=(const Mat &B)
+     * @brief Element-wise division: this = this / B
      *
-     * @param[in] B: source matrix
-     *
-     * @return
-     *      - result matrix: result[i,j] = result[i,j]/B[i,j]
+     * @param B The matrix divisor
+     * @return Mat& Reference to the current matrix
      */
-    Mat &Mat::operator/=(const Mat &B) // note this is element-wise division
+    Mat &Mat::operator/=(const Mat &B)
     {
-        // dimension check
-        if ((this->rows != B.rows) || (this->cols != B.cols))
+        // 1. Dimension check
+        if ((this->row != B.row) || (this->col != B.col))
         {
-            std::cerr << "operator /= Error: matrices do not have equal dimensions" << std::endl;
+            std::cerr << "[Error] Matrix division failed: Dimension mismatch ("
+                      << this->row << "x" << this->col << " vs "
+                      << B.row << "x" << B.col << ")\n";
             return *this;
         }
 
-        // check for zero division
-        for (int row = 0; row < B.rows; row++)
+        // 2. Zero division check
+        bool zero_found = false;
+        for (int i = 0; i < B.row; ++i)
         {
-            for (int col = 0; col < B.cols; col++)
+            for (int j = 0; j < B.col; ++j)
             {
-                if (B(row, col) == 0)
+                if (B(i, j) == 0.0f)
                 {
-                    std::cerr << "operator /= Error: division by zero" << std::endl;
-                    return *this;
+                    zero_found = true;
+                    break;
                 }
+            }
+            if (zero_found)
+                break;
+        }
+
+        if (zero_found)
+        {
+            std::cerr << "[Error] Matrix division failed: Division by zero detected.\n";
+            return *this;
+        }
+
+        // 3. Element-wise division
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
+            {
+                (*this)(i, j) /= B(i, j);
             }
         }
 
-        for (int row = 0; row < this->rows; row++)
-        {
-            for (int col = 0; col < this->cols; col++)
-            {
-                (*this)(row, col) = (*this)(row, col) / B(row, col); // note this is element-wise division
-            }
-        }
-        return (*this);
+        return *this;
     }
 
     /**
-     * /= with constant operator
-     * The operator use DSP optimized implementation of multiplication.
+     * @name Mat::operator/=(float num)
+     * @brief Element-wise division of this matrix by a constant.
      *
-     * @param[in] C: constant value
-     *
-     * @return
-     *      - result matrix: result /= C
+     * @param num The constant divisor
+     * @return Mat& Reference to the current matrix
      */
     Mat &Mat::operator/=(float num)
     {
-        if (num == 0)
+        // 1. Check division by zero
+        if (num == 0.0f)
         {
-            std::cerr << "operator /= Error: division by zero" << std::endl;
+            std::cerr << "[Error] Matrix division by zero is undefined.\n";
             return *this;
         }
 
-        if (this->sub_matrix)
+        // 2. Determine if padding handling is needed
+        bool need_padding_handling = (this->pad > 0);
+
+        float inv_num = 1.0f / num;
+
+        if (need_padding_handling)
         {
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_mulc_f32(this->data, this->data, 1 / num, this->rows, this->cols, this->padding, this->padding, 1, 1);
+            dspm_mulc_f32(this->data, this->data, inv_num,
+                          this->row, this->col,
+                          this->pad, this->pad,
+                          1, 1);
 #else
-            tiny_mat_multc_f32(this->data, this->data, 1 / num, this->rows, this->cols, this->padding, this->padding, 1, 1);
+            tiny_mat_multc_f32(this->data, this->data, inv_num,
+                              this->row, this->col,
+                              this->pad, this->pad,
+                              1, 1);
 #endif
         }
         else
         {
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dsps_mulc_f32_ansi(this->data, this->data, this->length, 1 / num, 1, 1);
+            dsps_mulc_f32(this->data, this->data, this->memory, inv_num, 1, 1);
 #else
-            tiny_vec_mulc_f32(this->data, this->data, this->length, 1 / num, 1, 1);
+            tiny_vec_mulc_f32(this->data, this->data, this->memory, inv_num, 1, 1);
 #endif
         }
+
         return *this;
     }
 
     /**
-     * ^= exponentiation operator
-     * The operator use DSP optimized implementation of multiplication.
+     * @name Mat::operator^(int num)
+     * @brief Element-wise integer exponentiation. Returns a new matrix where each element is raised to the given power.
      *
-     * @param[in] num: exponent
-     *
-     * @return
-     *      - result matrix: result = result^num
+     * @param num The exponent (integer)
+     * @return Mat New matrix after exponentiation
      */
     Mat Mat::operator^(int num)
     {
-        Mat temp(*this);
-        return expHelper(temp, num);
+        // Handle special cases
+        if (num == 0)
+        {
+            // Any number to the power of 0 is 1
+            Mat result(this->row, this->col, this->stride);
+            for (int i = 0; i < this->row; ++i)
+            {
+                for (int j = 0; j < this->col; ++j)
+                {
+                    result(i, j) = 1.0f;
+                }
+            }
+            return result;
+        }
+
+        if (num == 1)
+        {
+            // Return a copy of current matrix
+            return Mat(*this);
+        }
+
+        if (num < 0)
+        {
+            std::cerr << "[Error] Negative exponent not supported in operator^.\n";
+            return Mat(*this); // Return a copy without modification
+        }
+
+        // General case: positive exponent > 1
+        Mat result(this->row, this->col, this->stride);
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
+            {
+                float base = (*this)(i, j);
+                float value = 1.0f;
+                for (int k = 0; k < num; ++k)
+                {
+                    value *= base;
+                }
+                result(i, j) = value;
+            }
+        }
+
+        return result;
     }
 
     /* === Linear Algebra === */
     /**
-     * @brief Normalize the matrix
+     * @name Mat::transpose
+     * @brief Transpose the matrix.
      *
-     * The method normalize the matrix to unit length.
+     * @return Transposed matrix
      */
-    void Mat::normalize(void) // normalize the matrix
+    Mat Mat::transpose()
     {
-        float sqr_norm = 0;
-        for (int i = 0; i < this->rows; ++i)
+        Mat result(this->col, this->row);
+        for (int i = 0; i < this->row; ++i)
         {
-            for (int j = 0; j < this->cols; ++j)
+            for (int j = 0; j < this->col; ++j)
             {
-                sqr_norm += (*this)(i, j) * (*this)(i, j);
+                result(j, i) = this->data[i * this->stride + j];
             }
         }
-        sqr_norm = 1 / sqrtf(sqr_norm);
-        *this *= sqr_norm;
+        return result;
     }
 
     /**
-     * @brief Calculate the matrix norm
+     * @brief Calculate the cofactor matrix by removing specified row and column.
      *
-     * The method calculate the matrix norm.
-     *
-     * @return
-     *      - result matrix norm
+     * @param target_row Row index to remove
+     * @param target_col Column index to remove
+     * @return Mat The (n-1)x(n-1) cofactor matrix
      */
-    float Mat::norm(void) // calculate matrix norm
+    Mat Mat::cofactor(int target_row, int target_col)
     {
-        float sqr_norm = 0;
-        for (int i = 0; i < this->rows; ++i)
+        if (this->row != this->col)
         {
-            for (int j = 0; j < this->cols; ++j)
-            {
-                sqr_norm += (*this)(i, j) * (*this)(i, j);
-            }
+            std::cerr << "[Error] Cofactor requires square matrix.\n";
+            return Mat();
         }
-        sqr_norm = sqrtf(sqr_norm);
-        return sqr_norm;
+
+        int n = this->row;
+        Mat result(n - 1, n - 1);
+
+        for (int i = 0, res_i = 0; i < n; ++i)
+        {
+            if (i == target_row)
+                continue;
+
+            for (int j = 0, res_j = 0; j < n; ++j)
+            {
+                if (j == target_col)
+                    continue;
+
+                result.data[res_i * result.stride + res_j] = this->data[i * this->stride + j];
+                res_j++;
+            }
+            res_i++;
+        }
+
+        return result;
     }
 
     /**
-     * @brief Calculate the determinant of the matrix
+     * @name Mat::determinant()
+     * @brief Calculate the determinant of a square matrix using Laplace Expansion.
+     * @brief Low efficiency, only suitable for small matrices!!!
      *
-     * The method calculate the determinant of the matrix.
-     *
-     * @param n: size of the matrix
-     *
-     * @return
-     *      - result matrix determinant
+     * @return Determinant value (float)
      */
-    float Mat::det(int n)
+    float Mat::determinant()
     {
-        float D = 0; // Initialize result
+        if (this->row != this->col)
+        {
+            std::cerr << "[Error] Determinant can only be calculated for square matrices.\n";
+            return 0.0f;
+        }
 
-        //  Base case : if matrix contains single element
+        int n = this->row;
+
+        // Base case: 1x1 matrix
         if (n == 1)
+            return this->data[0];
+
+        // Base case: 2x2 matrix (optimized)
+        if (n == 2)
+            return this->data[0] * this->data[3] - this->data[1] * this->data[2];
+
+        float D = 0.0f;
+        int sign = 1;
+
+        for (int f = 0; f < n; ++f)
         {
-            return (*this)(0, 0);
-        }
-
-        Mat temp(this->rows, this->rows); // To store cofactors
-
-        int sign = 1; // To store sign multiplier
-
-        // Iterate for each element of first row
-        for (int f = 0; f < n; f++)
-        {
-            // Getting Cofactor of A[0][f]
-            Mat temp = this->cofactor(0, f, n);
-            D += (*this)(0, f) * temp.det(n - 1) * sign;
-
-            // terms are to be added with alternate sign
-            sign = -sign;
+            Mat minor = this->cofactor(0, f);                // Get cofactor matrix
+            D += sign * (*this)(0, f) * minor.determinant(); // Recursive call to calculate determinant of the cofactor matrix
+            sign = -sign;                                    // Alternate sign
         }
 
         return D;
     }
 
     /**
-     * Matrix transpose.
-     * Change rows and columns between each other.
+     * @name Mat::adjoint()
+     * @brief Calculate the adjoint (adjugate) matrix of a square matrix.
      *
-     * @return
-     *      - transposed matrix
+     * @return Mat The adjoint matrix
      */
-    Mat Mat::t()
+    Mat Mat::adjoint()
     {
-        Mat ret(this->cols, this->rows);
-        for (int i = 0; i < this->rows; ++i)
+        if (this->row != this->col)
         {
-            for (int j = 0; j < this->cols; ++j)
+            std::cerr << "[Error] Adjoint can only be computed for square matrices.\n";
+            return Mat();
+        }
+
+        int n = this->row;
+        Mat adj(n, n);
+
+        // Special case for 1x1 matrix
+        if (n == 1)
+        {
+            adj(0, 0) = 1.0f;
+            return adj;
+        }
+
+        for (int i = 0; i < n; ++i)
+        {
+            for (int j = 0; j < n; ++j)
             {
-                ret(j, i) = this->data[i * this->stride + j];
+                // Calculate cofactor matrix of element (i, j)
+                Mat cof = this->cofactor(i, j);
+
+                int sign = ((i + j) % 2 == 0) ? 1 : -1;
+
+                // Adjoint is transpose of cofactor matrix
+                adj(j, i) = sign * cof.determinant();
             }
         }
-        return ret;
+
+        return adj;
     }
 
     /**
-     * Find the inverse matrix
-     *
-     * @return
-     *      - inverse matrix
+     * @brief Normalize the matrix using L2 norm (Frobenius norm).
+     *        After normalization, ||Matrix|| = 1
      */
-    Mat Mat::inverse()
+    void Mat::normalize()
     {
-        Mat result(this->rows, this->cols);
-        // Find determinant of matrix
-        float det = this->det(this->rows);
-        if (det == 0)
+        float norm_sq = 0.0f;
+
+        for (int i = 0; i < this->row; ++i)
         {
-            // std::cout << "Singular matrix, can't find its inverse";
-            return result;
+            for (int j = 0; j < this->col; ++j)
+            {
+                float val = (*this)(i, j);
+                norm_sq += val * val;
+            }
         }
 
-        // Find adjoint
+        if (norm_sq == 0.0f)
+        {
+            std::cerr << "[Warning] Cannot normalize a zero matrix.\n";
+            return;
+        }
+
+        float inv_norm = 1.0f / sqrtf(norm_sq);
+        *this *= inv_norm;
+    }
+
+    /**
+     * @name Mat::norm() const
+     * @brief Calculate the Frobenius norm (L2 norm) of the matrix.
+     *
+     * @return float The computed matrix norm
+     */
+    float Mat::norm() const
+    {
+        float sum_sq = 0.0f;
+
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
+            {
+                float val = (*this)(i, j); // Access valid matrix element
+                sum_sq += val * val;
+            }
+        }
+
+        return sqrtf(sum_sq);
+    }
+
+    /**
+     * @name Mat::inverse_adjoint()
+     * @brief Compute the inverse of a square matrix using adjoint method.
+     *
+     * @return Mat The inverse matrix. If singular, returns a zero matrix.
+     */
+    Mat Mat::inverse_adjoint()
+    {
+        if (this->row != this->col)
+        {
+            std::cerr << "[Error] Inverse can only be computed for square matrices.\n";
+            return Mat();
+        }
+
+        int n = this->row;
+
+        float det_val = this->determinant();
+        if (det_val == 0.0f)
+        {
+            std::cerr << "[Error] Singular matrix, inverse does not exist.\n";
+            return Mat(n, n); // Return zero matrix
+        }
+
         Mat adj = this->adjoint();
 
-        // Find Inverse using formula "inverse(A) = adj(A)/det(A)"
-        for (int i = 0; i < this->rows; i++)
-            for (int j = 0; j < this->cols; j++)
+        // Inverse = adjoint / determinant
+        Mat inv(n, n);
+        float inv_det = 1.0f / det_val;
+
+        for (int i = 0; i < n; ++i)
+        {
+            for (int j = 0; j < n; ++j)
             {
-                result(i, j) = adj(i, j) / float(det);
+                inv(i, j) = adj(i, j) * inv_det;
             }
+        }
+
+        return inv;
+    }
+
+    /**
+     * @name Mat::eye(int size)
+     * @brief Generate an identity matrix of given size.
+     *
+     * @param size Dimension of the square identity matrix
+     * @return Mat Identity matrix (size x size)
+     */
+    Mat Mat::eye(int size)
+    {
+        Mat identity(size, size);
+
+        // Set diagonal elements to 1, rest are initialized as 0
+        for (int i = 0; i < size; ++i)
+        {
+            identity(i, i) = 1.0f;
+        }
+
+        return identity;
+    }
+
+    /**
+     * @name Mat::augment(const Mat &A, const Mat &B)
+     * @brief Augment two matrices horizontally [A | B].
+     *
+     * @param A Left matrix
+     * @param B Right matrix
+     * @return Mat Augmented matrix [A B]
+     */
+    Mat Mat::augment(const Mat &A, const Mat &B)
+    {
+        // 1. Check if row counts match
+        if (A.row != B.row)
+        {
+            std::cerr << "[Error] Cannot augment matrices: Row counts do not match ("
+                      << A.row << " vs " << B.row << ")\n";
+            return Mat();
+        }
+
+        // 2. Create new matrix with combined columns
+        Mat AB(A.row, A.col + B.col);
+
+        // 3. Copy data from A and B
+        for (int i = 0; i < A.row; ++i)
+        {
+            // Copy A
+            for (int j = 0; j < A.col; ++j)
+            {
+                AB(i, j) = A(i, j);
+            }
+            // Copy B
+            for (int j = 0; j < B.col; ++j)
+            {
+                AB(i, A.col + j) = B(i, j);
+            }
+        }
+
+        return AB;
+    }
+
+    /**
+     * @name Mat::ones(int size)
+     * @brief Create a square matrix filled with ones.
+     *
+     * @param size Size of the square matrix (rows = cols)
+     * @return Mat Square matrix [size x size] with all elements = 1
+     */
+    Mat Mat::ones(int size)
+    {
+        return Mat::ones(size, size);
+    }
+
+    /**
+     * @name Mat::ones(int rows, int cols)
+     * @brief Create a matrix of specified size filled with ones.
+     *
+     * @param rows Number of rows
+     * @param cols Number of columns
+     * @return Mat Matrix [rows x cols] with all elements = 1
+     */
+    Mat Mat::ones(int rows, int cols)
+    {
+        Mat result(rows, cols);
+
+        for (int i = 0; i < rows; ++i)
+        {
+            for (int j = 0; j < cols; ++j)
+            {
+                result(i, j) = 1.0f;
+            }
+        }
 
         return result;
     }
 
     /**
-     * Find pseudo inverse matrix
+     * @name Mat::gaussian_eliminate
+     * @brief Perform Gaussian Elimination to convert matrix to Row Echelon Form (REF).
      *
-     * @return
-     *      - inverse matrix
+     * @return Mat The upper triangular matrix (REF form)
      */
-    Mat Mat::pinv()
+    Mat Mat::gaussian_eliminate() const
     {
-        Mat I = Mat::eye(this->rows);
-        Mat AI = Mat::augment(*this, I);
-        Mat U = AI.gaussianEliminate();
-        Mat IAInverse = U.rowReduceFromGaussian();
-        Mat AInverse(this->rows, this->cols);
-        for (int i = 0; i < this->rows; ++i)
+        Mat result(*this); // Create a copy of the original matrix
+        int rows = result.row;
+        int cols = result.col;
+
+        int lead = 0; // Leading column tracker
+
+        for (int r = 0; r < rows; ++r)
         {
-            for (int j = 0; j < this->cols; ++j)
+            if (lead >= cols)
+                break;
+
+            int i = r;
+
+            // Find pivot row (partial pivoting)
+            while (result(i, lead) == 0)
             {
-                AInverse(i, j) = IAInverse(i, j + this->cols);
+                i++;
+                if (i == rows)
+                {
+                    i = r;
+                    lead++;
+                    if (lead == cols)
+                        return result; // Return the result matrix (upper triangular)
+                }
             }
+
+            // Swap rows if pivot is not in current row
+            if (i != r)
+                result.swap_rows(i, r);
+
+            // Eliminate rows below
+            for (int j = r + 1; j < rows; ++j)
+            {
+                if (result(j, lead) == 0)
+                    continue;
+
+                float factor = result(j, lead) / result(r, lead);
+                for (int k = lead; k < cols; ++k)
+                {
+                    result(j, k) -= factor * result(r, k);
+
+                    // Numerical precision handling (set near-zero values to zero)
+                    if (fabs(result(j, k)) < TINY_MATH_MIN_POSITIVE_INPUT_F32)
+                        result(j, k) = 0.0f;
+                }
+            }
+
+            lead++;
         }
-        return AInverse;
+
+        return result; // Return the upper triangular matrix
     }
 
     /**
-     * @brief   Gaussian Elimination
+     * @name Mat::row_reduce_from_gaussian()
+     * @brief Convert a matrix (assumed in row echelon form) to Reduced Row Echelon Form (RREF).
      *
-     * Gaussian Elimination of matrix
-     *
-     * @return
-     *      - result matrix
+     * @return Mat The matrix in RREF form
      */
-    Mat Mat::gaussianEliminate()
+    Mat Mat::row_reduce_from_gaussian()
     {
-        Mat Ab(*this);
-        int rows = Ab.rows;
-        int cols = Ab.cols;
-        int Acols = cols - 1;
+        Mat R(*this); // Make a copy to preserve original matrix
+        int rows = R.row;
+        int cols = R.col;
 
-        int i = 0; // row tracker
-        int j = 0; // column tracker
+        int pivot_row = rows - 1;
+        int pivot_col = cols - 2;
 
-        // iterate through the rows
-        while (i < rows)
+        while (pivot_row >= 0)
         {
-            // find a pivot for the row
-            bool pivot_found = false;
-            while (j < Acols && !pivot_found)
+            // Locate pivot in current row
+            int current_pivot_col = -1;
+            for (int k = 0; k < cols; ++k)
             {
-                if (Ab(i, j) != 0)
-                { // pivot not equal to 0
-                    pivot_found = true;
+                if (R(pivot_row, k) != 0)
+                {
+                    current_pivot_col = k;
+                    break;
                 }
-                else
-                { // check for a possible swap
-                    int max_row = i;
-                    float max_val = 0;
-                    for (int k = i + 1; k < rows; ++k)
+            }
+
+            if (current_pivot_col != -1)
+            {
+                // Normalize pivot row
+                float pivot_val = R(pivot_row, current_pivot_col);
+                for (int s = current_pivot_col; s < cols; ++s)
+                {
+                    R(pivot_row, s) /= pivot_val;
+                    if (fabs(R(pivot_row, s)) < TINY_MATH_MIN_POSITIVE_INPUT_F32)
                     {
-                        float cur_abs = Ab(k, j) >= 0 ? Ab(k, j) : -1 * Ab(k, j);
-                        if (cur_abs > max_val)
+                        R(pivot_row, s) = 0.0f;
+                    }
+                }
+
+                // Eliminate above pivot
+                for (int t = pivot_row - 1; t >= 0; --t)
+                {
+                    float factor = R(t, current_pivot_col);
+                    for (int s = current_pivot_col; s < cols; ++s)
+                    {
+                        R(t, s) -= factor * R(pivot_row, s);
+                        if (fabs(R(t, s)) < TINY_MATH_MIN_POSITIVE_INPUT_F32)
                         {
-                            max_row = k;
-                            max_val = cur_abs;
+                            R(t, s) = 0.0f;
                         }
                     }
-                    if (max_row != i)
-                    {
-                        Ab.swapRows(max_row, i);
-                        pivot_found = true;
-                    }
-                    else
-                    {
-                        j++;
-                    }
                 }
             }
 
-            // perform elimination as normal if pivot was found
-            if (pivot_found)
-            {
-                for (int t = i + 1; t < rows; ++t)
-                {
-                    for (int s = j + 1; s < cols; ++s)
-                    {
-                        Ab(t, s) = Ab(t, s) - Ab(i, s) * (Ab(t, j) / Ab(i, j));
-                        if (Ab(t, s) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && Ab(t, s) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
-                        {
-                            Ab(t, s) = 0;
-                        }
-                    }
-                    Ab(t, j) = 0;
-                }
-            }
-
-            i++;
-            j++;
-        }
-
-        return Ab;
-    }
-
-    /**
-     * Row reduction for Gaussian elimination
-     *
-     * @return
-     *      - result matrix
-     */
-    Mat Mat::rowReduceFromGaussian()
-    {
-        Mat R(*this);
-        int rows = R.rows;
-        int cols = R.cols;
-
-        int i = rows - 1; // row tracker
-        int j = cols - 2; // column tracker
-
-        // iterate through every row
-        while (i >= 0)
-        {
-            // find the pivot column
-            int k = j - 1;
-            while (k >= 0)
-            {
-                if (R(i, k) != 0)
-                {
-                    j = k;
-                }
-                k--;
-            }
-
-            // zero out elements above pivots if pivot not 0
-            if (R(i, j) != 0)
-            {
-                for (int t = i - 1; t >= 0; --t)
-                {
-                    for (int s = 0; s < cols; ++s)
-                    {
-                        if (s != j)
-                        {
-                            R(t, s) = R(t, s) - R(i, s) * (R(t, j) / R(i, j));
-                            if (R(t, s) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && R(t, s) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
-                            {
-                                R(t, s) = 0;
-                            }
-                        }
-                    }
-                    R(t, j) = 0;
-                }
-
-                // divide row by pivot
-                for (int k = j + 1; k < cols; ++k)
-                {
-                    R(i, k) = R(i, k) / R(i, j);
-                    if (R(i, k) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && R(i, k) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
-                    {
-                        R(i, k) = 0;
-                    }
-                }
-                R(i, j) = 1;
-            }
-
-            i--;
-            j--;
+            pivot_row--;
         }
 
         return R;
     }
 
-    /* === Static Utility Functions === */
-
     /**
-     * Create identity matrix.
-     * Create a square matrix and fill diagonal with 1.
+     * @name Mat::inverse_gje()
+     * @brief Compute the inverse of a square matrix using Gauss-Jordan elimination.
      *
-     * @param[in] size: matrix size
-     *
-     * @return
-     *      - matrix [N]x[N] with 1 in diagonal
+     * @return Mat The inverse matrix if invertible, otherwise returns empty matrix.
      */
-    Mat Mat::eye(int size)
+    Mat Mat::inverse_gje()
     {
-        Mat temp(size, size);
-        for (int i = 0; i < temp.rows; ++i)
+        if (this->row != this->col)
         {
-            for (int j = 0; j < temp.cols; ++j)
+            std::cerr << "[Error] Inversion requires a square matrix.\n";
+            return Mat();
+        }
+
+        // Step 1: Create augmented matrix [A | I]
+        Mat I = Mat::eye(this->row);            // Identity matrix
+        Mat augmented = Mat::augment(*this, I); // Augment matrix A with I
+
+        // Step 2: Apply Gauss-Jordan elimination to get [I | A_inv]
+        Mat rref = augmented.gaussian_eliminate().row_reduce_from_gaussian();
+
+        // Check if the left half is the identity matrix
+        for (int i = 0; i < this->row; ++i)
+        {
+            for (int j = 0; j < this->col; ++j)
             {
-                if (i == j)
+                if (fabs(rref(i, j) - I(i, j)) > TINY_MATH_MIN_POSITIVE_INPUT_F32)
                 {
-                    temp(i, j) = 1;
-                }
-                else
-                {
-                    temp(i, j) = 0;
+                    std::cerr << "[Error] Matrix is singular, cannot compute inverse.\n";
+                    return Mat();
                 }
             }
         }
-        return temp;
-    }
-    
-    /**
-     * Create matrix with all elements 1.
-     * Create a square matrix and fill all elements with 1.
-     *
-     * @param[in] size: matrix size
-     *
-     * @return
-     *      - matrix [N]x[N] with 1 in all elements
-     */
-    Mat Mat::ones(int size)
-    {
-        return (ones(size, size));
-    }
 
-    /**
-     * Create matrix with all elements 1.
-     * Create a matrix and fill all elements with 1.
-     *
-     * @param[in] rows: matrix rows
-     * @param[in] cols: matrix cols
-     *
-     * @return
-     *      - matrix [N]x[N] with 1 in all elements
-     */
-    Mat Mat::ones(int rows, int cols)
-    {
-        Mat temp(rows, cols);
-        for (int row = 0; row < temp.rows; ++row)
+        // Step 3: Extract the right half as the inverse matrix
+        Mat result(this->row, this->col);
+        for (int i = 0; i < this->row; ++i)
         {
-            for (int col = 0; col < temp.cols; ++col)
+            for (int j = 0; j < this->col; ++j)
             {
-                temp(row, col) = 1;
+                result(i, j) = rref(i, j + this->col); // Extract the right part
             }
         }
-        return temp;
+
+        return result;
     }
 
     /**
-     * @brief   Solve the matrix
+     * @name Mat::dotprod(const Mat &A, const Mat &B)
+     * @brief Calculate the dot product of two vectors (Nx1).
      *
-     * Solve matrix. Find roots for the matrix A*x = b
+     * @param[in] A Input vector A (Nx1).
+     * @param[in] B Input vector B (Nx1).
      *
-     * @param[in] A: matrix [N]x[N] with input coefficients
-     * @param[in] b: vector [N]x[1] with result values
-     *
-     * @return
-     *      - matrix [N]x[1] with roots
+     * @return float The computed dot product value.
      */
-    Mat Mat::solve(Mat A, Mat b)
+    float Mat::dotprod(const Mat &A, const Mat &B)
     {
-        // Gaussian elimination
-        for (int i = 0; i < A.rows; ++i)
+        if (A.row != B.row || A.col != 1 || B.col != 1)
+        {
+            std::cerr << "[Error] Dot product can only be computed for two vectors of the same length.\n";
+            return 0.0f; // Return 0 in case of dimension mismatch
+        }
+
+        float sum = 0;
+        for (int i = 0; i < A.row; ++i)
+        {
+            sum += A(i, 0) * B(i, 0);
+        }
+
+        return sum;
+    }
+
+    /**
+     * @name Mat::solve
+     * @brief Solve the linear system Ax = b using Gaussian elimination.
+     *
+     * @param A Coefficient matrix (NxN)
+     * @param b Result vector (Nx1)
+     * @return Mat Solution vector (Nx1) containing the roots of the equation Ax = b
+     */
+    Mat Mat::solve(const Mat &A, const Mat &b)
+    {
+        // Check if the matrix A is square
+        if (A.row != A.col)
+        {
+            std::cerr << "[Error] Matrix A must be square for solving.\n";
+            return Mat(); // Return empty matrix
+        }
+
+        // Check if A and b dimensions are compatible for solving
+        if (A.row != b.row || b.col != 1)
+        {
+            std::cerr << "[Error] Matrix dimensions do not match for solving.\n";
+            return Mat(); // Return empty matrix
+        }
+
+        // Create augmented matrix [A | b]
+        Mat augmentedMatrix(A.row, A.col + 1);
+        for (int i = 0; i < A.row; ++i)
+        {
+            for (int j = 0; j < A.col; ++j)
+            {
+                augmentedMatrix(i, j) = A(i, j); // Copy matrix A into augmented matrix
+            }
+            augmentedMatrix(i, A.col) = b(i, 0); // Copy vector b into augmented matrix
+        }
+
+        // Perform Gaussian elimination
+        for (int i = 0; i < A.row; ++i)
+        {
+            // Find pivot and make sure it's non-zero
+            if (augmentedMatrix(i, i) == 0)
+            {
+                std::cerr << "[Error] Pivot is zero, matrix is singular.\n";
+                return Mat(); // Return empty matrix
+            }
+
+            // Normalize the pivot row
+            float pivot = augmentedMatrix(i, i);
+            for (int j = i; j < augmentedMatrix.col; ++j)
+            {
+                augmentedMatrix(i, j) /= pivot; // Normalize the pivot row
+            }
+
+            // Eliminate the entries below the pivot
+            for (int j = i + 1; j < A.row; ++j)
+            {
+                float factor = augmentedMatrix(j, i);
+                for (int k = i; k < augmentedMatrix.col; ++k)
+                {
+                    augmentedMatrix(j, k) -= factor * augmentedMatrix(i, k);
+                }
+            }
+        }
+
+        // Back-substitution to find the solution
+        Mat solution(A.row, 1);
+        for (int i = A.row - 1; i >= 0; --i)
+        {
+            float sum = augmentedMatrix(i, A.col);
+            for (int j = i + 1; j < A.row; ++j)
+            {
+                sum -= augmentedMatrix(i, j) * solution(j, 0);
+            }
+            solution(i, 0) = sum;
+        }
+
+        return solution;
+    }
+
+    /**
+     * @name Mat::band_solve
+     * @brief Solve the system of equations Ax = b using optimized Gaussian elimination for banded matrices.
+     *
+     * @param A Coefficient matrix (NxN) - banded matrix
+     * @param b Result vector (Nx1)
+     * @param k Bandwidth of the matrix (the width of the non-zero bands)
+     * @return Mat Solution vector (Nx1) containing the roots of the equation Ax = b
+     */
+    Mat Mat::band_solve(Mat A, Mat b, int k)
+    {
+        // Dimension compatibility check
+        if (A.row != A.col) // Check if A is a square matrix
+        {
+            std::cerr << "[Error] Matrix A must be square for solving.\n";
+            return Mat(); // Return an empty matrix in case of an error
+        }
+
+        if (A.row != b.row || b.col != 1) // Check if dimensions of A and b are compatible
+        {
+            std::cerr << "[Error] Matrix dimensions are not compatible for solving.\n";
+            return Mat(); // Return an empty matrix in case of an error
+        }
+
+        int bandsBelow = (k - 1) / 2; // Number of bands below the main diagonal
+
+        // Perform forward elimination to reduce the matrix
+        for (int i = 0; i < A.row; ++i)
         {
             if (A(i, i) == 0)
             {
-                // pivot 0 - error
-                std::cerr << "Error: the coefficient matrix has 0 as a pivot. Please fix the input and try again." << std::endl;
-                Mat err_result(0, 0);
+                // Pivot 0 - error
+                std::cerr << "[Error] Zero pivot detected in bandSolve. Cannot proceed.\n";
+                Mat err_result(b.row, 1);
+                memset(err_result.data, 0, b.row * sizeof(float));
                 return err_result;
             }
-            float a_ii = 1 / A(i, i);
-            for (int j = i + 1; j < A.rows; ++j)
+
+            float a_ii = 1 / A(i, i); // Inverse of the pivot element
+
+            // Eliminate elements below the pivot in the current column
+            for (int j = i + 1; j < A.row && j <= i + bandsBelow; ++j)
             {
-                float a_ji = A(j, i) * a_ii;
-                for (int k = i + 1; k < A.cols; ++k)
+                if (A(j, i) != 0)
                 {
-                    A(j, k) -= A(i, k) * a_ji;
-                    if ((A(j, k) < TINY_MATH_MIN_POSITIVE_INPUT_F32) && (A(j, k) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32))
+                    float factor = A(j, i) * a_ii;
+                    for (int k = i; k < A.col; ++k)
                     {
-                        A(j, k) = 0;
+                        A(j, k) -= A(i, k) * factor; // Eliminate the element
                     }
+                    b(j, 0) -= b(i, 0) * factor; // Update the result vector
+                    A(j, i) = 0;                 // Set the element to zero as it has been eliminated
                 }
-                b(j, 0) -= b(i, 0) * a_ji;
-                if (A(j, 0) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && A(j, 0) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
-                {
-                    A(j, 0) = 0;
-                }
-                A(j, i) = 0;
             }
         }
 
-        // Back substitution
-        Mat x(b.rows, 1);
-        x((x.rows - 1), 0) = b((x.rows - 1), 0) / A((x.rows - 1), (x.rows - 1));
-        if (x((x.rows - 1), 0) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && x((x.rows - 1), 0) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
-        {
-            x((x.rows - 1), 0) = 0;
-        }
-        for (int i = x.rows - 2; i >= 0; --i)
+        // Back substitution to solve for x
+        Mat x(b.row, 1);
+        x(x.row - 1, 0) = b(x.row - 1, 0) / A(x.row - 1, x.row - 1); // Solve the last variable
+
+        for (int i = x.row - 2; i >= 0; --i)
         {
             float sum = 0;
-            for (int j = i + 1; j < x.rows; ++j)
+            for (int j = i + 1; j < x.row; ++j)
             {
-                sum += A(i, j) * x(j, 0);
+                sum += A(i, j) * x(j, 0); // Sum of the known terms
             }
-            x(i, 0) = (b(i, 0) - sum) / A(i, i);
-            if (x(i, 0) < TINY_MATH_MIN_POSITIVE_INPUT_F32 && x(i, 0) > -1 * TINY_MATH_MIN_POSITIVE_INPUT_F32)
-            {
-                x(i, 0) = 0;
-            }
+            x(i, 0) = (b(i, 0) - sum) / A(i, i); // Solve for the current variable
         }
-        return x;
+
+        return x; // Return the solution vector
     }
 
     /**
-     * @brief   Band solve the matrix
+     * @name Mat::roots(Mat A, Mat y)
+     * @brief   Solve the matrix using a different method. Another implementation of the 'solve' function, no difference in principle.
      *
-     * Solve band matrix. Find roots for the matrix A*x = b with bandwidth k.
-     *
-     * @param[in] A: matrix [N]x[N] with input coefficients
-     * @param[in] b: vector [N]x[1] with result values
-     * @param[in] k: upper bandwidth value
-     *
-     * @return
-     *      - matrix [N]x[1] with roots
-     */
-    Mat Mat::bandSolve(Mat A, Mat b, int k)
-    {
-        // optimized Gaussian elimination
-        int bandsBelow = (k - 1) / 2;
-        for (int i = 0; i < A.rows; ++i)
-        {
-            if (A(i, i) == 0)
-            {
-                // pivot 0 - error
-                std::cerr << "Error: the coefficient matrix has 0 as a pivot. Please fix the input and try again." << std::endl;
-                Mat err_result(b.rows, 1);
-                memset(err_result.data, 0, b.rows * sizeof(float));
-                return err_result;
-            }
-            float a_ii = 1 / A(i, i);
-            for (int j = i + 1; j < A.rows && j <= i + bandsBelow; ++j)
-            {
-                int k = i + 1;
-                while ((k < A.cols) && (fabs(A(j, k)) > TINY_MATH_MIN_POSITIVE_INPUT_F32))
-                {
-                    A(j, k) -= A(i, k) * (A(j, i) * a_ii);
-                    k++;
-                }
-                b(j, 0) -= b(i, 0) * (A(j, i) * a_ii);
-                A(j, i) = 0;
-            }
-        }
-
-        // Back substitution
-        Mat x(b.rows, 1);
-        x((x.rows - 1), 0) = b((x.rows - 1), 0) / A((x.rows - 1), (x.rows - 1));
-        for (int i = x.rows - 2; i >= 0; --i)
-        {
-            float sum = 0;
-            for (int j = i + 1; j < x.rows; ++j)
-            {
-                sum += A(i, j) * x(j, 0);
-            }
-            x(i, 0) = (b(i, 0) - sum) / A(i, i);
-        }
-
-        return x;
-    }
-
-    /**
-     * @brief   Solve the matrix
-     *
-     * Different way to solve the matrix. Find roots for the matrix A*x = y
+     * This method solves the linear system A * x = y using Gaussian elimination.
      *
      * @param[in] A: matrix [N]x[N] with input coefficients
      * @param[in] y: vector [N]x[1] with result values
@@ -1948,252 +1943,119 @@ namespace tiny
      */
     Mat Mat::roots(Mat A, Mat y)
     {
-        int n = A.cols + 1;
+        int n = A.col; // Number of rows and columns in A (assuming A is square)
 
-        Mat result(y.rows, 1);
+        // Create augmented matrix [A | y]
+        Mat augmentedMatrix = Mat::augment(A, y);
 
-        Mat g_m = Mat::augment(A, y);
-        for (int j = 0; j < A.cols; j++)
+        // Perform Gaussian elimination
+        for (int j = 0; j < n; j++)
         {
-            float g_jj = 1 / g_m(j, j);
-            for (int i = 0; i < A.cols; i++)
+            // Normalize the pivot row (make pivot element equal to 1)
+            float pivot = augmentedMatrix(j, j);
+            if (pivot == 0)
             {
-                if (i != j)
+                std::cerr << "[Error] Pivot is zero, system may have no solution." << std::endl;
+                return Mat(); // Return an empty matrix in case of an error
+            }
+
+            for (int k = 0; k < augmentedMatrix.col; k++)
+            {
+                augmentedMatrix(j, k) /= pivot;
+            }
+
+            // Eliminate the column below the pivot (set other elements in the column to zero)
+            for (int i = j + 1; i < n; i++)
+            {
+                float factor = augmentedMatrix(i, j);
+                for (int k = 0; k < augmentedMatrix.col; k++)
                 {
-                    float c = g_m(i, j) * g_jj;
-                    for (int k = 0; k < n; k++)
-                    {
-                        g_m(i, k) = g_m(i, k) - c * g_m(j, k);
-                    }
+                    augmentedMatrix(i, k) -= factor * augmentedMatrix(j, k);
                 }
             }
         }
-        for (int i = 0; i < A.rows; i++)
+
+        // Perform back-substitution
+        Mat result(n, 1);
+        for (int i = n - 1; i >= 0; i--)
         {
-            result(i, 0) = g_m(i, A.cols) / g_m(i, i);
+            float sum = augmentedMatrix(i, n); // Right-hand side of the augmented matrix
+            for (int j = i + 1; j < n; j++)
+            {
+                sum -= augmentedMatrix(i, j) * result(j, 0); // Subtract the known terms
+            }
+            result(i, 0) = sum; // Solve for the current variable
         }
+
         return result;
     }
 
-    /**
-     * @brief   Dotproduct of two vectors
-     *
-     * The method returns dotproduct of two vectors
-     *
-     * @param[in] A: Input vector A Nx1
-     * @param[in] B: Input vector B Nx1
-     *
-     * @return
-     *      - dotproduct value
-     */
-    float Mat::dotProduct(Mat a, Mat b)
-    {
-        float sum = 0;
-        for (int i = 0; i < a.rows; ++i)
-        {
-            sum += (a(i, 0) * b(i, 0));
-        }
-        return sum;
-    }
-
-    /**
-     * @brief   Augmented matrices (concatenate two matrices horizontally)
-     *
-     * Augmented matrices
-     *
-     * @param[in] A: Input vector A MxN
-     * @param[in] B: Input vector B MxK
-     *
-     * @return
-     *      - Augmented matrix Mx(N+K)
-     */
-    Mat Mat::augment(Mat A, Mat B)
-    {
-        Mat AB(A.rows, A.cols + B.cols);
-        for (int i = 0; i < AB.rows; ++i)
-        {
-            for (int j = 0; j < AB.cols; ++j)
-            {
-                if (j < A.cols)
-                {
-                    AB(i, j) = A(i, j);
-                }
-                else
-                {
-                    AB(i, j) = B(i, j - A.cols);
-                }
-            }
-        }
-        return AB;
-    }
-
-    /* === Private Utility Functions === */
-    /**
-     * @brief   Calculate cofactor matrix
-     *
-     * Calculate cofactor matrix of the matrix
-     *
-     * @param[in] row: row position
-     * @param[in] col: column position
-     * @param[in] n: size of the matrix
-     *
-     * @return
-     *      - cofactor matrix
-     */
-    Mat Mat::cofactor(int row, int col, int n)
-    {
-        int i = 0, j = 0;
-        Mat result(n, n);
-        // Looping for each element of the matrix
-        for (int r = 0; r < n; r++)
-        {
-            for (int c = 0; c < n; c++)
-            {
-                //  Copying into temporary matrix only those element
-                //  which are not in given row and column
-                if (r != row && c != col)
-                {
-                    result(i, j++) = (*this)(r, c);
-
-                    // Row is filled, so increase row index and
-                    // reset col index
-                    if (j == this->rows - 1)
-                    {
-                        j = 0;
-                        i++;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * @brief   Calculate adjoint matrix
-     *
-     * Calculate adjoint matrix of the matrix
-     *
-     * @return
-     *      - adjoint matrix
-     */
-    Mat Mat::adjoint()
-    {
-        Mat adj(this->rows, this->cols);
-        if (this->rows == 1)
-        {
-            adj(0, 0) = 1;
-            return adj;
-        }
-
-        // temp is used to store cofactors of A(,)
-        int sign = 1;
-        Mat temp(this->rows, this->cols);
-
-        for (int i = 0; i < this->rows; i++)
-        {
-            for (int j = 0; j < this->cols; j++)
-            {
-                // Get cofactor of A(i,j)
-                temp = this->cofactor(i, j, this->rows);
-
-                // sign of adj(j,i) positive if sum of row
-                // and column indexes is even.
-                sign = ((i + j) % 2 == 0) ? 1 : -1;
-
-                // Interchanging rows and columns to get the
-                // transpose of the cofactor matrix
-                adj(j, i) = (sign) * (temp.det(this->rows - 1));
-            }
-        }
-        return adj;
-    }
-
-    /**
-     * @brief   Calculate matrix exponential
-     *
-     * Calculate matrix exponential of the matrix
-     *
-     * @param[in] m: input matrix
-     * @param[in] num: number of iterations
-     *
-     * @return
-     *      - matrix exponential
-     */
-    Mat Mat::expHelper(const Mat &m, int num)
-    {
-        if (num == 0)
-        {
-            return Mat::eye(m.rows);
-        }
-        else if (num == 1)
-        {
-            return m;
-        }
-        else if (num % 2 == 0)
-        { // num is even
-            return expHelper(m * m, num / 2);
-        }
-        else
-        { // num is odd
-            return m * expHelper(m * m, (num - 1) / 2);
-        }
-    }
-    /* === Stream Operators === */
-
     /* === Stream Operators === */
     /**
-     * Print matrix to the standard iostream.
-     * @param[in] os: output stream
-     * @param[in] m: matrix to print
+     * @name operator<<
+     * @brief Stream insertion operator for printing matrix to the output stream (e.g., std::cout).
      *
-     * @return
-     *      - output stream
+     * This function allows printing the contents of a matrix to an output stream.
+     * It prints each row of the matrix on a new line, with elements separated by spaces.
+     *
+     * @param os Output stream where the matrix will be printed (e.g., std::cout)
+     * @param m Matrix to be printed
+     *
+     * @return os The output stream after printing the matrix
      */
-    ostream &operator<<(ostream &os, const Mat &m)
+    std::ostream &operator<<(std::ostream &os, const Mat &m)
     {
-        for (int i = 0; i < m.rows; ++i)
+        for (int i = 0; i < m.row; ++i)
         {
             os << m(i, 0);
-            for (int j = 1; j < m.cols; ++j)
+            for (int j = 1; j < m.col; ++j)
             {
                 os << " " << m(i, j);
             }
-            os << endl;
+            os << std::endl;
         }
         return os;
     }
 
     /**
-     * Print rectangular ROI to the standard iostream.
-     * @param[in] os: output stream
-     * @param[in] rect: ROI
+     * @name operator<<
+     * @brief Stream insertion operator for printing the Rectangular ROI structure to the output stream.
      *
-     * @return
-     *      - output stream
+     * This function prints the details of the ROI (Region of Interest) including the start row and column,
+     * and the width and height of the rectangular region.
+     *
+     * @param os Output stream where the ROI will be printed (e.g., std::cout)
+     * @param roi The ROI structure to be printed
+     *
+     * @return os The output stream after printing the ROI details
      */
-    ostream &operator<<(ostream &os, const Mat::Rect &rect)
+    std::ostream &operator<<(std::ostream &os, const Mat::ROI &roi)
     {
-        os << "row start " << rect.y << endl;
-        os << "col start " << rect.x << endl;
-        os << "row count " << rect.height << endl;
-        os << "col count " << rect.width << endl;
+        os << "row start " << roi.pos_y << std::endl;
+        os << "col start " << roi.pos_x << std::endl;
+        os << "row count " << roi.height << std::endl;
+        os << "col count " << roi.width << std::endl;
 
         return os;
     }
-    
+
     /**
-     * Fill the matrix from iostream.
-     * @param[in] is: input stream
-     * @param[in] m: matrix to fill
+     * @name operator>>
+     * @brief Stream extraction operator for reading matrix from the input stream (e.g., std::cin).
      *
-     * @return
-     *      - input stream
+     * This function reads the contents of a matrix from an input stream.
+     * The matrix elements are read row by row, with elements separated by spaces or newlines.
+     *
+     * @param is Input stream from which the matrix will be read (e.g., std::cin)
+     * @param m Matrix to store the read data
+     *
+     * @return is The input stream after reading the matrix
      */
-    istream &operator>>(istream &is, Mat &m)
+    std::istream &operator>>(std::istream &is, Mat &m)
     {
-        for (int i = 0; i < m.rows; ++i)
+        for (int i = 0; i < m.row; ++i)
         {
-            for (int j = 0; j < m.cols; ++j)
+            for (int j = 0; j < m.col; ++j)
             {
                 is >> m(i, j);
             }
@@ -2214,7 +2076,7 @@ namespace tiny
      */
     Mat operator+(const Mat &m1, const Mat &m2)
     {
-        if ((m1.rows != m2.rows) || (m1.cols != m2.cols))
+        if ((m1.row != m2.row) || (m1.col != m2.col))
         {
             std::cerr << "operator + Error: matrices do not have equal dimensions" << std::endl;
             Mat err_ret;
@@ -2223,11 +2085,11 @@ namespace tiny
 
         if (m1.sub_matrix || m2.sub_matrix)
         {
-            Mat temp(m1.rows, m2.cols);
+            Mat temp(m1.row, m2.col);
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_add_f32(m1.data, m2.data, temp.data, m1.rows, m1.cols, m1.padding, m2.padding, temp.padding, 1, 1, 1);
+            dspm_add_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m1.pad, m2.pad, temp.pad, 1, 1, 1);
 #else
-            tiny_mat_add_f32(m1.data, m2.data, temp.data, m1.rows, m1.cols, m1.padding, m2.padding, temp.padding, 1, 1, 1);
+            tiny_mat_add_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m1.pad, m2.pad, temp.pad, 1, 1, 1);
 #endif
             return temp;
         }
@@ -2252,11 +2114,11 @@ namespace tiny
     {
         if (m.sub_matrix)
         {
-            Mat temp(m.rows, m.cols);
+            Mat temp(m.row, m.col);
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_addc_f32(m.data, temp.data, C, m.rows, m.cols, m.padding, temp.padding, 1, 1);
+            dspm_addc_f32(m.data, temp.data, C, m.row, m.col, m.pad, temp.pad, 1, 1);
 #else
-            tiny_mat_addc_f32(m.data, temp.data, C, m.rows, m.cols, m.padding, temp.padding, 1, 1);
+            tiny_mat_addc_f32(m.data, temp.data, C, m.row, m.col, m.pad, temp.pad, 1, 1);
 #endif
             return temp;
         }
@@ -2279,7 +2141,7 @@ namespace tiny
      */
     Mat operator-(const Mat &m1, const Mat &m2)
     {
-        if ((m1.rows != m2.rows) || (m1.cols != m2.cols))
+        if ((m1.row != m2.row) || (m1.col != m2.col))
         {
             std::cerr << "operator - Error: matrices do not have equal dimensions" << std::endl;
             Mat err_ret;
@@ -2288,11 +2150,11 @@ namespace tiny
 
         if (m1.sub_matrix || m2.sub_matrix)
         {
-            Mat temp(m1.rows, m1.cols);
+            Mat temp(m1.row, m1.col);
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_sub_f32(m1.data, m2.data, temp.data, m1.rows, m1.cols, m1.padding, m2.padding, temp.padding, 1, 1, 1);
+            dspm_sub_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m1.pad, m2.pad, temp.pad, 1, 1, 1);
 #else
-            tiny_mat_sub_f32(m1.data, m2.data, temp.data, m1.rows, m1.cols, m1.padding, m2.padding, temp.padding, 1, 1, 1);
+            tiny_mat_sub_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m1.pad, m2.pad, temp.pad, 1, 1, 1);
 #endif
             return temp;
         }
@@ -2302,6 +2164,7 @@ namespace tiny
             return (temp -= m2);
         }
     }
+
 
     /**
      * - operator, subtraction of matrix with constant
@@ -2317,11 +2180,11 @@ namespace tiny
     {
         if (m.sub_matrix)
         {
-            Mat temp(m.rows, m.cols);
+            Mat temp(m.row, m.col);
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_addc_f32(m.data, temp.data, -C, m.rows, m.cols, m.padding, temp.padding, 1, 1);
+            dspm_addc_f32(m.data, temp.data, -C, m.row, m.col, m.pad, temp.pad, 1, 1);
 #else
-            tiny_mat_addc_f32(m.data, temp.data, -C, m.rows, m.cols, m.padding, temp.padding, 1, 1);
+            tiny_mat_addc_f32(m.data, temp.data, -C, m.row, m.col, m.pad, temp.pad, 1, 1);
 #endif
             return temp;
         }
@@ -2331,6 +2194,7 @@ namespace tiny
             return (temp -= C);
         }
     }
+
 
     /**
      * * operator, multiplication of two matrices.
@@ -2344,28 +2208,28 @@ namespace tiny
      */
     Mat operator*(const Mat &m1, const Mat &m2)
     {
-        if (m1.cols != m2.rows)
+        if (m1.col != m2.row)
         {
             std::cerr << "operator * Error: matrices do not have correct dimensions" << std::endl;
             Mat err_ret;
             return err_ret;
         }
-        Mat temp(m1.rows, m2.cols);
+        Mat temp(m1.row, m2.col);
 
         if (m1.sub_matrix || m2.sub_matrix)
         {
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_mult_ex_f32(m1.data, m2.data, temp.data, m1.rows, m1.cols, m2.cols, m1.padding, m2.padding, temp.padding);
+            dspm_mult_ex_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m2.col, m1.pad, m2.pad, temp.pad);
 #else
-            tiny_mat_mult_ex_f32(m1.data, m2.data, temp.data, m1.rows, m1.cols, m2.cols, m1.padding, m2.padding, temp.padding);
+            tiny_mat_mult_ex_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m2.col, m1.pad, m2.pad, temp.pad);
 #endif
         }
         else
         {
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_mult_f32(m1.data, m2.data, temp.data, m1.rows, m1.cols, m2.cols);
+            dspm_mult_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m2.col);
 #else
-            tiny_mat_mult_f32(m1.data, m2.data, temp.data, m1.rows, m1.cols, m2.cols);
+            tiny_mat_mult_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m2.col);
 #endif
         }
 
@@ -2386,11 +2250,11 @@ namespace tiny
     {
         if (m.sub_matrix)
         {
-            Mat temp(m.rows, m.cols);
+            Mat temp(m.row, m.col);
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_mulc_f32(m.data, temp.data, num, m.rows, m.cols, m.padding, temp.padding, 1, 1);
+            dspm_mulc_f32(m.data, temp.data, num, m.row, m.col, m.pad, temp.pad, 1, 1);
 #else
-            tiny_mat_mulc_f32(m.data, temp.data, num, m.rows, m.cols, m.padding, temp.padding, 1, 1);
+            tiny_mat_multc_f32(m.data, temp.data, num, m.row, m.col, m.pad, temp.pad, 1, 1);
 #endif
             return temp;
         }
@@ -2430,11 +2294,11 @@ namespace tiny
     {
         if (m.sub_matrix)
         {
-            Mat temp(m.rows, m.cols);
+            Mat temp(m.row, m.col);
 #if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
-            dspm_mulc_f32(m.data, temp.data, 1 / num, m.rows, m.cols, m.padding, temp.padding, 1, 1);
+            dspm_mulc_f32(m.data, temp.data, 1 / num, m.row, m.col, m.pad, temp.pad, 1, 1);
 #else
-            tiny_mat_multc_f32(m.data, temp.data, 1 / num, m.rows, m.cols, m.padding, temp.padding, 1, 1);
+            tiny_mat_multc_f32(m.data, temp.data, 1 / num, m.row, m.col, m.pad, temp.pad, 1, 1);
 #endif
             return temp;
         }
@@ -2444,6 +2308,7 @@ namespace tiny
             return (temp /= num);
         }
     }
+
 
     /**
      * / operator, divide matrix A by matrix B (element-wise)
@@ -2456,17 +2321,17 @@ namespace tiny
      */
     Mat operator/(const Mat &A, const Mat &B)
     {
-        if ((A.rows != B.rows) || (A.cols != B.cols))
+        if ((A.row != B.row) || (A.col != B.col))
         {
             std::cerr << "operator / Error: matrices do not have equal dimensions" << std::endl;
             Mat err_ret;
             return err_ret;
         }
 
-        Mat temp(A.rows, A.cols);
-        for (int row = 0; row < A.rows; row++)
+        Mat temp(A.row, A.col);
+        for (int row = 0; row < A.row; row++)
         {
-            for (int col = 0; col < A.cols; col++)
+            for (int col = 0; col < A.col; col++)
             {
                 temp(row, col) = A(row, col) / B(row, col);
             }
@@ -2474,6 +2339,7 @@ namespace tiny
         return temp;
     }
 
+    
     /**
      * == operator, compare two matrices
      *
@@ -2486,14 +2352,14 @@ namespace tiny
      */
     bool operator==(const Mat &m1, const Mat &m2)
     {
-        if ((m1.cols != m2.cols) || (m1.rows != m2.rows))
+        if ((m1.col != m2.col) || (m1.row != m2.row))
         {
             return false;
         }
 
-        for (int row = 0; row < m1.rows; row++)
+        for (int row = 0; row < m1.row; row++)
         {
-            for (int col = 0; col < m1.cols; col++)
+            for (int col = 0; col < m1.col; col++)
             {
                 if (m1(row, col) != m2(row, col))
                 {
@@ -2505,8 +2371,6 @@ namespace tiny
 
         return true;
     }
-
-
-
 }
+
 ```

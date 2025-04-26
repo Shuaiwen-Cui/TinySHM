@@ -44,6 +44,11 @@ namespace tiny
         bool sub_matrix; //< flag indicates that matrix is a subset of another matrix
 
         /* === Rectangular ROI Structure === */
+        /**
+         * @name Region of Interest (ROI) Structure
+         * @brief This is the structure for ROI
+         * 
+         */
         struct ROI
         {
             int pos_x;  ///< starting column index
@@ -137,29 +142,40 @@ namespace tiny
         Mat adjoint(); 
         void normalize();
         float norm() const;
-        Mat inverse();
+        Mat inverse_adjoint();
         static Mat eye(int size);
         static Mat augment(const Mat &A, const Mat &B);
         static Mat ones(int rows, int cols);
         static Mat ones(int size);
         Mat gaussian_eliminate() const;
         Mat row_reduce_from_gaussian();
-        Mat gaussian_inverse();
-
-        /* === Static Utility Functions === */
-
-        // Mat solve(Mat A, Mat b);
-        // Mat bandSolve(Mat A, Mat b, int k);
-        // Mat roots(Mat A, Mat y);
-        // float dotProduct(Mat A, Mat B);
-
-
-
-
+        Mat inverse_gje(); // Inverse using Gaussian-Jordan elimination
+        float dotprod(const Mat &A, const Mat &B);
+        Mat solve(const Mat &A, const Mat &b);
+        Mat band_solve(Mat A, Mat b, int k);
+        Mat roots(Mat A, Mat y);
+        
     protected:
 
     private:
 
-    // Mat expHelper(const Mat &m, int num);
     };
+
+    /* === Stream Operators === */
+    std::ostream &operator<<(std::ostream &os, const Mat &m);
+    std::ostream &operator<<(std::ostream &os, const Mat::ROI &roi);
+    std::istream &operator>>(std::istream &is, Mat &m);
+
+    /* === Global Arithmetic Operators === */
+    Mat operator+(const Mat &A, const Mat &B);
+    Mat operator+(const Mat &A, float C);
+    Mat operator-(const Mat &A, const Mat &B);
+    Mat operator-(const Mat &A, float C);
+    Mat operator*(const Mat &A, const Mat &B);
+    Mat operator*(const Mat &A, float C);
+    Mat operator*(float C, const Mat &A);
+    Mat operator/(const Mat &A, float C);
+    Mat operator/(const Mat &A, const Mat &B);
+    bool operator==(const Mat &A, const Mat &B);
+
 }

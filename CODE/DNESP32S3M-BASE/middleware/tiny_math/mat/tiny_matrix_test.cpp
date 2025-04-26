@@ -968,7 +968,7 @@ void test_matrix_norm()
 }
 
 // Test 5.7: Matrix Inversion
-void test_matrix_inverse()
+void test_inverse_adjoint_adjoint()
 {
     std::cout << "\n[Test: Matrix Inverse Calculation]\n";
 
@@ -979,7 +979,7 @@ void test_matrix_inverse()
     mat1(1, 0) = 2;  mat1(1, 1) = 6;
 
     mat1.print_matrix(true);
-    tiny::Mat inv1 = mat1.inverse();
+    tiny::Mat inv1 = mat1.inverse_adjoint();
     std::cout << "Inverse Matrix:\n";
     inv1.print_matrix(true);
     std::cout << "Expected Approx:\n[ 0.6  -0.7 ]\n[ -0.2  0.4 ]\n";
@@ -991,7 +991,7 @@ void test_matrix_inverse()
     mat2(1, 0) = 2;  mat2(1, 1) = 4;   // Rank-deficient, det = 0
 
     mat2.print_matrix(true);
-    tiny::Mat inv2 = mat2.inverse();
+    tiny::Mat inv2 = mat2.inverse_adjoint();
     std::cout << "Inverse Matrix (Should be zero matrix):\n";
     inv2.print_matrix(true);
 
@@ -1003,14 +1003,14 @@ void test_matrix_inverse()
     mat3(2,0) = 0; mat3(2,1) = 1; mat3(2,2) = 1;
 
     mat3.print_matrix(true);
-    tiny::Mat inv3 = mat3.inverse();
+    tiny::Mat inv3 = mat3.inverse_adjoint();
     std::cout << "Inverse Matrix:\n";
     inv3.print_matrix(true);
 
     /*** Test 4: Non-Square Matrix (Expect Error) ***/
     std::cout << "\n[Test 4] Non-Square Matrix (Expect Error)\n";
     tiny::Mat mat4(2, 3);
-    tiny::Mat inv4 = mat4.inverse();
+    tiny::Mat inv4 = mat4.inverse_adjoint();
     inv4.print_matrix(true);
 }
 
@@ -1086,7 +1086,7 @@ void test_gaussian_eliminate()
 
     tiny::Mat result1 = mat1.gaussian_eliminate();
 
-    std::cout << "After Gaussian Elimination:\n";
+    std::cout << "After Gaussian Elimination (Should be upper triangular):\n";
     result1.print_matrix(true);
 
     /*** Test 2: 3x4 Augmented Matrix ***/
@@ -1096,12 +1096,12 @@ void test_gaussian_eliminate()
     mat2(1,0) = -3; mat2(1,1) = -1; mat2(1,2) = 2; mat2(1,3) = -11;
     mat2(2,0) = -2; mat2(2,1) = 1; mat2(2,2) = 2; mat2(2,3) = -3;
 
-    std::cout << "Original Augmented Matrix:\n";
+    std::cout << "Original Augmented Matrix [A | b]:\n";
     mat2.print_matrix(true);
 
     tiny::Mat result2 = mat2.gaussian_eliminate();
 
-    std::cout << "Row Echelon Form:\n";
+    std::cout << "After Gaussian Elimination (Row Echelon Form):\n";
     result2.print_matrix(true);
 
     /*** Test 3: Singular Matrix ***/
@@ -1110,9 +1110,11 @@ void test_gaussian_eliminate()
     mat3(0,0) = 1; mat3(0,1) = 2;
     mat3(1,0) = 2; mat3(1,1) = 4;  // Linearly dependent rows
 
+    std::cout << "Original Singular Matrix:\n";
     mat3.print_matrix(true);
+
     tiny::Mat result3 = mat3.gaussian_eliminate();
-    std::cout << "After Gaussian Elimination:\n";
+    std::cout << "After Gaussian Elimination (Should show rows of zeros):\n";
     result3.print_matrix(true);
 
     /*** Test 4: Zero Matrix ***/
@@ -1122,9 +1124,10 @@ void test_gaussian_eliminate()
     mat4.print_matrix(true);
 
     tiny::Mat result4 = mat4.gaussian_eliminate();
-    std::cout << "After Gaussian Elimination:\n";
+    std::cout << "After Gaussian Elimination (Should be a zero matrix):\n";
     result4.print_matrix(true);
 }
+
 
 // Test 5.10: Row Reduce from Gaussian (RREF Calculation)
 void test_row_reduce_from_gaussian()
@@ -1178,7 +1181,7 @@ void test_row_reduce_from_gaussian()
 }
 
 // Test 5.11 gaussian inverse
-void test_gaussian_inverse()
+void test_inverse_gje()
 {
     std::cout << "\n--- Test: Gaussian Inverse ---\n";
 
@@ -1190,7 +1193,7 @@ void test_gaussian_inverse()
     std::cout << "Original matrix (mat1):\n";
     mat1.print_matrix(true);
     
-    tiny::Mat invMat1 = mat1.gaussian_inverse();
+    tiny::Mat invMat1 = mat1.inverse_gje();
     std::cout << "Inverse matrix (mat1):\n";
     invMat1.print_matrix(true);
 
@@ -1200,7 +1203,7 @@ void test_gaussian_inverse()
     std::cout << "Original matrix (Identity):\n";
     mat2.print_matrix(true);
     
-    tiny::Mat invMat2 = mat2.gaussian_inverse();
+    tiny::Mat invMat2 = mat2.inverse_gje();
     std::cout << "Inverse matrix (Identity):\n";
     invMat2.print_matrix(true); // Expected: Identity matrix
 
@@ -1213,7 +1216,7 @@ void test_gaussian_inverse()
     std::cout << "Original matrix (singular):\n";
     mat3.print_matrix(true);
     
-    tiny::Mat invMat3 = mat3.gaussian_inverse();
+    tiny::Mat invMat3 = mat3.inverse_gje();
     std::cout << "Inverse matrix (singular):\n";
     invMat3.print_matrix(true); // Expected: empty matrix or error message
 
@@ -1226,7 +1229,7 @@ void test_gaussian_inverse()
     std::cout << "Original matrix (mat4):\n";
     mat4.print_matrix(true);
     
-    tiny::Mat invMat4 = mat4.gaussian_inverse();
+    tiny::Mat invMat4 = mat4.inverse_gje();
     std::cout << "Inverse matrix (mat4):\n";
     invMat4.print_matrix(true); // Check that the inverse is calculated correctly
 
@@ -1238,19 +1241,465 @@ void test_gaussian_inverse()
     std::cout << "Original matrix (non-square):\n";
     mat5.print_matrix(true);
     
-    tiny::Mat invMat5 = mat5.gaussian_inverse();
+    tiny::Mat invMat5 = mat5.inverse_gje();
     std::cout << "Inverse matrix (non-square):\n";
     invMat5.print_matrix(true); // Expected: Error message or empty matrix
 }
 
+// Test 5.12: Dot Product
+void test_dotprod()
+{
+    std::cout << "\n--- Test: Dot Product ---\n";
 
+    // Test 1: Valid Dot Product Calculation (Same Length Vectors)
+    std::cout << "[Test 1] Valid Dot Product (Same Length Vectors)\n";
+    tiny::Mat vectorA(3, 1);  // Create a 3x1 vector
+    tiny::Mat vectorB(3, 1);  // Create a 3x1 vector
+
+    // Initialize vectors
+    vectorA(0, 0) = 1.0f;
+    vectorA(1, 0) = 2.0f;
+    vectorA(2, 0) = 3.0f;
+
+    vectorB(0, 0) = 4.0f;
+    vectorB(1, 0) = 5.0f;
+    vectorB(2, 0) = 6.0f;
+
+    // Compute the dot product
+    float result = vectorA.dotprod(vectorA, vectorB);
+    std::cout << "Dot product of vectorA and vectorB: " << result << std::endl;  // Expected result: 1*4 + 2*5 + 3*6 = 32
+
+    // Test 2: Dot Product with Dimension Mismatch (Different Length Vectors)
+    std::cout << "[Test 2] Invalid Dot Product (Dimension Mismatch)\n";
+    tiny::Mat vectorC(2, 1);  // Create a 2x1 vector (different size)
+    vectorC(0, 0) = 1.0f;
+    vectorC(1, 0) = 2.0f;
+
+    float invalidResult = vectorA.dotprod(vectorA, vectorC);  // Should print an error and return 0
+    std::cout << "Dot product (dimension mismatch): " << invalidResult << std::endl;  // Expected: 0 and error message
+
+    // Test 3: Dot Product of Zero Vectors
+    std::cout << "[Test 3] Dot Product of Zero Vectors\n";
+    tiny::Mat zeroVectorA(3, 1);  // Create a 3x1 zero vector
+    tiny::Mat zeroVectorB(3, 1);  // Create a 3x1 zero vector
+
+    // Initialize vectors
+    zeroVectorA(0, 0) = 0.0f;
+    zeroVectorA(1, 0) = 0.0f;
+    zeroVectorA(2, 0) = 0.0f;
+
+    zeroVectorB(0, 0) = 0.0f;
+    zeroVectorB(1, 0) = 0.0f;
+    zeroVectorB(2, 0) = 0.0f;
+
+    float zeroResult = zeroVectorA.dotprod(zeroVectorA, zeroVectorB);
+    std::cout << "Dot product of zero vectors: " << zeroResult << std::endl;  // Expected: 0
+
+    std::cout << "[Dot Product Test End]\n";
+}
+
+// Test 5.13: Solve Linear System
+void test_solve()
+{
+    std::cout << "\n[Test: Solve Linear System Ax = b]\n";
+
+    // Test 1: Solving a simple 2x2 system
+    std::cout << "[Test1] Solving a simple 2x2 system Ax = b\n";
+    tiny::Mat A(2, 2);
+    tiny::Mat b(2, 1);
+
+    A(0, 0) = 2; A(0, 1) = 1;
+    A(1, 0) = 1; A(1, 1) = 3;
+
+    b(0, 0) = 5;
+    b(1, 0) = 6;
+
+    tiny::Mat solution = A.solve(A, b);
+    std::cout << "Solution: \n";
+    solution.print_matrix(true);
+
+    // Test 2: Solving a 3x3 system
+    std::cout << "[Test2] Solving a 3x3 system Ax = b\n";
+    tiny::Mat A2(3, 3);
+    tiny::Mat b2(3, 1);
+
+    A2(0, 0) = 1; A2(0, 1) = 2; A2(0, 2) = 1;
+    A2(1, 0) = 2; A2(1, 1) = 0; A2(1, 2) = 3;
+    A2(2, 0) = 3; A2(2, 1) = 2; A2(2, 2) = 1;
+
+    b2(0, 0) = 9;
+    b2(1, 0) = 8;
+    b2(2, 0) = 7;
+
+    tiny::Mat solution2 = A2.solve(A2, b2);
+    std::cout << "Solution: \n";
+    solution2.print_matrix(true);
+
+    // Test 3: Solving a system where one row is all zeros
+    std::cout << "[Test3] Solving a system where one row is all zeros (expect failure or infinite solutions)\n";
+    tiny::Mat A3(3, 3);
+    tiny::Mat b3(3, 1);
+
+    A3(0, 0) = 1; A3(0, 1) = 2; A3(0, 2) = 3;
+    A3(1, 0) = 0; A3(1, 1) = 0; A3(1, 2) = 0; // Zero row
+    A3(2, 0) = 4; A3(2, 1) = 5; A3(2, 2) = 6;
+
+    b3(0, 0) = 9;
+    b3(1, 0) = 0; // Inconsistent, no solution should be possible
+    b3(2, 0) = 15;
+
+    tiny::Mat solution3 = A3.solve(A3, b3);
+    std::cout << "Solution: \n";
+    solution3.print_matrix(true);
+
+    // Test 4: Solving a system with zero determinant (singular matrix)
+    std::cout << "[Test4] Solving a system with zero determinant (singular matrix)\n";
+    tiny::Mat A4(3, 3);
+    tiny::Mat b4(3, 1);
+
+    A4(0, 0) = 2; A4(0, 1) = 4; A4(0, 2) = 1;
+    A4(1, 0) = 1; A4(1, 1) = 2; A4(1, 2) = 3;
+    A4(2, 0) = 3; A4(2, 1) = 6; A4(2, 2) = 2; // The matrix is singular (row 2 = 2 * row 1)
+
+    b4(0, 0) = 5;
+    b4(1, 0) = 6;
+    b4(2, 0) = 7;
+
+    tiny::Mat solution4 = A4.solve(A4, b4);
+    std::cout << "Solution: \n";
+    solution4.print_matrix(true); // Expect no solution or an error message
+
+    // Test 5: Solving a system with linearly dependent rows
+    std::cout << "[Test5] Solving a system with linearly dependent rows (expect failure or infinite solutions)\n";
+    tiny::Mat A5(3, 3);
+    tiny::Mat b5(3, 1);
+
+    A5(0, 0) = 1; A5(0, 1) = 1; A5(0, 2) = 1;
+    A5(1, 0) = 2; A5(1, 1) = 2; A5(1, 2) = 2;
+    A5(2, 0) = 3; A5(2, 1) = 3; A5(2, 2) = 3; // All rows are linearly dependent
+
+    b5(0, 0) = 6;
+    b5(1, 0) = 12;
+    b5(2, 0) = 18;
+
+    tiny::Mat solution5 = A5.solve(A5, b5);
+    std::cout << "Solution: \n";
+    solution5.print_matrix(true); // Expect an error message or infinite solutions
+
+    // Test 6: Solving a larger 4x4 system
+    std::cout << "[Test6] Solving a larger 4x4 system Ax = b\n";
+    tiny::Mat A6(4, 4);
+    tiny::Mat b6(4, 1);
+
+    A6(0, 0) = 4; A6(0, 1) = 2; A6(0, 2) = 3; A6(0, 3) = 1;
+    A6(1, 0) = 2; A6(1, 1) = 5; A6(1, 2) = 1; A6(1, 3) = 2;
+    A6(2, 0) = 3; A6(2, 1) = 1; A6(2, 2) = 6; A6(2, 3) = 3;
+    A6(3, 0) = 1; A6(3, 1) = 2; A6(3, 2) = 3; A6(3, 3) = 4;
+
+    b6(0, 0) = 10;
+    b6(1, 0) = 12;
+    b6(2, 0) = 14;
+    b6(3, 0) = 16;
+
+    tiny::Mat solution6 = A6.solve(A6, b6);
+    std::cout << "Solution: \n";
+    solution6.print_matrix(true); // Should print the solution vector
+
+    std::cout << "[Test end]\n";
+}
+
+// Test 5.14: Band Solve
+void test_band_solve()
+{
+    std::cout << "\n[band_solve Test]\n";
+
+    /*** Test 1: Simple 3x3 Band Matrix ***/
+    std::cout << "[Test 1] Simple 3x3 Band Matrix\n";
+    tiny::Mat A1(3, 3);
+    tiny::Mat b1(3, 1);
+
+    // Define the matrix A and vector b for the system Ax = b
+    A1(0, 0) = 2; A1(0, 1) = 1; A1(0, 2) = 0;
+    A1(1, 0) = 1; A1(1, 1) = 3; A1(1, 2) = 2;
+    A1(2, 0) = 0; A1(2, 1) = 1; A1(2, 2) = 4;
+
+    b1(0, 0) = 5;
+    b1(1, 0) = 6;
+    b1(2, 0) = 7;
+
+    // Solve Ax = b using band_solve
+    tiny::Mat solution1 = A1.band_solve(A1, b1, 3);
+    std::cout << "Solution: \n";
+    solution1.print_matrix(true);
+
+    /*** Test 2: 4x4 Band Matrix with different right-hand side vector ***/
+    std::cout << "[Test 2] 4x4 Band Matrix\n";
+    tiny::Mat A2(4, 4);
+    tiny::Mat b2(4, 1);
+
+    // Define the matrix A and vector b
+    A2(0, 0) = 2; A2(0, 1) = 1; A2(0, 2) = 0; A2(0, 3) = 0;
+    A2(1, 0) = 1; A2(1, 1) = 3; A2(1, 2) = 2; A2(1, 3) = 0;
+    A2(2, 0) = 0; A2(2, 1) = 1; A2(2, 2) = 4; A2(2, 3) = 2;
+    A2(3, 0) = 0; A2(3, 1) = 0; A2(3, 2) = 1; A2(3, 3) = 5;
+
+    b2(0, 0) = 8;
+    b2(1, 0) = 9;
+    b2(2, 0) = 10;
+    b2(3, 0) = 11;
+
+    // Solve Ax = b using band_solve
+    tiny::Mat solution2 = A2.band_solve(A2, b2, 3);
+    std::cout << "Solution: \n";
+    solution2.print_matrix(true);
+
+    /*** Test 3: Incompatible dimensions (expect error) ***/
+    std::cout << "[Test 3] Incompatible Dimensions (Expect Error)\n";
+    tiny::Mat A3(3, 3);
+    tiny::Mat b3(2, 1);  // Incompatible dimension
+
+    A3(0, 0) = 1; A3(0, 1) = 2; A3(0, 2) = 3;
+    A3(1, 0) = 4; A3(1, 1) = 5; A3(1, 2) = 6;
+    A3(2, 0) = 7; A3(2, 1) = 8; A3(2, 2) = 9;
+
+    b3(0, 0) = 10;
+    b3(1, 0) = 11;
+
+    // This should print an error because of incompatible dimensions
+    tiny::Mat solution3 = A3.band_solve(A3, b3, 3);
+    std::cout << "Solution: \n";
+    solution3.print_matrix(true);
+
+    /*** Test 4: Singular Matrix (Should fail) ***/
+    std::cout << "[Test 4] Singular Matrix (No unique solution)\n";
+    tiny::Mat A4(3, 3);
+    tiny::Mat b4(3, 1);
+
+    // Define a singular matrix (linearly dependent rows)
+    A4(0, 0) = 1; A4(0, 1) = 2; A4(0, 2) = 3;
+    A4(1, 0) = 2; A4(1, 1) = 4; A4(1, 2) = 6;
+    A4(2, 0) = 3; A4(2, 1) = 6; A4(2, 2) = 9;
+
+    b4(0, 0) = 10;
+    b4(1, 0) = 20;
+    b4(2, 0) = 30;
+
+    // This should print an error as the matrix is singular and does not have a unique solution
+    tiny::Mat solution4 = A4.band_solve(A4, b4, 3);
+    std::cout << "Solution: \n";
+    solution4.print_matrix(true);
+}
+
+// Test 5.15: Roots
+void test_roots()
+{
+    std::cout << "\n[Roots Test]\n";
+
+    /*** Test 1: Simple 2x2 System ***/
+    std::cout << "[Test 1] Solving a simple 2x2 system Ax = b\n";
+    tiny::Mat A1(2, 2);
+    tiny::Mat b1(2, 1);
+
+    // Define the matrix A and vector b for the system Ax = b
+    A1(0, 0) = 2; A1(0, 1) = 1;
+    A1(1, 0) = 1; A1(1, 1) = 3;
+
+    b1(0, 0) = 5;
+    b1(1, 0) = 6;
+
+    // Solve Ax = b using roots
+    tiny::Mat solution1 = A1.roots(A1, b1);
+    std::cout << "Solution: \n";
+    solution1.print_matrix(true);
+
+    /*** Test 2: 3x3 System ***/
+    std::cout << "[Test 2] Solving a 3x3 system Ax = b\n";
+    tiny::Mat A2(3, 3);
+    tiny::Mat b2(3, 1);
+
+    A2(0, 0) = 1; A2(0, 1) = 2; A2(0, 2) = 1;
+    A2(1, 0) = 2; A2(1, 1) = 0; A2(1, 2) = 3;
+    A2(2, 0) = 3; A2(2, 1) = 2; A2(2, 2) = 1;
+
+    b2(0, 0) = 9;
+    b2(1, 0) = 8;
+    b2(2, 0) = 7;
+
+    // Solve Ax = b using roots
+    tiny::Mat solution2 = A2.roots(A2, b2);
+    std::cout << "Solution: \n";
+    solution2.print_matrix(true);
+
+    /*** Test 3: Singular Matrix ***/
+    std::cout << "[Test 3] Singular Matrix (No unique solution)\n";
+    tiny::Mat A3(2, 2);
+    tiny::Mat b3(2, 1);
+
+    // Define a singular matrix (linearly dependent rows)
+    A3(0, 0) = 1; A3(0, 1) = 2;
+    A3(1, 0) = 2; A3(1, 1) = 4;
+
+    b3(0, 0) = 5;
+    b3(1, 0) = 6;
+
+    // This should print an error as the matrix is singular and does not have a unique solution
+    tiny::Mat solution3 = A3.roots(A3, b3);
+    std::cout << "Solution: \n";
+    solution3.print_matrix(true);
+
+    /*** Test 4: Incompatible Dimensions (Expect Error) ***/
+    std::cout << "[Test 4] Incompatible Dimensions (Expect Error)\n";
+    tiny::Mat A4(3, 3);
+    tiny::Mat b4(2, 1);  // Incompatible dimension
+
+    A4(0, 0) = 1; A4(0, 1) = 2; A4(0, 2) = 3;
+    A4(1, 0) = 4; A4(1, 1) = 5; A4(1, 2) = 6;
+    A4(2, 0) = 7; A4(2, 1) = 8; A4(2, 2) = 9;
+
+    b4(0, 0) = 10;
+    b4(1, 0) = 11;
+
+    // This should print an error because of incompatible dimensions
+    tiny::Mat solution4 = A4.roots(A4, b4);
+    std::cout << "Solution: \n";
+    solution4.print_matrix(true);
+}
+
+// Group 6: Stream Operators
+void test_stream_operators()
+{
+    std::cout << "\n[Test: Stream Operators]\n";
+
+    // Test 1: Test stream insertion operator (<<) for Mat
+    std::cout << "[Test 1] Stream Insertion Operator (<<) for Mat\n";
+    tiny::Mat mat1(3, 3);
+    mat1(0, 0) = 1; mat1(0, 1) = 2; mat1(0, 2) = 3;
+    mat1(1, 0) = 4; mat1(1, 1) = 5; mat1(1, 2) = 6;
+    mat1(2, 0) = 7; mat1(2, 1) = 8; mat1(2, 2) = 9;
+
+    std::cout << "Matrix mat1:\n";
+    std::cout << mat1 << std::endl; // Use the << operator to print mat1
+
+    // Test 2: Test stream insertion operator (<<) for Mat::ROI
+    std::cout << "[Test 2] Stream Insertion Operator (<<) for Mat::ROI\n";
+    tiny::Mat::ROI roi(1, 2, 3, 4);
+    std::cout << "ROI roi:\n";
+    std::cout << roi << std::endl; // Use the << operator to print roi
+
+    // Test 3: Test stream extraction operator (>>) for Mat
+    std::cout << "[Test 3] Stream Extraction Operator (>>) for Mat\n";
+    tiny::Mat mat2(2, 2);
+    std::cout << "Please enter 4 elements for a 2x2 matrix:\n";
+    std::cin >> mat2; // Use the >> operator to input mat2
+    std::cout << "Matrix mat2 after input:\n";
+    std::cout << mat2 << std::endl; // Use the << operator to print mat2
+
+    // Test 4: Test stream extraction operator (>>) for Mat (with invalid input)
+    std::cout << "[Test 4] Stream Extraction Operator (>>) for Mat with invalid input\n";
+    tiny::Mat mat3(2, 3);
+    std::cout << "Please enter 6 elements for a 2x3 matrix:\n";
+    std::cin >> mat3; // Use the >> operator to input mat3
+    std::cout << "Matrix mat3 after input:\n";
+    std::cout << mat3 << std::endl; // Use the << operator to print mat3
+}
+
+// Group 7: Global Arithmetic Operators
+
+void test_matrix_operations()
+{
+    std::cout << "\n[Test: Matrix Operations]\n";
+
+    /*** Test 1: Matrix Addition (operator+) ***/
+    std::cout << "\n[Test 1] Matrix Addition (operator+)\n";
+    tiny::Mat matA(2, 2);
+    tiny::Mat matB(2, 2);
+    
+    matA(0, 0) = 1; matA(0, 1) = 2;
+    matA(1, 0) = 3; matA(1, 1) = 4;
+
+    matB(0, 0) = 5; matB(0, 1) = 6;
+    matB(1, 0) = 7; matB(1, 1) = 8;
+
+    tiny::Mat resultAdd = matA + matB;
+    std::cout << "matA + matB:\n";
+    std::cout << resultAdd << std::endl;  // Expected: [6, 8], [10, 12]
+
+    /*** Test 2: Matrix Addition with Constant (operator+) ***/
+    std::cout << "\n[Test 2] Matrix Addition with Constant (operator+)\n";
+    tiny::Mat resultAddConst = matA + 5.0f;
+    std::cout << "matA + 5.0f:\n";
+    std::cout << resultAddConst << std::endl;  // Expected: [6, 7], [8, 9]
+
+    /*** Test 3: Matrix Subtraction (operator-) ***/
+    std::cout << "\n[Test 3] Matrix Subtraction (operator-)\n";
+    tiny::Mat resultSub = matA - matB;
+    std::cout << "matA - matB:\n";
+    std::cout << resultSub << std::endl;  // Expected: [-4, -4], [-4, -4]
+
+    /*** Test 4: Matrix Subtraction with Constant (operator-) ***/
+    std::cout << "\n[Test 4] Matrix Subtraction with Constant (operator-)\n";
+    tiny::Mat resultSubConst = matA - 2.0f;
+    std::cout << "matA - 2.0f:\n";
+    std::cout << resultSubConst << std::endl;  // Expected: [-1, 0], [1, 2]
+
+    /*** Test 5: Matrix Multiplication (operator*) ***/
+    std::cout << "\n[Test 5] Matrix Multiplication (operator*)\n";
+    tiny::Mat matC(2, 3);
+    tiny::Mat matD(3, 2);
+
+    matC(0, 0) = 1; matC(0, 1) = 2; matC(0, 2) = 3;
+    matC(1, 0) = 4; matC(1, 1) = 5; matC(1, 2) = 6;
+
+    matD(0, 0) = 7; matD(0, 1) = 8;
+    matD(1, 0) = 9; matD(1, 1) = 10;
+    matD(2, 0) = 11; matD(2, 1) = 12;
+
+    tiny::Mat resultMul = matC * matD;
+    std::cout << "matC * matD:\n";
+    std::cout << resultMul << std::endl;  // Expected: [58, 64], [139, 154]
+
+    /*** Test 6: Matrix Multiplication with Constant (operator*) ***/
+    std::cout << "\n[Test 6] Matrix Multiplication with Constant (operator*)\n";
+    tiny::Mat resultMulConst = matA * 2.0f;
+    std::cout << "matA * 2.0f:\n";
+    std::cout << resultMulConst << std::endl;  // Expected: [2, 4], [6, 8]
+
+    /*** Test 7: Matrix Division (operator/) ***/
+    std::cout << "\n[Test 7] Matrix Division (operator/)\n";
+    tiny::Mat resultDiv = matA / 2.0f;
+    std::cout << "matA / 2.0f:\n";
+    std::cout << resultDiv << std::endl;  // Expected: [0.5, 1], [1.5, 2]
+
+    /*** Test 8: Matrix Division Element-wise (operator/) ***/
+    std::cout << "\n[Test 8] Matrix Division Element-wise (operator/)\n";
+    tiny::Mat resultDivElem = matA / matB;
+    std::cout << "matA / matB:\n";
+    std::cout << resultDivElem << std::endl;  // Expected: [0.2, 0.333], [0.428, 0.5]
+
+    /*** Test 9: Matrix Comparison (operator==) ***/
+    std::cout << "\n[Test 9] Matrix Comparison (operator==)\n";
+    tiny::Mat matE(2, 2);
+    matE(0, 0) = 1; matE(0, 1) = 2;
+    matE(1, 0) = 3; matE(1, 1) = 4;
+
+    tiny::Mat matF(2, 2);
+    matF(0, 0) = 1; matF(0, 1) = 2;
+    matF(1, 0) = 3; matF(1, 1) = 4;
+
+    bool isEqual = (matE == matF);
+    std::cout << "matE == matF: " << (isEqual ? "True" : "False") << std::endl;  // Expected: True
+
+    matF(0, 0) = 5;  // Modify matF
+    isEqual = (matE == matF);
+    std::cout << "matE == matF after modification: " << (isEqual ? "True" : "False") << std::endl;  // Expected: False
+}
 
 void tiny_matrix_test()
 {
     std::cout << "============ [tiny_matrix_test start] ============\n";
 
     // Group 1: constructor & destructor
-    // test_constructor_destructor();
+    test_constructor_destructor();
 
     // Group 2: element access
     // test_element_access();
@@ -1275,11 +1724,19 @@ void tiny_matrix_test()
     // test_matrix_adjoint();
     // test_matrix_normalize();
     // test_matrix_norm();
-    // test_matrix_inverse();
+    // test_inverse_adjoint();
     // test_matrix_utilities();
     // test_gaussian_eliminate();
     // test_row_reduce_from_gaussian();
-    test_gaussian_inverse();
+    // test_inverse_gje();
+    // test_dotprod();
+    // test_solve();
+    // test_band_solve();
+    // test_roots();
+
+    // Group 6: Stream operators
+    // test_stream_operators();
+    // test_matrix_operations();
 
     std::cout << "============ [tiny_matrix_test end] ============\n";
 }

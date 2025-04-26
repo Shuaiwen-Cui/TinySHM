@@ -26,7 +26,14 @@
 namespace tiny
 {
     /* === Rectangular ROI Structure === */
-
+    /**
+     * @brief Construct a new Mat:: R O I:: R O I object
+     * 
+     * @param pos_x 
+     * @param pos_y 
+     * @param width 
+     * @param height 
+     */
     Mat::ROI::ROI(int pos_x, int pos_y, int width, int height)
     {
         this->pos_x = pos_x;
@@ -35,6 +42,14 @@ namespace tiny
         this->height = height;
     }
 
+    /**
+     * @brief resize the ROI structure
+     * 
+     * @param pos_x starting column
+     * @param pos_y starting row
+     * @param width number of columns
+     * @param height number of rows
+     */
     void Mat::ROI::resize_roi(int pos_x, int pos_y, int width, int height)
     {
         this->pos_x = pos_x;
@@ -43,6 +58,11 @@ namespace tiny
         this->height = height;
     }
 
+    /**
+     * @brief calculate the area of the ROI structure - how many elements covered
+     * 
+     * @return int 
+     */
     int Mat::ROI::area_roi(void) const
     {
         return this->width * this->height;
@@ -887,10 +907,7 @@ namespace tiny
                           this->pad, this->pad,
                           1, 1);
 #else
-            tiny_mat_mulc_f32(this->data, this->data, num,
-                              this->row, this->col,
-                              this->pad, this->pad,
-                              1, 1);
+            tiny_mat_multc_f32(this->data, this->data, num, this->row, this->col, this->pad, this->pad, 1, 1);
 #endif
         }
         else
@@ -987,7 +1004,7 @@ namespace tiny
                           this->pad, this->pad,
                           1, 1);
 #else
-            tiny_mat_mulc_f32(this->data, this->data, inv_num,
+            tiny_mat_multc_f32(this->data, this->data, inv_num,
                               this->row, this->col,
                               this->pad, this->pad,
                               1, 1);
@@ -1246,12 +1263,12 @@ namespace tiny
     }
 
     /**
-     * @name Mat::inverse()
+     * @name Mat::inverse_adjoint()
      * @brief Compute the inverse of a square matrix using adjoint method.
      *
      * @return Mat The inverse matrix. If singular, returns a zero matrix.
      */
-    Mat Mat::inverse()
+    Mat Mat::inverse_adjoint()
     {
         if (this->row != this->col)
         {
@@ -1387,7 +1404,7 @@ namespace tiny
      */
     Mat Mat::gaussian_eliminate() const
     {
-        Mat result(*this); // Copy of the original matrix
+        Mat result(*this); // Create a copy of the original matrix
         int rows = result.row;
         int cols = result.col;
 
@@ -1400,7 +1417,7 @@ namespace tiny
 
             int i = r;
 
-            // Find pivot row
+            // Find pivot row (partial pivoting)
             while (result(i, lead) == 0)
             {
                 i++;
@@ -1409,11 +1426,11 @@ namespace tiny
                     i = r;
                     lead++;
                     if (lead == cols)
-                        return result;
+                        return result; // Return the result matrix (upper triangular)
                 }
             }
 
-            // Swap if pivot is not in current row
+            // Swap rows if pivot is not in current row
             if (i != r)
                 result.swap_rows(i, r);
 
@@ -1428,6 +1445,7 @@ namespace tiny
                 {
                     result(j, k) -= factor * result(r, k);
 
+                    // Numerical precision handling (set near-zero values to zero)
                     if (fabs(result(j, k)) < TINY_MATH_MIN_POSITIVE_INPUT_F32)
                         result(j, k) = 0.0f;
                 }
@@ -1436,7 +1454,7 @@ namespace tiny
             lead++;
         }
 
-        return result;
+        return result; // Return the upper triangular matrix
     }
 
     /**
@@ -1502,12 +1520,12 @@ namespace tiny
     }
 
     /**
-     * @name Mat::gaussian_inverse()
+     * @name Mat::inverse_gje()
      * @brief Compute the inverse of a square matrix using Gauss-Jordan elimination.
      *
      * @return Mat The inverse matrix if invertible, otherwise returns empty matrix.
      */
-    Mat Mat::gaussian_inverse()
+    Mat Mat::inverse_gje()
     {
         if (this->row != this->col)
         {
@@ -1536,16 +1554,635 @@ namespace tiny
         }
 
         // Step 3: Extract the right half as the inverse matrix
-        Mat inverse(this->row, this->col);
+        Mat result(this->row, this->col);
         for (int i = 0; i < this->row; ++i)
         {
             for (int j = 0; j < this->col; ++j)
             {
-                inverse(i, j) = rref(i, j + this->col); // Extract the right part
+                result(i, j) = rref(i, j + this->col); // Extract the right part
             }
         }
 
-        return inverse;
+        return result;
     }
 
+    /**
+     * @name Mat::dotprod(const Mat &A, const Mat &B)
+     * @brief Calculate the dot product of two vectors (Nx1).
+     *
+     * @param[in] A Input vector A (Nx1).
+     * @param[in] B Input vector B (Nx1).
+     *
+     * @return float The computed dot product value.
+     */
+    float Mat::dotprod(const Mat &A, const Mat &B)
+    {
+        if (A.row != B.row || A.col != 1 || B.col != 1)
+        {
+            std::cerr << "[Error] Dot product can only be computed for two vectors of the same length.\n";
+            return 0.0f; // Return 0 in case of dimension mismatch
+        }
+
+        float sum = 0;
+        for (int i = 0; i < A.row; ++i)
+        {
+            sum += A(i, 0) * B(i, 0);
+        }
+
+        return sum;
+    }
+
+    /**
+     * @name Mat::solve
+     * @brief Solve the linear system Ax = b using Gaussian elimination.
+     *
+     * @param A Coefficient matrix (NxN)
+     * @param b Result vector (Nx1)
+     * @return Mat Solution vector (Nx1) containing the roots of the equation Ax = b
+     */
+    Mat Mat::solve(const Mat &A, const Mat &b)
+    {
+        // Check if the matrix A is square
+        if (A.row != A.col)
+        {
+            std::cerr << "[Error] Matrix A must be square for solving.\n";
+            return Mat(); // Return empty matrix
+        }
+
+        // Check if A and b dimensions are compatible for solving
+        if (A.row != b.row || b.col != 1)
+        {
+            std::cerr << "[Error] Matrix dimensions do not match for solving.\n";
+            return Mat(); // Return empty matrix
+        }
+
+        // Create augmented matrix [A | b]
+        Mat augmentedMatrix(A.row, A.col + 1);
+        for (int i = 0; i < A.row; ++i)
+        {
+            for (int j = 0; j < A.col; ++j)
+            {
+                augmentedMatrix(i, j) = A(i, j); // Copy matrix A into augmented matrix
+            }
+            augmentedMatrix(i, A.col) = b(i, 0); // Copy vector b into augmented matrix
+        }
+
+        // Perform Gaussian elimination
+        for (int i = 0; i < A.row; ++i)
+        {
+            // Find pivot and make sure it's non-zero
+            if (augmentedMatrix(i, i) == 0)
+            {
+                std::cerr << "[Error] Pivot is zero, matrix is singular.\n";
+                return Mat(); // Return empty matrix
+            }
+
+            // Normalize the pivot row
+            float pivot = augmentedMatrix(i, i);
+            for (int j = i; j < augmentedMatrix.col; ++j)
+            {
+                augmentedMatrix(i, j) /= pivot; // Normalize the pivot row
+            }
+
+            // Eliminate the entries below the pivot
+            for (int j = i + 1; j < A.row; ++j)
+            {
+                float factor = augmentedMatrix(j, i);
+                for (int k = i; k < augmentedMatrix.col; ++k)
+                {
+                    augmentedMatrix(j, k) -= factor * augmentedMatrix(i, k);
+                }
+            }
+        }
+
+        // Back-substitution to find the solution
+        Mat solution(A.row, 1);
+        for (int i = A.row - 1; i >= 0; --i)
+        {
+            float sum = augmentedMatrix(i, A.col);
+            for (int j = i + 1; j < A.row; ++j)
+            {
+                sum -= augmentedMatrix(i, j) * solution(j, 0);
+            }
+            solution(i, 0) = sum;
+        }
+
+        return solution;
+    }
+
+    /**
+     * @name Mat::band_solve
+     * @brief Solve the system of equations Ax = b using optimized Gaussian elimination for banded matrices.
+     *
+     * @param A Coefficient matrix (NxN) - banded matrix
+     * @param b Result vector (Nx1)
+     * @param k Bandwidth of the matrix (the width of the non-zero bands)
+     * @return Mat Solution vector (Nx1) containing the roots of the equation Ax = b
+     */
+    Mat Mat::band_solve(Mat A, Mat b, int k)
+    {
+        // Dimension compatibility check
+        if (A.row != A.col) // Check if A is a square matrix
+        {
+            std::cerr << "[Error] Matrix A must be square for solving.\n";
+            return Mat(); // Return an empty matrix in case of an error
+        }
+
+        if (A.row != b.row || b.col != 1) // Check if dimensions of A and b are compatible
+        {
+            std::cerr << "[Error] Matrix dimensions are not compatible for solving.\n";
+            return Mat(); // Return an empty matrix in case of an error
+        }
+
+        int bandsBelow = (k - 1) / 2; // Number of bands below the main diagonal
+
+        // Perform forward elimination to reduce the matrix
+        for (int i = 0; i < A.row; ++i)
+        {
+            if (A(i, i) == 0)
+            {
+                // Pivot 0 - error
+                std::cerr << "[Error] Zero pivot detected in bandSolve. Cannot proceed.\n";
+                Mat err_result(b.row, 1);
+                memset(err_result.data, 0, b.row * sizeof(float));
+                return err_result;
+            }
+
+            float a_ii = 1 / A(i, i); // Inverse of the pivot element
+
+            // Eliminate elements below the pivot in the current column
+            for (int j = i + 1; j < A.row && j <= i + bandsBelow; ++j)
+            {
+                if (A(j, i) != 0)
+                {
+                    float factor = A(j, i) * a_ii;
+                    for (int k = i; k < A.col; ++k)
+                    {
+                        A(j, k) -= A(i, k) * factor; // Eliminate the element
+                    }
+                    b(j, 0) -= b(i, 0) * factor; // Update the result vector
+                    A(j, i) = 0;                 // Set the element to zero as it has been eliminated
+                }
+            }
+        }
+
+        // Back substitution to solve for x
+        Mat x(b.row, 1);
+        x(x.row - 1, 0) = b(x.row - 1, 0) / A(x.row - 1, x.row - 1); // Solve the last variable
+
+        for (int i = x.row - 2; i >= 0; --i)
+        {
+            float sum = 0;
+            for (int j = i + 1; j < x.row; ++j)
+            {
+                sum += A(i, j) * x(j, 0); // Sum of the known terms
+            }
+            x(i, 0) = (b(i, 0) - sum) / A(i, i); // Solve for the current variable
+        }
+
+        return x; // Return the solution vector
+    }
+
+    /**
+     * @name Mat::roots(Mat A, Mat y)
+     * @brief   Solve the matrix using a different method. Another implementation of the 'solve' function, no difference in principle.
+     *
+     * This method solves the linear system A * x = y using Gaussian elimination.
+     *
+     * @param[in] A: matrix [N]x[N] with input coefficients
+     * @param[in] y: vector [N]x[1] with result values
+     *
+     * @return
+     *      - matrix [N]x[1] with roots
+     */
+    Mat Mat::roots(Mat A, Mat y)
+    {
+        int n = A.col; // Number of rows and columns in A (assuming A is square)
+
+        // Create augmented matrix [A | y]
+        Mat augmentedMatrix = Mat::augment(A, y);
+
+        // Perform Gaussian elimination
+        for (int j = 0; j < n; j++)
+        {
+            // Normalize the pivot row (make pivot element equal to 1)
+            float pivot = augmentedMatrix(j, j);
+            if (pivot == 0)
+            {
+                std::cerr << "[Error] Pivot is zero, system may have no solution." << std::endl;
+                return Mat(); // Return an empty matrix in case of an error
+            }
+
+            for (int k = 0; k < augmentedMatrix.col; k++)
+            {
+                augmentedMatrix(j, k) /= pivot;
+            }
+
+            // Eliminate the column below the pivot (set other elements in the column to zero)
+            for (int i = j + 1; i < n; i++)
+            {
+                float factor = augmentedMatrix(i, j);
+                for (int k = 0; k < augmentedMatrix.col; k++)
+                {
+                    augmentedMatrix(i, k) -= factor * augmentedMatrix(j, k);
+                }
+            }
+        }
+
+        // Perform back-substitution
+        Mat result(n, 1);
+        for (int i = n - 1; i >= 0; i--)
+        {
+            float sum = augmentedMatrix(i, n); // Right-hand side of the augmented matrix
+            for (int j = i + 1; j < n; j++)
+            {
+                sum -= augmentedMatrix(i, j) * result(j, 0); // Subtract the known terms
+            }
+            result(i, 0) = sum; // Solve for the current variable
+        }
+
+        return result;
+    }
+
+    /* === Stream Operators === */
+    /**
+     * @name operator<<
+     * @brief Stream insertion operator for printing matrix to the output stream (e.g., std::cout).
+     *
+     * This function allows printing the contents of a matrix to an output stream.
+     * It prints each row of the matrix on a new line, with elements separated by spaces.
+     *
+     * @param os Output stream where the matrix will be printed (e.g., std::cout)
+     * @param m Matrix to be printed
+     *
+     * @return os The output stream after printing the matrix
+     */
+    std::ostream &operator<<(std::ostream &os, const Mat &m)
+    {
+        for (int i = 0; i < m.row; ++i)
+        {
+            os << m(i, 0);
+            for (int j = 1; j < m.col; ++j)
+            {
+                os << " " << m(i, j);
+            }
+            os << std::endl;
+        }
+        return os;
+    }
+
+    /**
+     * @name operator<<
+     * @brief Stream insertion operator for printing the Rectangular ROI structure to the output stream.
+     *
+     * This function prints the details of the ROI (Region of Interest) including the start row and column,
+     * and the width and height of the rectangular region.
+     *
+     * @param os Output stream where the ROI will be printed (e.g., std::cout)
+     * @param roi The ROI structure to be printed
+     *
+     * @return os The output stream after printing the ROI details
+     */
+    std::ostream &operator<<(std::ostream &os, const Mat::ROI &roi)
+    {
+        os << "row start " << roi.pos_y << std::endl;
+        os << "col start " << roi.pos_x << std::endl;
+        os << "row count " << roi.height << std::endl;
+        os << "col count " << roi.width << std::endl;
+
+        return os;
+    }
+
+    /**
+     * @name operator>>
+     * @brief Stream extraction operator for reading matrix from the input stream (e.g., std::cin).
+     *
+     * This function reads the contents of a matrix from an input stream.
+     * The matrix elements are read row by row, with elements separated by spaces or newlines.
+     *
+     * @param is Input stream from which the matrix will be read (e.g., std::cin)
+     * @param m Matrix to store the read data
+     *
+     * @return is The input stream after reading the matrix
+     */
+    std::istream &operator>>(std::istream &is, Mat &m)
+    {
+        for (int i = 0; i < m.row; ++i)
+        {
+            for (int j = 0; j < m.col; ++j)
+            {
+                is >> m(i, j);
+            }
+        }
+        return is;
+    }
+
+    /* === Global Arithmetic Operators === */
+    /**
+     * + operator, sum of two matrices
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] B: Input matrix B
+     *
+     * @return
+     *     - result matrix A+B
+     */
+    Mat operator+(const Mat &m1, const Mat &m2)
+    {
+        if ((m1.row != m2.row) || (m1.col != m2.col))
+        {
+            std::cerr << "operator + Error: matrices do not have equal dimensions" << std::endl;
+            Mat err_ret;
+            return err_ret;
+        }
+
+        if (m1.sub_matrix || m2.sub_matrix)
+        {
+            Mat temp(m1.row, m2.col);
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_add_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m1.pad, m2.pad, temp.pad, 1, 1, 1);
+#else
+            tiny_mat_add_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m1.pad, m2.pad, temp.pad, 1, 1, 1);
+#endif
+            return temp;
+        }
+        else
+        {
+            Mat temp(m1);
+            return (temp += m2);
+        }
+    }
+
+    /**
+     * + operator, sum of matrix with constant
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] C: Input constant
+     *
+     * @return
+     *     - result matrix A+C
+     */
+    Mat operator+(const Mat &m, float C)
+    {
+        if (m.sub_matrix)
+        {
+            Mat temp(m.row, m.col);
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_addc_f32(m.data, temp.data, C, m.row, m.col, m.pad, temp.pad, 1, 1);
+#else
+            tiny_mat_addc_f32(m.data, temp.data, C, m.row, m.col, m.pad, temp.pad, 1, 1);
+#endif
+            return temp;
+        }
+        else
+        {
+            Mat temp(m);
+            return (temp += C);
+        }
+    }
+
+    /**
+     * - operator, subtraction of two matrices
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] B: Input matrix B
+     *
+     * @return
+     *     - result matrix A-B
+     */
+    Mat operator-(const Mat &m1, const Mat &m2)
+    {
+        if ((m1.row != m2.row) || (m1.col != m2.col))
+        {
+            std::cerr << "operator - Error: matrices do not have equal dimensions" << std::endl;
+            Mat err_ret;
+            return err_ret;
+        }
+
+        if (m1.sub_matrix || m2.sub_matrix)
+        {
+            Mat temp(m1.row, m1.col);
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_sub_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m1.pad, m2.pad, temp.pad, 1, 1, 1);
+#else
+            tiny_mat_sub_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m1.pad, m2.pad, temp.pad, 1, 1, 1);
+#endif
+            return temp;
+        }
+        else
+        {
+            Mat temp(m1);
+            return (temp -= m2);
+        }
+    }
+
+
+    /**
+     * - operator, subtraction of matrix with constant
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] C: Input constant
+     *
+     * @return
+     *     - result matrix A-C
+     */
+    Mat operator-(const Mat &m, float C)
+    {
+        if (m.sub_matrix)
+        {
+            Mat temp(m.row, m.col);
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_addc_f32(m.data, temp.data, -C, m.row, m.col, m.pad, temp.pad, 1, 1);
+#else
+            tiny_mat_addc_f32(m.data, temp.data, -C, m.row, m.col, m.pad, temp.pad, 1, 1);
+#endif
+            return temp;
+        }
+        else
+        {
+            Mat temp(m);
+            return (temp -= C);
+        }
+    }
+
+
+    /**
+     * * operator, multiplication of two matrices.
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] B: Input matrix B
+     *
+     * @return
+     *     - result matrix A*B
+     */
+    Mat operator*(const Mat &m1, const Mat &m2)
+    {
+        if (m1.col != m2.row)
+        {
+            std::cerr << "operator * Error: matrices do not have correct dimensions" << std::endl;
+            Mat err_ret;
+            return err_ret;
+        }
+        Mat temp(m1.row, m2.col);
+
+        if (m1.sub_matrix || m2.sub_matrix)
+        {
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_mult_ex_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m2.col, m1.pad, m2.pad, temp.pad);
+#else
+            tiny_mat_mult_ex_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m2.col, m1.pad, m2.pad, temp.pad);
+#endif
+        }
+        else
+        {
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_mult_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m2.col);
+#else
+            tiny_mat_mult_f32(m1.data, m2.data, temp.data, m1.row, m1.col, m2.col);
+#endif
+        }
+
+        return temp;
+    }
+
+    /**
+     * * operator, multiplication of matrix with constant
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] C: floating point value
+     *
+     * @return
+     *     - result matrix A*B
+     */
+    Mat operator*(const Mat &m, float num)
+    {
+        if (m.sub_matrix)
+        {
+            Mat temp(m.row, m.col);
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_mulc_f32(m.data, temp.data, num, m.row, m.col, m.pad, temp.pad, 1, 1);
+#else
+            tiny_mat_multc_f32(m.data, temp.data, num, m.row, m.col, m.pad, temp.pad, 1, 1);
+#endif
+            return temp;
+        }
+        else
+        {
+            Mat temp(m);
+            return (temp *= num);
+        }
+    }
+    
+    /**
+     * * operator, multiplication of matrix with constant
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] C: floating point value
+     * @param[in] A: Input matrix A
+     *
+     * @return
+     *     - result matrix C*A
+     */
+    Mat operator*(float num, const Mat &m)
+    {
+        return (m * num);
+    }
+
+    /**
+     * / operator, divide of matrix by constant
+     * The operator use DSP optimized implementation of multiplication.
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] C: floating point value
+     *
+     * @return
+     *     - result matrix A/C
+     */
+    Mat operator/(const Mat &m, float num)
+    {
+        if (m.sub_matrix)
+        {
+            Mat temp(m.row, m.col);
+#if MCU_PLATFORM_SELECTED == MCU_PLATFORM_ESP32
+            dspm_mulc_f32(m.data, temp.data, 1 / num, m.row, m.col, m.pad, temp.pad, 1, 1);
+#else
+            tiny_mat_multc_f32(m.data, temp.data, 1 / num, m.row, m.col, m.pad, temp.pad, 1, 1);
+#endif
+            return temp;
+        }
+        else
+        {
+            Mat temp(m);
+            return (temp /= num);
+        }
+    }
+
+
+    /**
+     * / operator, divide matrix A by matrix B (element-wise)
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] B: Input matrix B
+     *
+     * @return
+     *     - result matrix C, where C[i,j] = A[i,j]/B[i,j]
+     */
+    Mat operator/(const Mat &A, const Mat &B)
+    {
+        if ((A.row != B.row) || (A.col != B.col))
+        {
+            std::cerr << "operator / Error: matrices do not have equal dimensions" << std::endl;
+            Mat err_ret;
+            return err_ret;
+        }
+
+        Mat temp(A.row, A.col);
+        for (int row = 0; row < A.row; row++)
+        {
+            for (int col = 0; col < A.col; col++)
+            {
+                temp(row, col) = A(row, col) / B(row, col);
+            }
+        }
+        return temp;
+    }
+
+    
+    /**
+     * == operator, compare two matrices
+     *
+     * @param[in] A: Input matrix A
+     * @param[in] B: Input matrix B
+     *
+     * @return
+     *      - true if matrices are the same
+     *      - false if matrices are different
+     */
+    bool operator==(const Mat &m1, const Mat &m2)
+    {
+        if ((m1.col != m2.col) || (m1.row != m2.row))
+        {
+            return false;
+        }
+
+        for (int row = 0; row < m1.row; row++)
+        {
+            for (int col = 0; col < m1.col; col++)
+            {
+                if (m1(row, col) != m2(row, col))
+                {
+                    std::cout << "operator == Error: " << row << " " << col << ", m1.data=" << m1(row, col) << ", m2.data=" << m2(row, col) << std::endl;
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
