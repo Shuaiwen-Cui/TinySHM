@@ -106,25 +106,11 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/MATRIX/tiny-mat-test/"/>
     </url>
     <url>
-        <loc>https://localhost:7000/MATH/MATRIX/tiny-matrix-api.en%20copy/</loc>
-        <lastmod>2025-04-27</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/MATRIX/tiny-matrix-api.en%20copy/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/MATRIX/tiny-matrix-api.en%20copy/"/>
-    </url>
-    <url>
         <loc>https://localhost:7000/MATH/MATRIX/tiny-matrix-api/</loc>
         <lastmod>2025-04-27</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/MATRIX/tiny-matrix-api/"/>
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/MATRIX/tiny-matrix-api/"/>
-    </url>
-    <url>
-        <loc>https://localhost:7000/MATH/MATRIX/tiny-matrix-api.zh%20copy/</loc>
-        <lastmod>2025-04-27</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/MATRIX/tiny-matrix-api.zh%20copy/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/MATRIX/tiny-matrix-api.zh%20copy/"/>
     </url>
     <url>
         <loc>https://localhost:7000/MATH/MATRIX/tiny-matrix-code/</loc>
@@ -351,25 +337,11 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/MATRIX/tiny-mat-test/"/>
     </url>
     <url>
-        <loc>https://localhost:7000/zh/MATH/MATRIX/tiny-matrix-api.en%20copy/</loc>
-        <lastmod>2025-04-27</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/MATRIX/tiny-matrix-api.en%20copy/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/MATRIX/tiny-matrix-api.en%20copy/"/>
-    </url>
-    <url>
         <loc>https://localhost:7000/zh/MATH/MATRIX/tiny-matrix-api/</loc>
         <lastmod>2025-04-27</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/MATRIX/tiny-matrix-api/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/MATRIX/tiny-matrix-api/"/>
-    </url>
-    <url>
-        <loc>https://localhost:7000/zh/MATH/MATRIX/tiny-matrix-api.zh%20copy/</loc>
-        <lastmod>2025-04-27</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/MATH/MATRIX/tiny-matrix-api.zh%20copy/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/MATH/MATRIX/tiny-matrix-api.zh%20copy/"/>
     </url>
     <url>
         <loc>https://localhost:7000/zh/MATH/MATRIX/tiny-matrix-code/</loc>
