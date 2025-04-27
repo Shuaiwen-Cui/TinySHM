@@ -1114,7 +1114,7 @@ Mat operator*(float C, const Mat &A);
 - `const Mat &A` : Matrix to be multiplied.
 
 
-### Divide matrix (element-wise)
+### Divide matrix (by constant)
 ```cpp
 Mat operator/(const Mat &A, float C);
 ```

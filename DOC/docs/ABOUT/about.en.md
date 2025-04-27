@@ -51,16 +51,16 @@ This project aims to develop an empowering framework that equips MCU-level IoT d
 
 ```txt
 +------------------------------+
-| APPLICATION                  |
-|   - measurement              | <-- measurement / sensing
-|   - system_identification    | <-- system identification
 |   - damage_detection         | <-- damage detection, localization, and assessment
+|   - system_identification    | <-- system identification
+|   - measurement              | <-- measurement / sensing
+| APPLICATION                  |
 +------------------------------+
-| MIDDLEWARE                   |
-|   - TinyToolbox              | <-- Platform-specific Low-level Optimization + Various Utilities
-|   - TinyMath                 | <-- Common Math Functions
-|   - TinyDSP                  | <-- DSP Functions
 |   - TinyAI                   | <-- AI Functions
+|   - TinyDSP                  | <-- DSP Functions
+|   - TinyMath                 | <-- Common Math Functions
+|   - TinyToolbox              | <-- Platform-specific Low-level Optimization + Various Utilities
+| MIDDLEWARE                   |
 +------------------------------+
 | DRIVERS                      |
 +------------------------------+

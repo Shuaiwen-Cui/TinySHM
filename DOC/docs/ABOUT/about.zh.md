@@ -52,16 +52,16 @@
 
 ```txt
 +------------------------------+
-| 应用层                        |
-|   - measurement              | <-- 测量
-|   - system_identification    | <-- 系统识别
 |   - damage_detection         | <-- 损伤检测,定位和评估
+|   - system_identification    | <-- 系统识别
+|   - measurement              | <-- 测量
+| 应用层                        |
 +------------------------------+
-| 中间件                        |
-|   - TinyToolbox              | <-- 平台底层优化 + 各种工具
-|   - TinyMath                 | <-- 常用数学函数
-|   - TinyDSP                  | <-- DSP 函数
 |   - TinyAI                   | <-- AI 函数
+|   - TinyDSP                  | <-- DSP 函数
+|   - TinyMath                 | <-- 常用数学函数
+|   - TinyToolbox              | <-- 平台底层优化 + 各种工具
+| 中间件                        |
 +------------------------------+
 | 驱动层                        |
 +------------------------------+
