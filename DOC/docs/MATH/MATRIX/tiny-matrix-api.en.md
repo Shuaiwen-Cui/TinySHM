@@ -384,15 +384,774 @@ Mat::~Mat();
 
 **Parameters**: void
 
+!!! note
+    For constructor functions, it must has the same name as the class name, and it must not have a return type. As shown, for C++, the function name can be reloaded by changing the number and order of the parameters as long as the permutation of the parameters is different. The destructor will be automatically called when the object goes out of scope.
 
 ## ELEMENT ACCESS
 
+### Access matrix elements - non const
+
+```cpp
+inline float &operator()(int row, int col);
+```
+
+**Description**: Accesses the matrix elements using the specified row and column indices.
+
+**Parameters**：
+
+- `int row` : Row index.
+
+- `int col` : Column index.
+
+### Access matrix elements - const
+
+```cpp
+inline const float &operator()(int row, int col) const;
+```
+
+**Description**: Accesses the matrix elements using the specified row and column indices (const version).
+
+**Parameters**：
+
+- `int row` : Row index.
+
+- `int col` : Column index.
+
+!!! note
+    These two functions are in fact redefining the `()` operator, which allows you to access the elements of the matrix using the syntax `matrix(row, col)`.
+
 ## DATA MANIPULATION
+
+### Copy other matrix into this matrix as a sub-matrix
+```cpp
+tiny_error_t Mat::copy_paste(const Mat &src, int row_pos, int col_pos);
+```
+
+**Description**: Copies the specified source matrix into this matrix as a sub-matrix starting from the specified row and column positions, not sharing the data buffer.
+
+**Parameters**:
+
+- `const Mat &src` : Source matrix.
+
+- `int row_pos` : Starting row position.
+
+- `int col_pos` : Starting column position.
+
+***Returns**: tiny_error_t - Error code.
+
+### Copy header of other matrix to this matrix
+```cpp
+tiny_error_t Mat::copy_head(const Mat &src);
+```
+
+**Description**: Copies the header of the specified source matrix to this matrix, sharing the data buffer. All items copy the source matrix.
+
+**Parameters**:
+
+- `const Mat &src` : Source matrix.
+
+**Returns**: tiny_error_t - Error code.
+
+### Get a view (shallow copy) of sub-matrix (ROI) from this matrix
+```cpp
+Mat Mat::view_roi(int start_row, int start_col, int roi_rows, int roi_cols) const;
+```
+
+**Description**: Gets a view (shallow copy) of the sub-matrix (ROI) from this matrix starting from the specified row and column positions.
+
+**Parameters**:
+
+- `int start_row` : Starting row position.
+
+- `int start_col` : Starting column position.
+
+- `int roi_rows` : Number of rows in the ROI.
+
+- `int roi_cols` : Number of columns in the ROI.
+
+!!! warning
+    Unlike ESP-DSP, view_roi does not allow to setup stride as it will automatically calculate the stride based on the number of columns and paddings. The function will also refuse illegal requests, i.e., out of bound requests. 
+
+### Get a view (shallow copy) of sub-matrix (ROI) from this matrix using ROI structure
+```cpp
+Mat Mat::view_roi(const Mat::ROI &roi) const;
+```
+
+**Description**: Gets a view (shallow copy) of the sub-matrix (ROI) from this matrix using the specified ROI structure. This function will call the previous function in low level by passing the ROI structure to the parameters.
+
+**Parameters**:
+
+- `const Mat::ROI &roi` : ROI structure.
+
+### Get a replica (deep copy) of sub-matrix (ROI)
+```cpp
+Mat Mat::copy_roi(int start_row, int start_col, int roi_rows, int roi_cols);
+```
+
+**Description**: Gets a replica (deep copy) of the sub-matrix (ROI) from this matrix starting from the specified row and column positions. This function will return a new matrix object that does not share the data buffer with the original matrix.
+
+**Parameters**:
+
+- `int start_row` : Starting row position.
+
+- `int start_col` : Starting column position.
+
+- `int roi_rows` : Number of rows in the ROI.
+
+- `int roi_cols` : Number of columns in the ROI.
+
+### Get a replica (deep copy) of sub-matrix (ROI) using ROI structure
+```cpp
+Mat Mat::copy_roi(const Mat::ROI &roi);
+```
+
+**Description**: Gets a replica (deep copy) of the sub-matrix (ROI) from this matrix using the specified ROI structure. This function will call the previous function in low level by passing the ROI structure to the parameters.
+
+**Parameters**:
+
+- `const Mat::ROI &roi` : ROI structure.
+
+### Get a block of matrix
+```cpp
+Mat Mat::block(int start_row, int start_col, int block_rows, int block_cols);
+```
+
+**Description**: Gets a block of the matrix starting from the specified row and column positions.
+
+**Parameters**:
+
+- `int start_row` : Starting row position.
+
+- `int start_col` : Starting column position.
+
+- `int block_rows` : Number of rows in the block.
+
+- `int block_cols` : Number of columns in the block.
+
+!!! tip "Differences between view_roi | copy_roi | block"
+
+    - `view_roi` : Shallow copy of the sub-matrix (ROI) from this matrix.
+
+    - `copy_roi` : Deep copy of the sub-matrix (ROI) from this matrix. Rigid and faster.
+
+    - `block` : Deep copy of the block from this matrix. Flexible and slower.
+
+### Swap rows
+
+```cpp
+void Mat::swap_rows(int row1, int row2);
+```
+
+**Description**: Swaps the specified rows in the matrix.
+
+**Parameters**:
+
+- `int row1` : First row index.
+
+- `int row2` : Second row index.
+
+**Returns**: void
+
+### Clear matrix
+
+```cpp
+void Mat::clear(void);
+```
+
+**Description**: Clears the matrix by setting all elements to zero.
+
+**Parameters**: void
+
+**Returns**: void
 
 ## ARITHMETIC OPERATORS
 
+!!! note
+    This section defines the arithmetic operators that act on the current matrix itself. The operators are overloaded to perform matrix operations.
+
+### Copy assignment
+```cpp
+Mat &operator=(const Mat &src);
+```
+
+**Description**: Copy assignment operator for the matrix.
+
+**Parameters**:
+
+- `const Mat &src` : Source matrix.
+
+### Add matrix
+```cpp
+Mat &operator+=(const Mat &A);
+```
+
+**Description**: Adds the specified matrix to this matrix.
+
+**Parameters**:
+
+- `const Mat &A` : Matrix to be added.
+
+### Add constant
+```cpp
+Mat &operator+=(float C);
+```
+
+### Sbtract matrix
+```cpp
+Mat &operator-=(const Mat &A);
+```
+
+**Description**: Subtracts the specified matrix from this matrix.
+
+**Parameters**:
+
+- `const Mat &A` : Matrix to be subtracted.
+
+### Subtract constant
+```cpp
+Mat &operator-=(float C);
+```
+
+**Description**: Subtracts the specified constant from this matrix.
+
+***Parameters**:
+
+- `float C` : Constant to be subtracted.
+
+### Multiply matrix
+```cpp
+Mat &operator*=(const Mat &A);
+```
+
+**Description**: Multiplies this matrix by the specified matrix.
+
+**Parameters**:
+
+- `const Mat &A` : Matrix to be multiplied.
+
+### Multiply constant
+```cpp
+Mat &operator*=(float C);
+```
+
+**Description**: Multiplies this matrix by the specified constant.
+
+**Parameters**:
+
+- `float C` : Constant to be multiplied.
+
+### Divide matrix (element-wise)
+```cpp
+Mat &operator/=(const Mat &B);
+```
+
+**Description**: Divides this matrix by the specified matrix element-wise.
+
+**Parameters**:
+
+- `const Mat &B` : Matrix to be divided by.
+
+### Divide constant
+```cpp
+Mat &operator/=(float C);
+```
+
+**Description**: Divides this matrix by the specified constant.
+
+**Parameters**:
+
+- `float C` : Constant to be divided by.
+
+### Exponentiation
+```cpp
+Mat operator^(int C);
+```
+
+**Description**: Raises this matrix to the specified power.
+
+**Parameters**:
+
+- `int C` : Exponent.
+
+
 ## LINEAR ALGEBRA
+
+### Transpose
+
+```cpp
+Mat::transpose();
+```
+
+**Description**: Calculates the transpose of the matrix, returning a new matrix.
+
+
+**Parameters**: None.
+
+### cofactor 
+
+```cpp
+Mat::cofactor(int row, int col);
+```
+
+**Description**: Extracts the cofactor matrix from the specified row and column.
+
+**Parameters**: 
+
+- `int row`: Number of the row to be excluded.
+
+- `int col`: Number of the column to be excluded.
+
+### Determinant
+
+```cpp
+float Mat::determinant();
+```
+
+**Description**: Calculates the determinant of the matrix. It is based on cofactor and adjoint matrices.
+
+**Parameters**: None.
+
+**Returns**: float - Determinant value.
+
+### Adjoint
+
+```cpp
+Mat::adjoint();
+```
+
+**Description**: Calculates the adjoint of the matrix.
+
+**Parameters**: None.
+
+**Returns**: Mat - Adjoint matrix.
+
+### Normalize
+
+```cpp
+void Mat::normalize();
+```
+
+**Description**: Normalizes the matrix.
+
+**Parameters**: None.
+
+**Returns**: void
+
+### Norm
+
+```cpp
+float Mat::norm() const;
+```
+
+**Description**: Calculates the norm of the matrix.
+
+**Parameters**: None.
+
+**Returns**: float - Norm value.
+
+### Inverse using Adjoint
+
+```cpp
+Mat::inverse_adjoint();
+```
+
+**Description**: Calculates the inverse of the matrix using the adjoint method.
+
+**Parameters**: None.
+
+**Returns**: Mat - Inverse matrix.
+
+### Identity matrix
+
+```cpp
+static Mat::eye(int size);
+```
+
+**Description**: Creates an identity matrix of the specified size.
+
+**Parameters**: 
+
+- `int size` : Size of the identity matrix.
+
+**Returns**: Mat - Identity matrix.
+
+
+### Augmentation Matrix
+
+```cpp
+static Mat::augment(const Mat &A, const Mat &B);
+```
+
+**Description**: Creates an augmented matrix by combining two matrices.
+
+**Parameters**:
+
+- `const Mat &A` : First matrix.
+
+### identity matrix
+
+```cpp
+static Mat::ones(int rows, int cols);
+```
+
+**Description**: Creates a matrix filled with ones of the specified size.
+
+**Parameters**:
+
+- `int rows` : Number of rows.
+
+- `int cols` : Number of columns.
+
+**Returns**: Mat - Matrix filled with ones.
+
+### All-Ones matrix
+
+```cpp
+static Mat::ones(int rows, int cols);
+```
+
+**Description**: Creates a matrix filled with ones of the specified size.
+
+**Parameters**:
+
+- `int rows` : Number of rows.
+
+- `int cols` : Number of columns.
+
+**Returns**: Mat - Matrix filled with ones.
+
+
+### All-Ones matrix
+
+```cpp
+static Mat::ones(int size);
+```
+
+**Description**: Creates a square matrix filled with ones of the specified size.
+
+**Parameters**:
+
+- `int size` : Size of the square matrix.
+
+**Returns**: Mat - Square matrix filled with ones.
+
+
+### Gaussian Elimination
+
+```cpp
+Mat::gaussian_eliminate() const;
+```
+
+**Description**: Performs Gaussian elimination on the matrix.
+
+
+**Parameters**: None.
+
+### row reduce from Gaussian elimination
+
+```cpp
+Mat::row_reduce_from_gaussian();
+```
+
+**Description**: Performs row reduction from Gaussian elimination on the matrix.
+
+**Parameters**: None.
+
+**Returns**: Mat - Row reduced matrix.
+
+### Inverse using Gaussian-Jordan elimination
+
+```cpp
+Mat::inverse_gje();
+```
+
+**Description**: Calculates the inverse of the matrix using Gaussian-Jordan elimination.
+
+**Parameters**: None.
+
+**Returns**: Mat - Inverse matrix.
+
+### Dot Product
+
+```cpp
+float Mat::dotprod(const Mat &A, const Mat &B);
+```
+
+**Description**: Calculates the dot product of two matrices.
+
+**Parameters**:
+
+- `const Mat &A` : First matrix.
+
+- `const Mat &B` : Second matrix.
+
+**Returns**: float - Dot product value.
+
+### Solve Linear System
+
+```cpp
+Mat Mat::solve(const Mat &A, const Mat &b);
+```
+
+**Description**: Solves the linear system Ax = b.
+
+**Parameters**:
+
+- `const Mat &A` : Coefficient matrix.
+
+- `const Mat &b` : Right-hand side matrix.
+
+**Returns**: Mat - Solution matrix.
+
+### Band Solve
+
+```cpp
+Mat Mat::band_solve(Mat A, Mat b, int k);
+```
+
+**Description**: Solves a banded linear system.
+
+**Parameters**:
+
+- `Mat A` : Coefficient matrix.
+
+- `Mat b` : Right-hand side matrix.
+
+
+### Band Solve
+
+```cpp
+Mat Mat::band_solve(Mat A, Mat b, int k);
+```
+
+**Description**: Solves a banded linear system.
+
+**Parameters**:
+
+- `Mat A` : Coefficient matrix.
+
+- `Mat b` : Right-hand side matrix.
+
+- `int k` : Bandwidth.
+
+**Returns**: Mat - Solution matrix.
+
+
+
+### Roots
+
+```cpp
+Mat Mat::roots(Mat A, Mat y);
+```
+
+**Description**: Calculates the roots of a polynomial represented by the matrix A.
+
+**Parameters**:
+
+- `Mat A` : Coefficient matrix.
+
+- `Mat y` : Right-hand side matrix.
+
+
+**Returns**: Mat - Roots matrix.
+
+
+
 
 ## STREAM OPERATORS
 
+### Matrix output stream operator
+```cpp
+std::ostream &operator<<(std::ostream &os, const Mat &m);
+```
+
+**Description**: Overloaded output stream operator for the matrix.
+
+**Parameters**:
+
+- `std::ostream &os` : Output stream.
+
+- `const Mat &m` : Matrix to be output.
+
+### ROI output stream operator
+```cpp
+std::ostream &operator<<(std::ostream &os, const Mat::ROI &roi);
+```
+
+**Description**: Overloaded output stream operator for the ROI structure.
+
+**Parameters**:
+
+- `std::ostream &os` : Output stream.
+
+- `const Mat::ROI &roi` : ROI structure.
+
+### Matrix input stream operator
+```cpp
+std::istream &operator>>(std::istream &is, Mat &m);
+```
+
+**Description**: Overloaded input stream operator for the matrix.
+
+**Parameters**:
+
+- `std::istream &is` : Input stream.
+
+- `Mat &m` : Matrix to be input.
+
+!!! tip 
+    This section is actually kind of overlapping with print function in terms of showing the matrix.
+
 ## GLOBAL ARITHMETIC OPERATORS
+
+!!! tip
+    The operators in this section return a new matrix object, which is the result of the operation. The original matrices remain unchanged. Unlike the previous section, the operators are designed to perform operation acting on the current matrix itself.
+
+
+### Add matrix
+```cpp
+Mat operator+(const Mat &A, const Mat &B);
+```
+
+**Description**: Adds the specified matrices.
+
+**Parameters**:
+
+- `const Mat &A` : First matrix.
+
+- `const Mat &B` : Second matrix.
+
+### Add constant
+```cpp
+Mat operator+(const Mat &A, float C);
+```
+
+**Description**: Adds the specified constant to the matrix.
+
+**Parameters**:
+
+- `const Mat &A` : Matrix to be added.
+
+- `float C` : Constant to be added.
+
+### Subtract matrix
+```cpp
+Mat operator-(const Mat &A, const Mat &B);
+```
+
+**Description**: Subtracts the specified matrices.
+
+**Parameters**:
+
+- `const Mat &A` : First matrix.
+
+- `const Mat &B` : Second matrix.
+
+### Subtract constant
+```cpp
+Mat operator-(const Mat &A, float C);
+```
+
+**Description**: Subtracts the specified constant from the matrix.
+
+**Parameters**:
+
+- `const Mat &A` : Matrix to be subtracted.
+
+- `float C` : Constant to be subtracted.
+
+### Multiply matrix
+```cpp
+Mat operator*(const Mat &A, const Mat &B);
+```
+
+**Description**: Multiplies the specified matrices.
+
+**Parameters**:
+
+- `const Mat &A` : First matrix.
+
+- `const Mat &B` : Second matrix.
+
+### Multiply constant
+```cpp
+Mat operator*(const Mat &A, float C);
+```
+
+**Description**: Multiplies the specified matrix by the constant.
+
+**Parameters**:
+
+- `const Mat &A` : Matrix to be multiplied.
+
+- `float C` : Constant to be multiplied.
+
+### Multiply constant
+```cpp
+Mat operator*(float C, const Mat &A);
+```
+
+**Description**: Multiplies the specified matrix by the constant.
+
+**Parameters**:
+
+- `float C` : Constant to be multiplied.
+
+- `const Mat &A` : Matrix to be multiplied.
+
+### Multiply constant with constant on the left
+
+```cpp
+Mat operator*(float C, const Mat &A);
+```
+
+**Description**: Multiplies the specified matrix by the constant.
+
+**Parameters**:
+
+- `float C` : Constant to be multiplied.
+
+- `const Mat &A` : Matrix to be multiplied.
+
+
+### Divide matrix (element-wise)
+```cpp
+Mat operator/(const Mat &A, float C);
+```
+
+**Description**: Divides the specified matrix by the constant element-wise.
+
+**Parameters**:
+
+- `const Mat &A` : Matrix to be divided.
+
+- `float C` : Constant to divide by.
+
+### Divide matrix (element-wise)
+```cpp
+Mat operator/(const Mat &A, const Mat &B);
+```
+
+**Description**: Divides the specified matrices element-wise.
+
+**Parameters**:
+
+- `const Mat &A` : First matrix.
+
+- `const Mat &B` : Second matrix.
+
+### Equality check
+```cpp
+bool operator==(const Mat &A, const Mat &B);
+```
+
+**Description**: Checks if the specified matrices are equal.
+
+**Parameters**:
+
+- `const Mat &A` : First matrix.
+
+- `const Mat &B` : Second matrix.
+
+**Returns**: bool - true if equal, false otherwise.
+
