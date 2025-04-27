@@ -174,13 +174,216 @@ namespace tiny
 }
 
 ```
-<!-- ## META DATA
+## META DATA
+
+- `int row` : Number of rows in the matrix.
+
+- `int col` : Number of columns in the matrix.
+
+- `int pad` : Number of paddings between two rows.
+
+- `int stride` : Stride = (number of elements in a row) + padding.
+
+- `int element` : Number of elements = rows * cols.
+
+- `int memory` : Size of the data buffer = rows * stride.
+
+- `float *data` : Pointer to the data buffer.
+
+- `float *temp` : Pointer to the temporary data buffer.
+
+- `bool ext_buff` : Flag indicating that the matrix uses an external buffer.
+
+- `bool sub_matrix` : Flag indicating that the matrix is a subset of another matrix.
 
 ## ROI STRUCTURE
 
+### Metadata
+
+- `int pos_x` : Starting column index.
+
+- `int pos_y` : Starting row index.
+
+- `int width` : Width of the ROI (columns).
+
+- `int height` : Height of the ROI (rows).
+
+### ROI Constructor
+
+```cpp
+Mat::ROI::ROI(int pos_x = 0, int pos_y = 0, int width = 0, int height = 0);
+```
+
+**Description**: ROI constructor initializes the ROI with the specified position and size.
+
+**Parameters**:
+
+- `int pos_x` : Starting column index.
+
+- `int pos_y` : Starting row index.
+
+- `int width` : Width of the ROI (columns).
+
+- `int height` : Height of the ROI (rows).
+
+### ROI RESIZE
+
+```cpp
+void Mat::ROI::resize_roi(int pos_x, int pos_y, int width, int height);
+```
+
+**Description**: Resizes the ROI to the specified position and size.
+
+**Parameters**:
+
+- `int pos_x` : Starting column index.
+
+- `int pos_y` : Starting row index.
+
+- `int width` : Width of the ROI (columns).
+
+- `int height` : Height of the ROI (rows).
+
+**Returns**: void
+
+### AREA ROI
+
+```cpp
+int Mat::ROI::area_roi(void) const;
+```
+
+**Description**: Calculates the area of the ROI.
+
+**Parameters**: void
+
+**Returns**: int - Area of the ROI.
+
 ## PRINT FUNCTION
 
+### Print matrix information
+
+```cpp
+void print_info() const;
+```
+
+**Description** : Prints the matrix information including number of rows, columns, elements, paddings, stride, memory size (size of float), data buffer address, temporary buffer address, indicators whether the matrix uses an external buffer, and whether it is a sub-matrix.
+
+**Parameters**: void
+
+**Returns**: void
+
+### Print matrix elements
+
+```cpp
+void Mat::print_matrix(bool show_padding);
+```
+
+**Description**: Prints the matrix elements. If `show_padding` is true, it will also print the padding values.
+
+**Parameters**: 
+
+- `bool show_padding` - If true, show padding values.
+
+**Returns**: void
+
 ## CONSTRUCTORS & DESTRUCTOR
+
+### Default Constructor
+
+```cpp
+Mat::Mat();
+```
+
+**Description**: Default constructor initializes the matrix with default values. This function will create a matrix with only one row and one column, and the only element is set to 0.
+
+**Parameters**: void
+
+### Constructor - Mat(int rows, int cols)
+
+```cpp
+Mat::Mat(int rows, int cols);
+```
+
+**Description**: Constructor initializes the matrix with the specified number of rows and columns.
+
+**Parameters**:
+
+- `int rows` : Number of rows.
+
+- `int cols` : Number of columns.
+
+### Constructor - Mat(int rows, int cols, int stride)
+
+```cpp
+Mat::Mat(int rows, int cols, int stride);
+```
+
+**Description**: Constructor initializes the matrix with the specified number of rows, columns, and stride.
+
+**Parameters**:
+
+- `int rows` : Number of rows.
+
+- `int cols` : Number of columns.
+
+- `int stride` : Stride.
+
+### Constructor - Mat(float *data, int rows, int cols)
+
+```cpp
+Mat::Mat(float *data, int rows, int cols);
+```
+
+**Description**: Constructor initializes the matrix with the specified data buffer, number of rows, and columns.
+
+**Parameters**:
+
+- `float *data` : Pointer to the data buffer.
+
+- `int rows` : Number of rows.
+
+- `int cols` : Number of columns.
+
+### Constructor - Mat(float *data, int rows, int cols, int stride)
+
+```cpp
+Mat(float *data, int rows, int cols, int stride);
+```
+
+**Description**: Constructor initializes the matrix with the specified data buffer, number of rows, columns, and stride.
+
+**Parameters**:
+
+- `float *data` : Pointer to the data buffer.
+
+- `int rows` : Number of rows.
+
+- `int cols` : Number of columns.
+
+- `int stride` : Stride.
+
+### Constructor - Mat(const Mat &src)
+
+```cpp
+Mat::Mat(const Mat &src);
+```
+
+**Description**: Copy constructor initializes the matrix with the specified source matrix.
+
+**Parameters**:
+
+- `const Mat &src` : Source matrix.
+
+### Destructor
+
+```cpp
+Mat::~Mat();
+```
+
+**Description**: Destructor releases the allocated memory for the matrix.
+
+**Parameters**: void
+
 
 ## ELEMENT ACCESS
 
@@ -192,4 +395,4 @@ namespace tiny
 
 ## STREAM OPERATORS
 
-## GLOBAL ARITHMETIC OPERATORS -->
+## GLOBAL ARITHMETIC OPERATORS

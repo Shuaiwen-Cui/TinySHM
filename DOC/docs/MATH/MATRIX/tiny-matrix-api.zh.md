@@ -173,13 +173,216 @@ namespace tiny
 }
 ```
 
-<!-- ## 元数据
+## 元数据
+
+- `int row`: 行数
+
+- `int col`: 列数
+
+- `int pad`: 行间填充数
+
+- `int stride`: 行内元素数 + 填充数
+
+- `int element`: 元素数
+
+- `int memory`: 数据缓冲区大小 = 行数 * 步幅
+
+- `float *data`: 数据缓冲区指针
+
+- `float *temp`: 临时数据缓冲区指针
+
+- `bool ext_buff`: 标志矩阵是否使用外部缓冲区
+
+- `bool sub_matrix`: 标志矩阵是否为另一个矩阵的子集
 
 ## ROI 结构
 
+### 元数据
+
+- `int pos_x`: 起始列索引
+
+- `int pos_y`: 起始行索引
+
+- `int width`: ROI 的宽度（列数）
+
+- `int height`: ROI 的高度（行数）
+
+### ROI 构造函数
+
+```cpp
+Mat::ROI::ROI(int pos_x = 0, int pos_y = 0, int width = 0, int height = 0);
+```
+
+**描述**: 构造一个 ROI 对象，默认值为 (0, 0, 0, 0)。
+
+**参数**:
+
+- `int pos_x`: 起始列索引
+
+- `int pos_y`: 起始行索引
+
+- `int width`: ROI 的宽度（列数）
+
+- `int height`: ROI 的高度（行数）
+
+### ROI 重置函数
+
+```cpp
+void Mat::ROI::resize_roi(int pos_x, int pos_y, int width, int height);
+```
+
+**描述**: 重置 ROI 的位置和大小。
+
+**参数**:
+
+- `int pos_x`: 起始列索引
+
+- `int pos_y`: 起始行索引
+
+- `int width`: ROI 的宽度（列数）
+
+- `int height`: ROI 的高度（行数）
+
+**返回值**: void
+
+### ROI 面积函数
+
+```cpp
+int Mat::ROI::area_roi(void) const;
+```
+
+**描述**: 计算 ROI 的面积。
+
+**参数**: void
+
+**返回值**: 整数类型 ROI 的面积
+
 ## 打印函数
 
+### 打印矩阵信息
+
+```cpp
+void Mat::print_info() const
+```
+
+**描述**: 打印矩阵的基本信息，包括行数、列数、元素数、填充数、步幅数、内存大小、数据缓冲区指针、临时数据缓冲区指针、外部缓冲区标志、子矩阵标志。
+
+**参数**: void
+
+**返回值**: void
+
+### 打印矩阵元素
+
+```cpp
+void Mat::print_matrix(bool show_padding);
+```
+
+**描述**: 打印矩阵的元素。
+
+**参数**:
+
+- `bool show_padding`: 是否显示填充区元素， true 显示，false 不显示
+
+**返回值**: void
+
 ## 构造与析构函数
+
+### 默认构造函数
+
+```cpp
+Mat::Mat();
+```
+
+**描述**: 默认构造函数将使用默认值初始化一个矩阵对象。这个函数会创建一个一行一列的矩阵，唯一的元素是0。
+
+**参数**: void
+
+### 构造函数 - Mat(int rows, int cols)
+
+```cpp
+Mat::Mat(int rows, int cols);
+```
+
+**描述**: 构造一个指定行数和列数的矩阵对象。
+
+**参数**:
+
+- `int rows`: 行数
+
+- `int cols`: 列数
+
+### 构造函数 - Mat(int rows, int cols, int stride)
+
+```cpp
+Mat::Mat(int rows, int cols, int stride);
+```
+
+**描述**: 构造一个指定行数、列数和步幅的矩阵对象。
+
+**参数**:
+
+- `int rows`: 行数
+
+- `int cols`: 列数
+
+- `int stride`: 步幅
+
+### 构造函数 - Mat(float *data, int rows, int cols)
+
+```cpp
+Mat::Mat(float *data, int rows, int cols);
+```
+
+**描述**: 构造一个指定行数和列数的矩阵对象，并使用给定的数据缓冲区。
+
+**参数**:
+
+- `float *data`: 数据缓冲区指针
+
+- `int rows`: 行数
+
+- `int cols`: 列数
+
+### 构造函数 - Mat(float *data, int rows, int cols, int stride)
+
+```cpp
+Mat::Mat(float *data, int rows, int cols, int stride);
+```
+
+**描述**: 构造一个指定行数、列数和步幅的矩阵对象，并使用给定的数据缓冲区。
+
+**参数**:
+
+- `float *data`: 数据缓冲区指针
+
+- `int rows`: 行数
+
+- `int cols`: 列数
+
+- `int stride`: 步幅
+
+### 构造函数 - Mat(const Mat &src)
+
+```cpp
+Mat::Mat(const Mat &src);
+```
+
+**描述**: 构造一个矩阵对象，并使用给定的矩阵对象的头部信息。
+
+**参数**:
+
+- `const Mat &src`: 源矩阵对象
+
+### 析构函数
+
+```cpp
+Mat::~Mat();
+```
+
+**描述**: 析构函数释放矩阵对象的内存。
+
+**参数**: void
+
 
 ## 元素访问
 
@@ -191,4 +394,4 @@ namespace tiny
 
 ## 流操作符
 
-## 全局算数运算符 -->
+## 全局算数运算符

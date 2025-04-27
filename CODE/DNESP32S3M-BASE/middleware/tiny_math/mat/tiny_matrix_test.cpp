@@ -1699,7 +1699,7 @@ void tiny_matrix_test()
     std::cout << "============ [tiny_matrix_test start] ============\n";
 
     // Group 1: constructor & destructor
-    test_constructor_destructor();
+    // test_constructor_destructor();
 
     // Group 2: element access
     // test_element_access();
@@ -1736,7 +1736,7 @@ void tiny_matrix_test()
 
     // Group 6: Stream operators
     // test_stream_operators();
-    // test_matrix_operations();
+    test_matrix_operations();
 
     std::cout << "============ [tiny_matrix_test end] ============\n";
 }

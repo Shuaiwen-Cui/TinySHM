@@ -33,3 +33,6 @@
     - `tiny_matrix.hpp` is a header file for the C++ language version, suitable for C++ programming.
 
     In simple terms, C language projects can only use `tiny_vec.h` and `tiny_mat.h`, while C++ projects can use `tiny_vec.h`, `tiny_mat.h`, and `tiny_matrix.hpp`.
+
+!!! tip
+    For specific usage methods, please refer to the test code.
