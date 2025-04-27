@@ -8,7 +8,6 @@ set(include_dirs
 )
 
 set(requires
-    tiny_toolbox
     tiny_math
 )
 
