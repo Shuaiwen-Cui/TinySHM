@@ -1,15 +1,34 @@
-/**
- * @file tiny_corr.c
- * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
- * @brief tiny_corr | code | source
- * @version 1.0
- * @date 2025-04-27
- * @copyright Copyright (c) 2025
- *
- */
-/* DEPENDENCIES */
-#include "tiny_corr.h"
+# 说明
 
+!!! note "说明"
+    相关性是信号处理中的一个重要概念，通常用于分析信号之间的相似性或依赖性。它在许多应用中都很有用，例如模式识别、时间序列分析和信号检测。
+
+## 滑动相关
+
+### 数学原理
+
+相关计算公式为：
+
+\[
+\text{Correlation}[n] = \sum_{m=0}^{L_p - 1} S[n + m] \cdot P[m]
+\]
+
+其中：
+- \( S \) 为输入信号，长度为 \( L_s \)
+
+- \( P \) 为模式序列（Pattern），长度为 \( L_p \)
+
+- \( n \in [0, L_s - L_p] \)
+
+**输出长度计算**：
+
+\[
+L_{\text{out}} = L_s - L_p + 1
+\]
+
+### tiny_corr_f32
+
+```c
 /**
  * @name: tiny_corr_f32
  * @brief Correlation function
@@ -52,7 +71,55 @@ tiny_error_t tiny_corr_f32(const float *Signal, const int siglen, const float *P
 
     return TINY_OK;
 }
+```
 
+**描述**: 计算信号和模式之间的相关性。
+
+**特点**
+
+- 支持平台加速
+
+**参数**:
+
+- `Signal`: 输入信号数组
+
+- `siglen`: 信号数组的长度
+
+- `Pattern`: 输入模式数组
+
+- `patlen`: 模式数组的长度
+
+- `dest`: 输出数组，用于存储相关性结果
+
+**返回值**: 返回成功或错误代码。
+
+## 交叉相关函数
+
+### 数学原理
+
+互相关计算公式为：
+
+\[
+R_{xy}[n] = \sum_{k} x[k] \cdot y[k + n]
+\]
+
+其中：
+
+- \( x \) 为信号序列，长度为 \( L_x \)
+
+- \( y \) 为卷积核（Kernel），长度为 \( L_y \)
+
+- \( n \in [0, L_x + L_y - 2] \)
+
+**输出长度计算**：
+
+\[
+L_{\text{out}} = L_x + L_y - 1
+\]
+
+### tiny_ccorr_f32
+
+```c
 /**
  * @name: tiny_ccorr_f32
  * @brief Cross-correlation function
@@ -135,3 +202,24 @@ tiny_error_t tiny_ccorr_f32(const float *Signal, const int siglen, const float *
 #endif
     return TINY_OK;
 }
+```
+
+**描述**: 计算信号和卷积核之间的互相关性。
+
+**特点**
+
+- 支持平台加速
+
+**参数**:
+
+- `Signal`: 输入信号数组
+
+- `siglen`: 信号数组的长度
+
+- `Kernel`: 输入卷积核数组
+
+- `kernlen`: 卷积核数组的长度
+
+- `corrvout`: 输出数组，用于存储互相关性结果
+
+**返回值**: 返回成功或错误代码。

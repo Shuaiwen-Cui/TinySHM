@@ -68,3 +68,32 @@ This project aims to develop an empowering framework that equips MCU-level IoT d
 +------------------------------+
 
 ```
+
+## DEV SCHEDULE
+
+✅ - Finished
+
+🏗️ - Ongoing
+
+📆 - In Plan
+
+```txt
+<tiny_toolbox>
+- time ✅
+- command 📆
+
+<tiny_math>
+- vector ✅
+- matrix ✅
+
+<tiny_dsp>
+- signal 🏗️
+    - convolution ✅
+    - correlation ✅
+- filter 📆
+- transform 📆
+- support 📆
+
+<tiny_ai>
+
+```

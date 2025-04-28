@@ -27,33 +27,33 @@ extern "C"
 {
 #endif
 
-/**
- * @name: tiny_corr_f32
- * @brief Correlation function
- * 
- * @param Signal: input signal array
- * @param siglen: length of the signal array
- * @param Pattern: input pattern array
- * @param patlen: length of the pattern array
- * @param dest: output array for the correlation result
- * 
- * @return tiny_error_t 
- */
-tiny_error_t tiny_corr_f32(const float *Signal, const int siglen, const float *Pattern, const int patlen, float *dest);
+    /**
+     * @name: tiny_corr_f32
+     * @brief Correlation function
+     *
+     * @param Signal: input signal array
+     * @param siglen: length of the signal array
+     * @param Pattern: input pattern array
+     * @param patlen: length of the pattern array
+     * @param dest: output array for the correlation result
+     *
+     * @return tiny_error_t
+     */
+    tiny_error_t tiny_corr_f32(const float *Signal, const int siglen, const float *Pattern, const int patlen, float *dest);
 
-/**
- * @name: tiny_ccorr_f32
- * @brief Cross-correlation function
- *
- * @param Signal: input signal array
- * @param siglen: length of the signal array
- * @param Kernel: input kernel array
- * @param kernlen: length of the kernel array
- * @param corrvout: output array for the cross-correlation result
- *
- * @return tiny_error_t
- */
-tiny_error_t tiny_ccorr_f32(const float *Signal, const int siglen, const float *Kernel, const int kernlen, float *corrvout);
+    /**
+     * @name: tiny_ccorr_f32
+     * @brief Cross-correlation function
+     *
+     * @param Signal: input signal array
+     * @param siglen: length of the signal array
+     * @param Kernel: input kernel array
+     * @param kernlen: length of the kernel array
+     * @param corrvout: output array for the cross-correlation result
+     *
+     * @return tiny_error_t
+     */
+    tiny_error_t tiny_ccorr_f32(const float *Signal, const int siglen, const float *Kernel, const int kernlen, float *corrvout);
 
 #ifdef __cplusplus
 }

@@ -1,3 +1,40 @@
+# 测试
+
+## tiny_corr_test.h
+
+```c
+
+/**
+ * @file tiny_corr_test.h
+ * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
+ * @brief tiny_corr | test | header
+ * @version 1.0
+ * @date 2025-04-27
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+#pragma once
+
+/* DEPENDENCIES */
+#include "tiny_corr.h"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+void tiny_signal_corr_ccorr_test(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+```
+
+## tiny_corr_test.c
+
+```c
 /**
  * @file tiny_corr_test.c
  * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
@@ -91,3 +128,37 @@ void tiny_signal_corr_ccorr_test(void)
 
     printf("==========================================================\n");
 }
+
+```
+
+## 测试结果
+
+```c
+========== Correlation & Cross-Correlation Test ==========
+
+--- Test 1: tiny_corr_f32 ---
+Input Signal : [1.00, 2.00, 3.00, 4.00, 2.00, 1.00]
+Pattern      : [2.00, 1.00, 0.00]
+Output vs Expected:
+  [0] Output = 4.000 | Expected = 4.000
+  [1] Output = 7.000 | Expected = 7.000
+  [2] Output = 10.000 | Expected = 10.000
+  [3] Output = 10.000 | Expected = 10.000
+[tiny_corr_f32 Test] [PASS]
+
+--- Test 2: tiny_ccorr_f32 ---
+Input Signal X: [1.00, 3.00, 2.00, 0.00, 1.00, 2.00]
+Input Signal Y: [2.00, 1.00, 0.00, -1.00]
+Output vs Expected:
+  [0] Output = -1.000 | Expected = -1.000
+  [1] Output = -3.000 | Expected = -3.000
+  [2] Output = -1.000 | Expected = -1.000
+  [3] Output = 5.000 | Expected = 5.000
+  [4] Output = 7.000 | Expected = 7.000
+  [5] Output = 2.000 | Expected = 2.000
+  [6] Output = 1.000 | Expected = 1.000
+  [7] Output = 4.000 | Expected = 4.000
+  [8] Output = 4.000 | Expected = 4.000
+[tiny_ccorr_f32 Test] [PASS]
+==========================================================
+```

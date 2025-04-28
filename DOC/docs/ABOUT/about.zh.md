@@ -69,3 +69,32 @@
 +------------------------------+
 
 ```
+
+## 开发计划与进度
+
+✅ - 已完成
+
+🏗️ - 开发中
+
+📆 - 规划中
+
+```txt
+<tiny_toolbox>
+- time ✅
+- command 📆
+
+<tiny_math>
+- vector ✅
+- matrix ✅
+
+<tiny_dsp>
+- signal 🏗️
+    - convolution ✅
+    - correlation ✅
+- filter 📆
+- transform 📆
+- support 📆
+
+<tiny_ai>
+
+```

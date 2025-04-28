@@ -31,9 +31,9 @@
 
 - Alientek 的 DNESP32S3M（ESP32-S3）
 
-![DNESP32S3M](DNESP32S3M.png){width=800px}
+<!-- ![DNESP32S3M](DNESP32S3M.png){width=800px}
 
-![DNESP32S3M-BACK](DNESP32S3M-BACK.png){width=800px}
+![DNESP32S3M-BACK](DNESP32S3M-BACK.png){width=800px} -->
 
 <div class="grid cards" markdown>
 

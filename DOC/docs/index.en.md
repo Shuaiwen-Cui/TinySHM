@@ -30,9 +30,9 @@ This project aims to develop an empowering framework that equips MCU-level IoT d
 
 - DNESP32S3M from Alientek (ESP32-S3)
 
-![DNESP32S3M](DNESP32S3M.png){width=800px}
+<!-- ![DNESP32S3M](DNESP32S3M.png){width=800px}
 
-![DNESP32S3M-BACK](DNESP32S3M-BACK.png){width=800px}
+![DNESP32S3M-BACK](DNESP32S3M-BACK.png){width=800px} -->
 
 <div class="grid cards" markdown>
 

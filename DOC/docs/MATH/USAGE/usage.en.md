@@ -1,8 +1,7 @@
 # USAGE INSTRUCTIONS
 
 !!! info "Usage Instructions"
-    This document provides usage instructions for the `math` module in Python. 
-    It includes examples and explanations of various functions and methods available in the module.
+    This document provides usage instructions for the `tiny_math` module.
 
 ## Import TinyMath as a Whole
 

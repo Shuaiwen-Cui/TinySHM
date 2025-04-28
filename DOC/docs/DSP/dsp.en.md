@@ -11,15 +11,22 @@
 ```c
 set(src_dirs
     .
+    signal
+    filter
+    transform
+    support
 )
 
 set(include_dirs
     .
     include
+    signal
+    filter
+    transform
+    support
 )
 
 set(requires
-    tiny_toolbox
     tiny_math
 )
 
@@ -32,10 +39,25 @@ idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRE
 
 ### Dependency Diagram
 
-to be added
+![](tiny_dsp.png)
 
 ### Code Tree
 
 ```txt
-
+tiny_dsp/
+├── include/                     
+│   ├── tiny_dsp.h               # entrance header file
+│   └── tiny_dsp_config.h        # dsp module configuration file
+│
+├── signal/
+│   ├── tiny_conv.h              # convolution - header file
+│   ├── tiny_conv.c              # convolution - source file
+│   ├── tiny_corr.h              # correlation - header file
+│   └── tiny_corr.c              # correlation - source file
+│
+├── filter/
+│
+├── transform/
+│
+└── support/
 ```
