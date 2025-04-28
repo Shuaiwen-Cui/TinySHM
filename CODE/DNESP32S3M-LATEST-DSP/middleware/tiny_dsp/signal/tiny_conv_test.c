@@ -44,7 +44,7 @@ void tiny_signal_conv_test(void)
     const float expected_output[] = {0.5f, 2.0f, 3.5f, 5.0f, 6.5f, 5.0f};
     int pass = 1;
     for (int i = 0; i < conv_len; i++) {
-        if ( (conv_output[i] - expected_output[i]) > 1e-3f || (conv_output[i] - expected_output[i]) < -1e-3f ) {
+        if ( (conv_output[i] - expected_output[i]) > 1e-5f || (conv_output[i] - expected_output[i]) < -1e-5f ) {
             pass = 0;
             break;
         }

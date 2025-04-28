@@ -21,6 +21,10 @@
 #include "tiny_conv.h"
 #include "tiny_conv_test.h"
 
+// signal - correlation & crosss correlation
+#include "tiny_corr.h"
+#include "tiny_corr_test.h"
+
 // [filter]
 
 // [transform]

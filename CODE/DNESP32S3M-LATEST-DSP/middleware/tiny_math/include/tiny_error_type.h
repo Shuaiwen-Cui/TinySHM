@@ -65,7 +65,7 @@ typedef int tiny_error_t; // Error type for the tiny_math middleware
 #define TINY_ERR_DSP_NULL_POINTER        (TINY_ERR_DSP_BASE + 7)
 #define TINY_ERR_DSP_ZERO_DIVISION       (TINY_ERR_DSP_BASE + 8)
 #define TINY_ERR_DSP_NEGATIVE_SQRT       (TINY_ERR_DSP_BASE + 9)
-
+#define TINY_ERR_DSP_MISMATCH            (TINY_ERR_DSP_BASE + 10)
 
 #ifdef __cplusplus
 }

@@ -11,6 +11,18 @@
 /* DEPENDENCIES */
 #include "tiny_conv.h"
 
+/**
+ * @name: tiny_conv_f32
+ * @brief Convolution function
+ * 
+ * @param Signal The input signal array
+ * @param siglen The length of the input signal array
+ * @param Kernel The input kernel array
+ * @param kernlen The length of the input kernel array
+ * @param convout The output array for the convolution result
+ * 
+ * @return tiny_error_t 
+ */
 tiny_error_t tiny_conv_f32(const float *Signal, const int siglen, const float *Kernel, const int kernlen, float *convout)
 {
     if (NULL == Signal || NULL == Kernel || NULL == convout)
