@@ -48,6 +48,7 @@
 // TinyAuton
 #include "tiny_toolbox.h" // TinyToolbox
 #include "tiny_math.h"   // TinyMath Header
+#include "tiny_dsp.h" // TinyDSP Header
 
 // #include "tiny_vec.h" // TinyVec Header
 // #include "tiny_vec_test.h" // TinyVec Test Header
@@ -178,10 +179,15 @@ void app_main()
     // xTaskCreate(acc_sense_task, "Accel_Sense_Task", 8192, &sense_config, 5, NULL);
 
     /* TEST SANDBOX */
+
+    // [tiny_math]
+
     // tiny_vec_test(); // test tiny_vec
     // tiny_mat_test(); // test tiny_mat
-    tiny_matrix_test(); // test tiny_matrix
+    // tiny_matrix_test(); // test tiny_matrix
 
+    // [tiny_dsp]
+    tiny_signal_conv_test(); // test tiny_dsp
 
 
     /* INFINITE LOOP */

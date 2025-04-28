@@ -1,10 +1,18 @@
 set(src_dirs
     .
+    signal
+    filter
+    transform
+    support
 )
 
 set(include_dirs
     .
     include
+    signal
+    filter
+    transform
+    support
 )
 
 set(requires

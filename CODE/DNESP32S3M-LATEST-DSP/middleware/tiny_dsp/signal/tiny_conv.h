@@ -1,7 +1,7 @@
 /**
  * @file tiny_conv.h
  * @author SHUAIWEN CUI (SHUAIWEN001@e.ntu.edu.sg)
- * @brief This file is the header file for the submodule conv of the tiny_dsp middleware.
+ * @brief tiny_conv | code | header 
  * @version 1.0
  * @date 2025-04-27
  * @copyright Copyright (c) 2025
