@@ -36,6 +36,69 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/dsp/"/>
     </url>
     <url>
+        <loc>https://localhost:7000/DSP/HEADER-FILE/tiny_dsp/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/HEADER-FILE/tiny_dsp/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/HEADER-FILE/tiny_dsp/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/DSP/HEADER-FILE/tiny_dsp_config/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/HEADER-FILE/tiny_dsp_config/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/HEADER-FILE/tiny_dsp_config/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/DSP/SIGNAL/CONVOLUTION/code/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CONVOLUTION/code/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CONVOLUTION/code/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/DSP/SIGNAL/CONVOLUTION/notes/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CONVOLUTION/notes/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CONVOLUTION/notes/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/DSP/SIGNAL/CONVOLUTION/test/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CONVOLUTION/test/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CONVOLUTION/test/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/DSP/SIGNAL/CORRELATION/code/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CORRELATION/code/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/code/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/DSP/SIGNAL/CORRELATION/notes/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CORRELATION/notes/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/notes/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/DSP/SIGNAL/CORRELATION/test/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CORRELATION/test/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/test/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/DSP/USAGE/usage/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/USAGE/usage/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/USAGE/usage/"/>
+    </url>
+    <url>
         <loc>https://localhost:7000/MATH/math/</loc>
         <lastmod>2025-04-28</lastmod>
         <changefreq>daily</changefreq>
@@ -265,6 +328,69 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/dsp/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/dsp/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/HEADER-FILE/tiny_dsp/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/HEADER-FILE/tiny_dsp/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/HEADER-FILE/tiny_dsp/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/HEADER-FILE/tiny_dsp_config/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/HEADER-FILE/tiny_dsp_config/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/HEADER-FILE/tiny_dsp_config/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/SIGNAL/CONVOLUTION/code/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CONVOLUTION/code/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CONVOLUTION/code/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/SIGNAL/CONVOLUTION/notes/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CONVOLUTION/notes/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CONVOLUTION/notes/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/SIGNAL/CONVOLUTION/test/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CONVOLUTION/test/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CONVOLUTION/test/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/code/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/code/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CORRELATION/code/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/notes/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/notes/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CORRELATION/notes/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/test/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/test/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CORRELATION/test/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/USAGE/usage/</loc>
+        <lastmod>2025-04-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/USAGE/usage/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/USAGE/usage/"/>
     </url>
     <url>
         <loc>https://localhost:7000/zh/MATH/math/</loc>

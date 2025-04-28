@@ -17,7 +17,7 @@
 
 // [signal]
 
-// signal - tiny_conv
+// signal - convolution
 #include "tiny_conv.h"
 #include "tiny_conv_test.h"
 
@@ -28,6 +28,10 @@
 // [filter]
 
 // [transform]
+
+// transform - discrete wavelet transform
+#include "tiny_dwt.h"
+#include "tiny_dwt_test.h"
 
 // [support]
 
