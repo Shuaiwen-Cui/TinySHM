@@ -140,6 +140,7 @@ plugins:
             SIGNAL: 信号
             CONVOLUTION: 卷积
             CORRELATION: 互相关
+            RESAMPLING: 重采样
             AI: 人工智能
             MEASUREMENT: 测量
             SYSTEM_IDENTIFICATION: 系统识别
@@ -319,6 +320,10 @@ nav:
              - NOTES: "DSP/SIGNAL/CORRELATION/notes.md"
              - CODE: "DSP/SIGNAL/CORRELATION/code.md"
              - TEST: "DSP/SIGNAL/CORRELATION/test.md"
+          - RESAMPLING:
+             - NOTES: "DSP/SIGNAL/RESAMPLE/notes.md"
+             - CODE: "DSP/SIGNAL/RESAMPLE/code.md"
+             - TEST: "DSP/SIGNAL/RESAMPLE/test.md"
   - AI:
       - "AI/ai.md"
   - MEASUREMENT:

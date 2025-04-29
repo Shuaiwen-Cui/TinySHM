@@ -25,6 +25,10 @@
 #include "tiny_corr.h"
 #include "tiny_corr_test.h"
 
+// signal - resample & decimate
+#include "tiny_resample.h"
+#include "tiny_resample_test.h"
+
 // [filter]
 
 // [transform]

@@ -187,8 +187,9 @@ void app_main()
     // tiny_matrix_test(); // test tiny_matrix
 
     // [tiny_dsp]
-    tiny_signal_conv_test(); // test tiny_dsp convolution functions
+    // tiny_signal_conv_test(); // test tiny_dsp convolution functions
     // tiny_signal_corr_ccorr_test(); // test tiny_dsp correlation and cross-correlation functions
+    tiny_signal_resample_decimate_test();
 
 
     /* INFINITE LOOP */
