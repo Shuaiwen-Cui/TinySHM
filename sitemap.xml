@@ -92,6 +92,27 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/test/"/>
     </url>
     <url>
+        <loc>https://localhost:7000/DSP/SIGNAL/RESAMPLE/code/</loc>
+        <lastmod>2025-04-29</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/RESAMPLE/code/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/RESAMPLE/code/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/DSP/SIGNAL/RESAMPLE/notes/</loc>
+        <lastmod>2025-04-29</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/RESAMPLE/notes/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/RESAMPLE/notes/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/DSP/SIGNAL/RESAMPLE/test/</loc>
+        <lastmod>2025-04-29</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/RESAMPLE/test/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/RESAMPLE/test/"/>
+    </url>
+    <url>
         <loc>https://localhost:7000/DSP/TRANSFORM/DWT/code/</loc>
         <lastmod>2025-04-29</lastmod>
         <changefreq>daily</changefreq>
@@ -405,6 +426,27 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/CORRELATION/test/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/CORRELATION/test/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/SIGNAL/RESAMPLE/code/</loc>
+        <lastmod>2025-04-29</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/RESAMPLE/code/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/RESAMPLE/code/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/SIGNAL/RESAMPLE/notes/</loc>
+        <lastmod>2025-04-29</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/RESAMPLE/notes/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/RESAMPLE/notes/"/>
+    </url>
+    <url>
+        <loc>https://localhost:7000/zh/DSP/SIGNAL/RESAMPLE/test/</loc>
+        <lastmod>2025-04-29</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://localhost:7000/zh/DSP/SIGNAL/RESAMPLE/test/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://localhost:7000/DSP/SIGNAL/RESAMPLE/test/"/>
     </url>
     <url>
         <loc>https://localhost:7000/zh/DSP/TRANSFORM/DWT/code/</loc>
