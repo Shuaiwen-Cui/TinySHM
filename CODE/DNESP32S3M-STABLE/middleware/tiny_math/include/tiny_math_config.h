@@ -25,6 +25,7 @@ extern "C"
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 // lower level
 #include "tiny_toolbox.h"
