@@ -141,6 +141,8 @@ plugins:
             CONVOLUTION: 卷积
             CORRELATION: 互相关
             RESAMPLING: 重采样
+            TRANSFORM: 变换
+            DWT: 离散小波变换
             AI: 人工智能
             MEASUREMENT: 测量
             SYSTEM_IDENTIFICATION: 系统识别
@@ -324,6 +326,11 @@ nav:
              - NOTES: "DSP/SIGNAL/RESAMPLE/notes.md"
              - CODE: "DSP/SIGNAL/RESAMPLE/code.md"
              - TEST: "DSP/SIGNAL/RESAMPLE/test.md"
+      - TRANSFORM:
+          - DWT:
+              - NOTES: "DSP/TRANSFORM/DWT/notes.md"
+              - CODE: "DSP/TRANSFORM/DWT/code.md"
+              - TEST: "DSP/TRANSFORM/DWT/test.md"
   - AI:
       - "AI/ai.md"
   - MEASUREMENT:

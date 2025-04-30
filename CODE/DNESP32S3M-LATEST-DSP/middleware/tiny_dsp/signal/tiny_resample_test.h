@@ -18,7 +18,7 @@ extern "C"
 {
 #endif
 
-void tiny_signal_resample_decimate_test(void);
+void tiny_resample_test(void);
 
 #ifdef __cplusplus
 }

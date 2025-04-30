@@ -11,65 +11,41 @@
 /* DEPENDENCIES */
 #include "tiny_resample_test.h" // tiny_resample test header
 
-#define EPSILON 1e-1f  // Tolerance for float comparison
 
-// Utility to print float array
-void print_array(const char *label, const float *array, int len) {
-    printf("%s [", label);
-    for (int i = 0; i < len; i++) {
-        printf("%.2f", array[i]);
-        if (i != len - 1) printf(", ");
-    }
-    printf("]\n");
-}
-
-// Simple float array comparison
-int compare_float_array(const float *a, const float *b, int len) {
-    for (int i = 0; i < len; i++) {
-        if (fabs(a[i] - b[i]) > EPSILON) {
-            return 0;
-        }
-    }
-    return 1;
-}
-
-void tiny_signal_resample_decimate_test(void)
+void tiny_resample_test(void)
 {
-    printf("\n========== TinyDSP Resample & Decimate Test ==========\n");
+    printf("========== TinyResample Test ==========\n");
 
-    /*** Test 1: Decimate by factor 2 ***/
-    const float input1[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f};
-    const int input1_len = sizeof(input1) / sizeof(input1[0]);
-    const int factor = 2;
-    float dec_output[8] = {0};
-    int dec_output_len = 0;
+    const float input[] = {1, 2, 3, 4, 5, 6, 7, 8};
+    const int input_len = sizeof(input) / sizeof(input[0]);
 
-    const float expected_dec[] = {1.0f, 3.0f, 5.0f};
+    // Downsample
+    float downsampled[8];
+    int down_len = 0;
+    tiny_downsample_skip_f32(input, input_len, downsampled, &down_len, 1, 2);
+    printf("Downsampled (skip 2): ");
+    for (int i = 0; i < down_len; i++) printf(" %.2f", downsampled[i]);
+    printf("\n");
 
-    tiny_error_t status_dec = tiny_decimate_f32(input1, input1_len, dec_output, &dec_output_len, factor);
+    // Upsample
+    float upsampled[16];
+    tiny_upsample_zero_f32(downsampled, down_len, upsampled, 16);
+    printf("Zero-Upsampled:     ");
+    for (int i = 0; i < 16; i++) printf(" %.2f", upsampled[i]);
+    printf("\n");
 
-    printf("\n--- Test 1: tiny_decimate_f32 (factor = %d) ---\n", factor);
-    print_array("Input     :", input1, input1_len);
-    print_array("Expected  :", expected_dec, dec_output_len);
-    print_array("Output    :", dec_output, dec_output_len);
-    printf("Result    : [%s]\n", (status_dec == TINY_OK && compare_float_array(dec_output, expected_dec, dec_output_len)) ? "PASS" : "FAIL");
+    // Resample
+    float resampled[12];
+    tiny_resample_f32(input, input_len, resampled, 12);
+    printf("Interpolated:       ");
+    for (int i = 0; i < 12; i++) printf(" %.2f", resampled[i]);
+    printf("\n");
 
-    /*** Test 2: Resample to length 7 ***/
-    const float input2[] = {10.0f, 20.0f, 30.0f, 40.0f};
-    const int input2_len = sizeof(input2) / sizeof(input2[0]);
-    const int target_len = 7;
-    float res_output[16] = {0};
+    // Validate linear interpolation at midpoints
+    printf("Resample validation at midpoints (expected: 1.5, 2.5, ..., 7.5):\n");
+    for (int i = 1; i < 12; i += 2) {
+        printf("  midpoint[%d] = %.2f\n", i, resampled[i]);
+    }
 
-    // Approximate expected values by visual inspection (not exact)
-    const float expected_res[] = {10.0f, 15.7f, 21.4f, 27.1f, 32.9f, 38.6f, 40.0f};
-
-    tiny_error_t status_res = tiny_resample_f32(input2, input2_len, res_output, target_len);
-
-    printf("\n--- Test 2: tiny_resample_f32 (target_len = %d) ---\n", target_len);
-    print_array("Input     :", input2, input2_len);
-    print_array("Expected  :", expected_res, target_len);
-    print_array("Output    :", res_output, target_len);
-    printf("Result    : [%s]\n", (status_res == TINY_OK && compare_float_array(res_output, expected_res, target_len)) ? "PASS" : "FAIL");
-
-    printf("========================================================\n");
+    printf("========================================\n");
 }

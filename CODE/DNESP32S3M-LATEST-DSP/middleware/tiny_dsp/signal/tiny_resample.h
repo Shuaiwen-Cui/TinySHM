@@ -25,21 +25,31 @@ extern "C"
 #endif
 
     /**
-     * @name: tiny_decimate_f32
-     * @brief Decimate a signal by a given factor
+     * @name tiny_downsample_skip_f32
+     * @brief Downsample a signal by a given factor using skipping
      *
      * @param input pointer to the input signal array
      * @param input_len length of the input signal array
      * @param output pointer to the output signal array
      * @param output_len pointer to the length of the output signal array
-     * @param factor decimation factor
+     * @param keep number of samples to keep
+     * @param skip number of samples to skip
+     *
      * @return tiny_error_t
      */
-    tiny_error_t tiny_decimate_f32(const float *input,
-                                   int input_len,
-                                   float *output,
-                                   int *output_len,
-                                   int factor);
+    tiny_error_t tiny_downsample_skip_f32(const float *input, int input_len, float *output, int *output_len, int keep, int skip);
+
+    /**
+     * @name tiny_upsample_zero_f32
+     * @brief Upsample a signal using zero-insertion between samples
+     *
+     * @param input pointer to the input signal array
+     * @param input_len length of the input signal array
+     * @param output pointer to the output signal array
+     * @param target_len target length for the output signal array
+     * @return tiny_error_t
+     */
+    tiny_error_t tiny_upsample_zero_f32(const float *input, int input_len, float *output, int target_len);
 
     /**
      * @name: tiny_resample_f32

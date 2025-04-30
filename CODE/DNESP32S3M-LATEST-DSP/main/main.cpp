@@ -149,27 +149,27 @@ void app_main()
     // sd_card_unmount();
     vTaskDelay(1000);
 
-    lcd_show_string(0, 0, lcd_self.width, 16, 16, "WiFi STA Test  ", RED);
-    ret = wifi_sta_wpa2_init();
-    if (ret == ESP_OK)
-    {
-        ESP_LOGI(TAG_WIFI, "WiFi STA Init OK");
-        lcd_show_string(0, 0, lcd_self.width, 16, 16, "WiFi STA Test OK", RED);
-    }
-    else
-    {
-        ESP_LOGE(TAG_WIFI, "WiFi STA Init Failed");
-    }
+    // lcd_show_string(0, 0, lcd_self.width, 16, 16, "WiFi STA Test  ", RED);
+    // ret = wifi_sta_wpa2_init();
+    // if (ret == ESP_OK)
+    // {
+    //     ESP_LOGI(TAG_WIFI, "WiFi STA Init OK");
+    //     lcd_show_string(0, 0, lcd_self.width, 16, 16, "WiFi STA Test OK", RED);
+    // }
+    // else
+    // {
+    //     ESP_LOGE(TAG_WIFI, "WiFi STA Init Failed");
+    // }
 
-    // time sync and mqtt
-    ev = xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, pdTRUE, pdFALSE, portMAX_DELAY);
-    if (ev & CONNECTED_BIT)
-    {
-        sync_time_with_timezone("CST-8");
-        vTaskDelay(500/portTICK_PERIOD_MS);
-        mqtt_app_start();
-        vTaskDelay(3000 / portTICK_PERIOD_MS); // wait for mqtt to connect
-    }
+    // // time sync and mqtt
+    // ev = xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, pdTRUE, pdFALSE, portMAX_DELAY);
+    // if (ev & CONNECTED_BIT)
+    // {
+    //     sync_time_with_timezone("CST-8");
+    //     vTaskDelay(500/portTICK_PERIOD_MS);
+    //     mqtt_app_start();
+    //     vTaskDelay(3000 / portTICK_PERIOD_MS); // wait for mqtt to connect
+    // }
 
     /* TASK PERFORMING */
     // streamline
@@ -179,6 +179,8 @@ void app_main()
     // xTaskCreate(acc_sense_task, "Accel_Sense_Task", 8192, &sense_config, 5, NULL);
 
     /* TEST SANDBOX */
+    printf("========== TEST SANDBOX ==========\n");
+    vTaskDelay(1000 / portTICK_PERIOD_MS); // 1 second delay
 
     // [tiny_math]
 
@@ -189,7 +191,10 @@ void app_main()
     // [tiny_dsp]
     // tiny_signal_conv_test(); // test tiny_dsp convolution functions
     // tiny_signal_corr_ccorr_test(); // test tiny_dsp correlation and cross-correlation functions
-    tiny_signal_resample_decimate_test();
+    // tiny_resample_test();  
+    // tiny_dwt_test();
+    tiny_dwt_test_multilevel(); // test tiny_dsp discrete wavelet transform functions
+
 
 
     /* INFINITE LOOP */
