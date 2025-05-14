@@ -175,12 +175,12 @@ void app_main()
     // xTaskCreate(acc_streamline_task, "Accel_Streamline_Task", 4096, &streamline_config, 5, NULL);
 
     // normal sense
-    // xTaskCreate(acc_sense_task, "Accel_Sense_Task", 8192, &sense_config, 5, NULL);
+    xTaskCreate(acc_sense_task, "Accel_Sense_Task", 8192, &sense_config, 5, NULL);
 
     /* TEST SANDBOX */
     // tiny_vec_test(); // test tiny_vec
     // tiny_mat_test(); // test tiny_mat
-    tiny_matrix_test(); // test tiny_matrix
+    // tiny_matrix_test(); // test tiny_matrix
 
 
 

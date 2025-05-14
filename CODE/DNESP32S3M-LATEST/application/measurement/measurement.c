@@ -55,7 +55,7 @@ struct SenseConfig streamline_config = {
 // for sensing configuration
 struct SenseConfig sense_config = {
     .sample_rate = 100,   // Sample rate in Hz, only can be (1, 2, 5, 10, 20, 25, 50, 100, 200, 500) for FreeRTOS based sensing. Note can not be 1000Hz (no time to feed the watchdog).
-    .sample_duration = 10, // Sample duration in seconds
+    .sample_duration = 2, // Sample duration in seconds
     .printout = true      // Only available for sampling rate <= 100Hz
 };
 
